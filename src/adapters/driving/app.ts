@@ -12,6 +12,7 @@ import * as projects from "../../application/projects.js";
 import * as tasks from "../../application/tasks.js";
 import { taskUpdateToApiPayload } from "../../infrastructure/mappers/custom_fields_mapper.js";
 import { installCursorSkills } from "../../application/install-cursor-skills.js";
+import { installCursorAgents } from "../../application/install-cursor-agents.js";
 import { RunrunitAPIError } from "../driven/api.js";
   
 
@@ -471,6 +472,47 @@ export const TOOLS = [
     },
   },
   /**
+   * @namedTools runrunit_install_cursor_agents
+   */
+  {
+    name: "runrunit_install_cursor_agents",
+    description:
+      "Copies bundled Cursor agent markdown files from the mcp-runrunit package (cursor-agents/) into ~/.cursor/agents (flat files: preserves each source basename, including .agent.md). Use dry_run:true first. Optional agent_names filters by destination filename; target:global (default) or project with project_root for .cursor/agents in a repo; source_dir overrides auto-discovery of cursor-agents.",
+    inputSchema: {
+      type: "object" as const,
+      properties: {
+        dry_run: {
+          type: "boolean",
+          description:
+            "If true, only lists what would be copied (no writes). Recommended before first sync.",
+        },
+        agent_names: {
+          type: "array",
+          items: { type: "string" },
+          description:
+            "Optional destination basenames to copy (e.g. mentor.agent.md, kieran-typescript-reviewer.md). Stems without .md are accepted. If omitted, copies every root *.md and every subfolder with exactly one markdown file.",
+        },
+        target: {
+          type: "string",
+          enum: ["global", "project"],
+          description:
+            "global = ~/.cursor/agents (default). project = <project_root>/.cursor/agents — requires project_root when target is project.",
+        },
+        project_root: {
+          type: "string",
+          description:
+            "Absolute path to the project root when target is project. Ignored when target is global.",
+        },
+        source_dir: {
+          type: "string",
+          description:
+            "Optional absolute path to a cursor-agents directory. If omitted, resolves next to the installed mcp-runrunit package.",
+        },
+      },
+      required: [],
+    },
+  },
+  /**
    * @namedTools runrunit_upload_image_cloudinary
    */
   {
@@ -910,6 +952,26 @@ export function createMcpServer(): Server {
               ? (a.skill_names as unknown[]).map((x) => String(x))
               : undefined,
             target,
+            project_root:
+              a.project_root != null ? String(a.project_root) : undefined,
+            source_dir:
+              a.source_dir != null ? String(a.source_dir) : undefined,
+          });
+          break;
+        }
+        case "runrunit_install_cursor_agents": {
+          const targetAgentsRaw =
+            a.target != null ? String(a.target).trim() : "";
+          const targetAgents =
+            targetAgentsRaw === "project"
+              ? ("project" as const)
+              : ("global" as const);
+          result = installCursorAgents({
+            dry_run: a.dry_run === true,
+            agent_names: Array.isArray(a.agent_names)
+              ? (a.agent_names as unknown[]).map((x) => String(x))
+              : undefined,
+            target: targetAgents,
             project_root:
               a.project_root != null ? String(a.project_root) : undefined,
             source_dir:
