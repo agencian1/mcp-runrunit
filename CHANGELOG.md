@@ -4,6 +4,11 @@ All notable changes to the mcp-runrunit package will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.4.0] - 2026-04-08
+
+### Added
+- Packaged directory `cursor-agents/` and MCP tool `runrunit_install_cursor_agents` to copy agent markdown files to `~/.cursor/agents` (global) or `<project_root>/.cursor/agents`, with optional `dry_run`, `agent_names`, `source_dir`, and `target` / `project_root`. Basenames are preserved (flat layout).
+
 ## [1.3.1] - 2026-04-08
 - Move repository for organization Github.
 
