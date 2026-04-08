@@ -1,18 +1,18 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.zNetinho/runrunit-n1",
+  "name": "io.github.agencian1/runrunit-n1",
   "title": "Runrun.it MCP Server",
   "description": "MCP server for Runrun.it: Tasks, Comments, Projects",
   "repository": {
-    "url": "https://github.com/zNetinho/mcp-runrunit.git",
+    "url": "https://github.com/agencian1/mcp-runrunit.git",
     "source": "github"
   },
-  "version": "1.3.0",
+  "version": "1.3.1",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "mcp-runrunit",
-      "version": "1.3.0",
+      "version": "1.3.1",
       "transport": { "type": "stdio" },
       "environmentVariables": [
         {
