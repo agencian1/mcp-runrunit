@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@modelcontextprotocol/sdk/types": ["./node_modules/@modelcontextprotocol/sdk/dist/esm/types.d.ts"],
+      "@modelcontextprotocol/sdk/server/stdio": ["./node_modules/@modelcontextprotocol/sdk/dist/esm/server/stdio.d.ts"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["src/index.ts"]
+}

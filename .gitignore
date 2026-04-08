@@ -1,0 +1,14 @@
+# environment variables
+.env
+
+# dependencies
+node_modules/*
+
+# build
+dist/*
+
+# cursor
+.cursor/*
+
+# logs
+*.log

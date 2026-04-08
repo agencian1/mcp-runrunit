@@ -1,0 +1,88 @@
+# Release mcp-runrunit: tag + npm publish on push to main
+# Version must be already bumped (package.json, server.json, CHANGELOG) before merging to main.
+# Docs: https://docs.github.com/pt/actions/tutorials/publish-packages/publish-nodejs-packages
+
+name: Release mcp-runrunit to npm
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - 'src/**'
+      - 'scripts/**'
+      - 'server.json'
+      - 'CHANGELOG.md'
+      - '.github/workflows/release-mcp-runrunit.yml'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Check NPM_TOKEN
+        run: |
+          if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+            echo "::error::NPM_TOKEN secret is not set. Add it at: Settings → Secrets and variables → Actions → New repository secret. Create token at https://www.npmjs.com/account/tokens (type: Automation)."
+            exit 1
+          fi
+          echo "NPM_TOKEN is set."
+
+      - name: Read version
+        id: version
+        run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_OUTPUT
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      # Fix package.json fields (bin name, repository.url) to avoid npm publish warnings
+      - name: Fix package.json
+        run: npm pkg fix
+
+      # .npmrc in package dir ensures auth is used when publishing from working-directory
+      # NPM_TOKEN: repository SECRET at Settings → Secrets and variables → Actions → Secrets
+      # Create at https://www.npmjs.com/account/tokens (type: Automation)
+      - name: Setup .npmrc for npm publish
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > .npmrc
+          echo "registry=https://registry.npmjs.org/" >> .npmrc
+          echo "always-auth=true" >> .npmrc
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish to npm
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "::error::NPM_TOKEN is missing. Add it as a repository SECRET: Settings → Secrets and variables → Actions → NPM_TOKEN"
+            exit 1
+          fi
+          npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create and push tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "v${{ steps.version.outputs.VERSION }}"
+          git push origin "v${{ steps.version.outputs.VERSION }}"

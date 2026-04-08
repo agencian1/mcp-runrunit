@@ -1,0 +1,51 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.zNetinho/runrunit-n1",
+  "title": "Runrun.it MCP Server",
+  "description": "MCP server for Runrun.it: Tasks, Comments, Projects",
+  "repository": {
+    "url": "https://github.com/zNetinho/mcp-runrunit.git",
+    "source": "github"
+  },
+  "version": "1.3.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "mcp-runrunit",
+      "version": "1.3.0",
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        {
+          "name": "RUNRUNIT_APP_KEY",
+          "description": "Runrun.it API App-Key (application key)",
+          "isRequired": true,
+          "isSecret": true
+        },
+        {
+          "name": "RUNRUNIT_USER_TOKEN",
+          "description": "Runrun.it API User-Token (user authentication)",
+          "isRequired": true,
+          "isSecret": true
+        },
+        {
+          "name": "CLOUDINARY_CLOUD_NAME",
+          "description": "Cloudinary cloud name (for skills: upload-image-cloudinary, evidências em PRs/comentários)",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "CLOUDINARY_API_KEY",
+          "description": "Cloudinary API key (for image upload in skills)",
+          "isRequired": false,
+          "isSecret": true
+        },
+        {
+          "name": "CLOUDINARY_API_SECRET",
+          "description": "Cloudinary API secret (for image upload in skills; never expose client-side)",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}
