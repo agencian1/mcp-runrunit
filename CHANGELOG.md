@@ -4,6 +4,16 @@ All notable changes to the mcp-runrunit package will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.5.0] - 2026-04-08
+
+### Added
+- MCP tools `runrunit_share_cursor_agent` and `runrunit_share_cursor_skill` to open GitHub pull requests that add or update bundled Cursor agents/skills in the repo (GitHub credentials via MCP host env only; see `.env.example`).
+- Vitest test suite and unit tests for share-cursor GitHub and path logic.
+- Packaged Cursor skill `react-best-practices` (rules bundle for TSX quality review).
+
+### Changed
+- README, `AGENTS.md`, and `install-cursor-team-skills` skill to distinguish local install tools from share-via-PR tools.
+
 ## [1.4.0] - 2026-04-08
 
 ### Added
