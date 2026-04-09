@@ -1,6 +1,6 @@
 {
   "name": "mcp-runrunit",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "MCP server for Runrun.it API - Tasks, Comments, Projects",
   "type": "module",
   "main": "dist/index.js",
@@ -27,13 +27,15 @@
     "prepare": "npm run build",
     "prepublishOnly": "npm run build",
     "start": "node --env-file=.env dist/server.js",
-    "dev": "npm run build && node --env-file=.env dist/server.js"
+    "dev": "npm run build && node --env-file=.env dist/server.js",
+    "test": "vitest run"
   },
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
+    "@octokit/rest": "^22.0.0",
     "express": "^5.0.0",
     "zod": "^3.23.0"
   },
@@ -41,6 +43,7 @@
     "@types/express": "^5.0.0",
     "@types/node": "^20.0.0",
     "esbuild": "^0.28.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "vitest": "^3.0.0"
   }
 }
