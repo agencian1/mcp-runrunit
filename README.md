@@ -69,6 +69,14 @@ Configure as variáveis de ambiente (ou no JSON de configuração do MCP no Curs
 - `CLOUDINARY_API_KEY` — API key
 - `CLOUDINARY_API_SECRET` — API secret (nunca expor no client-side)
 
+**GitHub** (opcional; tools `runrunit_share_cursor_agent` e `runrunit_share_cursor_skill`):
+
+- `GITHUB_TOKEN` — PAT ou token com permissão de escrita em `contents` e `pull_requests` no repositório alvo
+- `GITHUB_REPO_OWNER`, `GITHUB_REPO_NAME` — repositório onde abrir o PR (layout `cursor-agents/` e `cursor-skills/` na raiz)
+- `GITHUB_BASE_BRANCH` — branch base (opcional; default `main`)
+
+Estas variáveis existem **só no anfitrião do processo MCP** (ficheiro de config do Cursor, CI, segredos da org). **Não** passe token nem credenciais como argumento de tool nem partilhe em chat ou repositório.
+
 ## Instalação e utilização local
 
 ```bash
@@ -140,7 +148,7 @@ Depois de publicado no npm, qualquer pessoa pode usar com `npx` sem clonar o rep
 
 ## Cursor Skills e agentes (evidências, PR, comentários na task, agents)
 
-O pacote inclui a pasta `cursor-skills/` com skills para uso no Cursor: **registrar-evidencias**, **upload-image-cloudinary**, **create-pr-github**, **comentar-task-runrunit**, **code-reviewer**, **install-cursor-team-skills** (atalho que orienta usar a tool abaixo). Para instalar ou sincronizar tudo no PC de um colega, use a tool MCP **`runrunit_install_cursor_skills`** (recomendado: `dry_run: true` primeiro; usa `os.homedir()` e funciona em Windows, macOS e Linux). Parâmetros opcionais: `skill_names`, `target` (`global` ou `project` + `project_root`), `source_dir` se a pasta não for encontrada ao lado do pacote.
+O pacote inclui a pasta `cursor-skills/` com skills para uso no Cursor: **registrar-evidencias**, **upload-image-cloudinary**, **create-pr-github**, **comentar-task-runrunit**, **code-reviewer**, **react-best-practices** (guia Vercel para React/Next.js, com `rules/` e `AGENTS.md`), **install-cursor-team-skills** (atalho que orienta usar a tool abaixo). Para instalar ou sincronizar tudo no PC de um colega, use a tool MCP **`runrunit_install_cursor_skills`** (recomendado: `dry_run: true` primeiro; usa `os.homedir()` e funciona em Windows, macOS e Linux). Parâmetros opcionais: `skill_names`, `target` (`global` ou `project` + `project_root`), `source_dir` se a pasta não for encontrada ao lado do pacote.
 
 A pasta **`cursor-agents/`** guarda ficheiros Markdown de agentes (na raiz, ex. `nome.md` ou `nome.agent.md`, ou subpastas com **um único** ficheiro `.md`). Para copiar para o Cursor no utilizador que corre o MCP, use **`runrunit_install_cursor_agents`**: destino global `~/.cursor/agents/` (lista plana de ficheiros; o nome do ficheiro no destino é o mesmo basename de origem). Parâmetros opcionais: `agent_names`, `target`, `project_root`, `source_dir`, `dry_run`.
 
@@ -196,8 +204,10 @@ As skills que fazem upload de imagens (evidências em PRs e comentários Runrun.
 
 | Ferramenta | Descrição |
 |------------|-----------|
-| `runrunit_install_cursor_skills` | Copia as pastas de `cursor-skills/` do pacote para `~/.cursor/skills` (global) ou para `<project_root>/.cursor/skills` (`target: project`). Útil para onboard da equipe; escrita no diretório home do usuário que executa o processo do MCP. |
-| `runrunit_install_cursor_agents` | Copia ficheiros Markdown de `cursor-agents/` para `~/.cursor/agents` (global) ou `<project_root>/.cursor/agents`, preservando o basename de cada ficheiro (incl. `*.agent.md`). Opcional: `agent_names`, `dry_run`, `source_dir`, `target` / `project_root`. |
+| `runrunit_install_cursor_skills` | **Só instalação local:** copia pastas de `cursor-skills/` para `~/.cursor/skills` ou `<project_root>/.cursor/skills`. Não usar para “compartilhar no GitHub” — nesse caso use `runrunit_share_cursor_skill`. |
+| `runrunit_install_cursor_agents` | **Só instalação local:** copia Markdown de `cursor-agents/` para `~/.cursor/agents` ou projeto, preservando o basename. Para propor agente ao repo via PR, use `runrunit_share_cursor_agent`. |
+| `runrunit_share_cursor_agent` | **Partilha com o time (PR):** quando pedirem compartilhar/dividir agente com o time no GitHub. Abre PR com um ficheiro de `cursor-agents/`. Requer `GITHUB_*` no servidor MCP. |
+| `runrunit_share_cursor_skill` | **Partilha com o time (PR):** quando pedirem compartilhar/dividir skill com o time (ex. `react-best-practices`). Abre PR com `cursor-skills/{skill_name}/SKILL.md`. Mesmos requisitos GitHub que a tool de agente. |
 
 ### Skills
 
@@ -210,7 +220,8 @@ Skills em `cursor-skills/`:
 | `upload-image-cloudinary` | Upload de imagens para Cloudinary e retorno de URLs públicas. Usar quando screenshots ou evidências precisarem ser hospedadas (ex.: body da PR, docs). Requer CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY e CLOUDINARY_API_SECRET. |
 | `comentar-task-runrunit` | Orquestra evidências e comentário na tarefa do Runrun.it: captura antes/depois, upload no Cloudinary, opcionalmente abre PR e cria comentário na task com resumo, passo a passo de teste e links; grava link_da_branch na task se houver PR. |
 | `create-pr-github` | Cria um pull request bem estruturado, com descrição, rótulos, revisores e evidências visuais. Inclui preparar branch, descrição, checklist e output obrigatório (link da PR, branch, ambiente de destino). |
-| `install-cursor-team-skills` | Skill mínima que indica chamar a tool `runrunit_install_cursor_skills` para sincronizar as demais skills do pacote no Cursor. |
+| `install-cursor-team-skills` | Orienta `runrunit_install_cursor_skills` (cópia local) e distingue de `runrunit_share_cursor_skill` (PR no GitHub quando pedirem compartilhar com o time). |
+| `react-best-practices` | Checklist e regras de performance para React e Next.js (Vercel). Use ao editar TSX/JSX, revisar componentes ou otimizar bundle e render. Inclui ficheiros detalhados em `rules/` e o documento compilado `AGENTS.md`. |
 
 ### Agents
 

@@ -13,7 +13,12 @@ import * as tasks from "../../application/tasks.js";
 import { taskUpdateToApiPayload } from "../../infrastructure/mappers/custom_fields_mapper.js";
 import { installCursorSkills } from "../../application/install-cursor-skills.js";
 import { installCursorAgents } from "../../application/install-cursor-agents.js";
+import {
+  shareCursorAgent,
+  shareCursorSkill,
+} from "../../application/share-cursor-github.js";
 import { RunrunitAPIError } from "../driven/api.js";
+import { ShareGithubConfigError } from "../driven/github.js";
   
 
 export const TOOLS = [
@@ -436,7 +441,7 @@ export const TOOLS = [
   {
     name: "runrunit_install_cursor_skills",
     description:
-      "Copies bundled Cursor skills from the mcp-runrunit package (cursor-skills/) into the user's Cursor skills directory (~/.cursor/skills on any OS: uses os.homedir). Use to onboard teammates or sync team SKILL.md workflows. Prefer dry_run:true first to preview. Optional skill_names limits which folders to copy; target:global (default) or project with project_root for .cursor/skills in a repo; source_dir overrides auto-discovery of cursor-skills.",
+      "Local install only: copies bundled Cursor skills from mcp-runrunit (cursor-skills/) into ~/.cursor/skills or project .cursor/skills (os.homedir). Use when the user wants to sync skills onto their machine (onboarding, pull package skills locally). Prefer dry_run:true first. NOT for sharing via GitHub or “compartilhar / dividir com o time” in the repo — that is runrunit_share_cursor_skill. Optional skill_names, target global|project, project_root, source_dir.",
     inputSchema: {
       type: "object" as const,
       properties: {
@@ -477,7 +482,7 @@ export const TOOLS = [
   {
     name: "runrunit_install_cursor_agents",
     description:
-      "Copies bundled Cursor agent markdown files from the mcp-runrunit package (cursor-agents/) into ~/.cursor/agents (flat files: preserves each source basename, including .agent.md). Use dry_run:true first. Optional agent_names filters by destination filename; target:global (default) or project with project_root for .cursor/agents in a repo; source_dir overrides auto-discovery of cursor-agents.",
+      "Local install only: copies agent markdown from mcp-runrunit (cursor-agents/) into ~/.cursor/agents (flat files, preserves basename including .agent.md). Use dry_run:true first. NOT for compartilhar/dividir com o time via GitHub — use runrunit_share_cursor_agent for a PR. Optional agent_names, target, project_root, source_dir.",
     inputSchema: {
       type: "object" as const,
       properties: {
@@ -600,6 +605,54 @@ export const TOOLS = [
         guild_id: { type: "string", description: "Discord guild ID (optional)" },
       },
       required: [],
+    },
+  },
+  /**
+   * @namedTools runrunit_share_cursor_agent
+   */
+  {
+    name: "runrunit_share_cursor_agent",
+    description:
+      "Use when the user wants to share a Cursor agent with the team through GitHub (e.g. compartilhar agente com o time, dividir com o time, propor ao repositório, share agent with the team via PR). Opens a pull request with one markdown file from cursor-agents/. For copying agents into ~/.cursor/agents locally, use runrunit_install_cursor_agents instead. Requires GITHUB_TOKEN, GITHUB_REPO_OWNER, GITHUB_REPO_NAME on the MCP server host only; never pass credentials via this tool.",
+    inputSchema: {
+      type: "object" as const,
+      properties: {
+        agent_name: {
+          type: "string",
+          description:
+            "Agent file name or stem (e.g. security-auditor or security-auditor.md) matching a file under cursor-agents/.",
+        },
+        project_root: {
+          type: "string",
+          description:
+            "Optional absolute path to project root containing cursor-agents/. If omitted, walks up from cwd.",
+        },
+      },
+      required: ["agent_name"],
+    },
+  },
+  /**
+   * @namedTools runrunit_share_cursor_skill
+   */
+  {
+    name: "runrunit_share_cursor_skill",
+    description:
+      "Primary tool when the user wants to share a Cursor skill with the team via GitHub: compartilhar skill, dividir com o time, propor ao repo, publicar skill para a equipe, share skill with the team, open a PR for teammates. Opens a pull request that adds or updates cursor-skills/{skill_name}/SKILL.md (single file in the PR; add rules/ etc. in follow-up commits if needed). Do not use runrunit_install_cursor_skills for this — that only copies folders to local ~/.cursor/skills. Same GitHub env as runrunit_share_cursor_agent (token on MCP host only).",
+    inputSchema: {
+      type: "object" as const,
+      properties: {
+        skill_name: {
+          type: "string",
+          description:
+            "Folder name under cursor-skills/ (e.g. react-best-practices, upload-image-cloudinary). Matches the directory that contains SKILL.md.",
+        },
+        project_root: {
+          type: "string",
+          description:
+            "Optional absolute path to project root containing cursor-skills/. If omitted, walks up from cwd.",
+        },
+      },
+      required: ["skill_name"],
     },
   },
 ];
@@ -1017,6 +1070,22 @@ export function createMcpServer(): Server {
           });
           break;
         }
+        case "runrunit_share_cursor_agent": {
+          result = await shareCursorAgent({
+            agent_name: String(a.agent_name ?? ""),
+            project_root:
+              a.project_root != null ? String(a.project_root) : undefined,
+          });
+          break;
+        }
+        case "runrunit_share_cursor_skill": {
+          result = await shareCursorSkill({
+            skill_name: String(a.skill_name ?? ""),
+            project_root:
+              a.project_root != null ? String(a.project_root) : undefined,
+          });
+          break;
+        }
         default:
           return {
             content: textContent(`Unknown tool: ${name}`),
@@ -1029,11 +1098,13 @@ export function createMcpServer(): Server {
       };
     } catch (err) {
       const message =
-        err instanceof RunrunitAPIError
-          ? `${err.message}${err.body ? ` ${JSON.stringify(err.body)}` : ""}`
-          : err instanceof Error
-            ? err.message
-            : String(err);
+        err instanceof ShareGithubConfigError
+          ? err.message
+          : err instanceof RunrunitAPIError
+            ? `${err.message}${err.body ? ` ${JSON.stringify(err.body)}` : ""}`
+            : err instanceof Error
+              ? err.message
+              : String(err);
       return {
         content: textContent(`Error: ${message}`),
         isError: true,
