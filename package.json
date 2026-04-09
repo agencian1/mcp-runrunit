@@ -26,8 +26,8 @@
     "postbuild": "node scripts/bundle.mjs",
     "prepare": "npm run build",
     "prepublishOnly": "npm run build",
-    "start": "node --env-file=.env dist/server.js",
-    "dev": "npm run build && node --env-file=.env dist/server.js",
+    "start": "node --env-file=.env --import ./dist/instrument-http.js dist/server.js",
+    "dev": "npm run build && node --env-file=.env --import ./dist/instrument-http.js dist/server.js",
     "test": "vitest run"
   },
   "engines": {

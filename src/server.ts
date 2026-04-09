@@ -10,10 +10,7 @@ import type { Server } from "@modelcontextprotocol/sdk/server";
 import {
   captureExceptionWithContext,
   flushAndClose,
-  initSentry,
 } from "./observability/sentry.js";
-
-initSentry("http");
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);

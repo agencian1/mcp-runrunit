@@ -74,6 +74,14 @@ function parseSampleRate(): number {
   return 1.0;
 }
 
+function parseTraceSampleRate(): number {
+  const raw = process.env.SENTRY_TRACES_SAMPLE_RATE;
+  if (!raw) return process.env.NODE_ENV === "development" ? 1.0 : 0.1;
+  const parsed = Number(raw);
+  if (Number.isFinite(parsed) && parsed >= 0 && parsed <= 1) return parsed;
+  return process.env.NODE_ENV === "development" ? 1.0 : 0.1;
+}
+
 export function initSentry(runtimeMode: RuntimeMode): void {
   activeRuntimeMode = runtimeMode;
 
@@ -94,6 +102,8 @@ export function initSentry(runtimeMode: RuntimeMode): void {
     environment,
     release,
     sampleRate: parseSampleRate(),
+    // Enables tracing transactions for the Performance panel in Sentry.
+    tracesSampleRate: parseTraceSampleRate(),
     sendDefaultPii: false,
     maxBreadcrumbs: 30,
     beforeSend(event) {
