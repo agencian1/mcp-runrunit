@@ -3,9 +3,14 @@ import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 import express from "express";
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
+import * as Sentry from "@sentry/node";
 import { createMcpServer } from "./adapters/driving/app.js";
 import type { Server } from "@modelcontextprotocol/sdk/server";
+import {
+  captureExceptionWithContext,
+  flushAndClose,
+} from "./observability/sentry.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
@@ -155,13 +160,38 @@ async function main() {
     res.json({ status: "ok", mcp: "runrunit" });
   });
 
+  // Must be after routes so framework errors are captured by Sentry.
+  Sentry.setupExpressErrorHandler(app);
+
+  app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+    captureExceptionWithContext(err, {
+      tags: { error_kind: "express_unhandled" },
+    });
+    if (!res.headersSent) {
+      res.status(500).json({
+        jsonrpc: "2.0",
+        error: { code: -32603, message: "Internal server error" },
+        id: null,
+      });
+    }
+  });
+
   app.listen(PORT, () => {
+    Sentry.captureMessage("mcp-runrunit: HTTP server started", {
+      level: "info",
+      tags: { server: "http" },
+    });
     console.error(`mcp-runrunit: HTTP server at http://127.0.0.1:${PORT}${MCP_PATH}`);
     console.error(`  Health: http://127.0.0.1:${PORT}/health`);
   });
 }
 
 main().catch((error) => {
+  captureExceptionWithContext(error, {
+    tags: { error_kind: "bootstrap_fatal" },
+  });
   console.error("mcp-runrunit HTTP server fatal error:", error);
-  process.exit(1);
+  void flushAndClose().finally(() => {
+    process.exit(1);
+  });
 });

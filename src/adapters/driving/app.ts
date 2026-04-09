@@ -19,6 +19,7 @@ import {
 } from "../../application/share-cursor-github.js";
 import { RunrunitAPIError } from "../driven/api.js";
 import { ShareGithubConfigError } from "../driven/github.js";
+import { captureExceptionWithContext } from "../../observability/sentry.js";
   
 
 export const TOOLS = [
@@ -1097,6 +1098,17 @@ export function createMcpServer(): Server {
         content: textContent(JSON.stringify(result, null, 2)),
       };
     } catch (err) {
+      captureExceptionWithContext(err, {
+        tags: {
+          tool_name: name,
+          error_kind: "tool_execution",
+          runtime_mode: process.env.MCP_RUNTIME_MODE ?? "unknown",
+        },
+        extra: {
+          toolArguments: args,
+        },
+      });
+
       const message =
         err instanceof ShareGithubConfigError
           ? err.message
