@@ -77,6 +77,17 @@ Configure as variáveis de ambiente (ou no JSON de configuração do MCP no Curs
 
 Estas variáveis existem **só no anfitrião do processo MCP** (ficheiro de config do Cursor, CI, segredos da org). **Não** passe token nem credenciais como argumento de tool nem partilhe em chat ou repositório.
 
+**Sentry** (opcional; monitoramento de erros do MCP):
+
+- `SENTRY_DSN` — DSN do projeto Sentry
+- `SENTRY_ENVIRONMENT` — ambiente (`development`, `staging`, `production`)
+- `SENTRY_RELEASE` — versão/release (ex.: `mcp-runrunit@1.5.0+abc1234`)
+- `SENTRY_ENABLED` — liga/desliga o envio de eventos
+- `SENTRY_ERROR_SAMPLE_RATE` — taxa de amostragem de erros (0.0 a 1.0; default 1.0)
+
+Recomendação: manter `sendDefaultPii` desabilitado (já aplicado no código) e configurar segredos apenas no ambiente do host MCP/CI.
+Guia operacional de validação/rollout: `docs/SENTRY-ROLLOUT.md`.
+
 ## Instalação e utilização local
 
 ```bash

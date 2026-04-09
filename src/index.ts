@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { createMcpServer } from "./adapters/driving/app.js";
+import { captureExceptionWithContext, flushAndClose, initSentry } from "./observability/sentry.js";
+
+initSentry("stdio");
 
 async function main() {
   const server = createMcpServer();
@@ -10,6 +13,11 @@ async function main() {
 }
 
 main().catch((error) => {
+  captureExceptionWithContext(error, {
+    tags: { error_kind: "bootstrap_fatal" },
+  });
   console.error("mcp-runrunit fatal error:", error);
-  process.exit(1);
+  void flushAndClose().finally(() => {
+    process.exit(1);
+  });
 });

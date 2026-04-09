@@ -4,6 +4,16 @@ All notable changes to the mcp-runrunit package will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.6.0] - 2026-04-09
+
+### Added
+- Sentry error monitoring integration for stdio and HTTP entrypoints with centralized observability module (`init`, contextual capture, and graceful flush on fatal paths).
+- Operational rollout guide `docs/SENTRY-ROLLOUT.md` with staging validation checklist, minimum alerts, and gradual production enablement steps.
+
+### Changed
+- Tool execution error handling now sends contextual Sentry tags (`tool_name`, `runtime_mode`, `error_kind`) with sanitized metadata.
+- Environment documentation updated with `SENTRY_*` variables in `.env.example` and README.
+
 ## [1.5.0] - 2026-04-08
 
 ### Added
