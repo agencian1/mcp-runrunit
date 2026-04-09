@@ -4,6 +4,11 @@ All notable changes to the mcp-runrunit package will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.6.1] - 2026-04-09
+
+### Fixed
+- Sentry HTTP server: load tracing instrumentation before Express so performance transactions appear reliably; configurable traces sampling via `SENTRY_TRACES_SAMPLE_RATE` (see `.env.example`).
+
 ## [1.6.0] - 2026-04-09
 
 ### Added
