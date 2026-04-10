@@ -15,6 +15,9 @@ await esbuild.build({
   format: "esm",
   outfile,
   packages: "bundle",
+  // @sentry/node pulls OpenTelemetry with dynamic require("util") etc.; bundling
+  // that into ESM triggers "Dynamic require is not supported". Load from node_modules.
+  external: ["@sentry/node"],
   target: "node18",
   sourcemap: false,
   minify: false,

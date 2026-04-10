@@ -4,6 +4,11 @@ All notable changes to the mcp-runrunit package will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.6.2] - 2026-04-09
+
+### Fixed
+- Sentry stdio bundle: mark `@sentry/node` as an esbuild external so OpenTelemetry is not inlined into `dist/index.js`, avoiding production startup failures from dynamic `require` inside the ESM bundle.
+
 ## [1.6.1] - 2026-04-09
 
 ### Fixed
