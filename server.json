@@ -7,12 +7,12 @@
     "url": "https://github.com/agencian1/mcp-runrunit.git",
     "source": "github"
   },
-  "version": "1.6.1",
+  "version": "1.6.2",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "mcp-runrunit",
-      "version": "1.6.1",
+      "version": "1.6.2",
       "transport": { "type": "stdio" },
       "environmentVariables": [
         {
