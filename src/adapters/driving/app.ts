@@ -671,7 +671,7 @@ export const TOOLS = [
   {
     name: 'runrunit_share_cursor_skill',
     description:
-      'Primary tool when the user wants to share a Cursor skill with the team via GitHub: compartilhar skill, dividir com o time, propor ao repo, publicar skill para a equipe, share skill with the team, open a PR for teammates. Opens a pull request that adds or updates cursor-skills/{skill_name}/SKILL.md (single file in the PR; add rules/ etc. in follow-up commits if needed). Do not use runrunit_install_cursor_skills for this — that only copies folders to local ~/.cursor/skills. Same GitHub env as runrunit_share_cursor_agent (token on MCP host only).',
+      'Primary tool when the user wants to share a Cursor skill with the team via GitHub: compartilhar skill, dividir com o time, propor ao repo, publicar skill para a equipe, share skill with the team, open a PR for teammates. Opens a pull request that adds or updates the full cursor-skills/{skill_name}/ folder (SKILL.md, rules/, templates/, scripts/, etc.) in one atomic commit. Do not use runrunit_install_cursor_skills for this — that only copies folders to local ~/.cursor/skills. Same GitHub env as runrunit_share_cursor_agent (token on MCP host only).',
     inputSchema: {
       type: 'object' as const,
       properties: {

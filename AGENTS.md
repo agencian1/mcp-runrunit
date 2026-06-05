@@ -2,7 +2,8 @@
 
 - Prefer git commit messages and GitHub PR bodies without marketing or footer lines such as "Made with..."; keep commits and descriptions minimal.
 - Use npm (not pnpm) for installing dependencies and running scripts in this repository.
-- When the user wants to share agents or skills with the team (e.g. compartilhar, dividir com o time, share with the team), use `runrunit_share_cursor_agent` or `runrunit_share_cursor_skill` to propose changes via GitHub PR; use `runrunit_install_cursor_agents` and `runrunit_install_cursor_skills` only for copying bundled assets to the local machine.
+- When the user wants to share agents or skills with the team (e.g. compartilhar, dividir com o time, share with the team), use `runrunit_share_cursor_agent` or `runrunit_share_cursor_skill` to propose changes via GitHub PR; `runrunit_share_cursor_skill` uploads the full `cursor-skills/{name}/` folder (not only SKILL.md). Use `runrunit_install_cursor_agents` and `runrunit_install_cursor_skills` only for copying bundled assets to the local machine.
+- Not include Co-author in commit or branch!.
 
 ## Learned Workspace Facts
 

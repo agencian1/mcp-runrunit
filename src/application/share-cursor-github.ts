@@ -5,14 +5,15 @@ import type { GithubShareConfig } from '../adapters/driven/github.js';
 import {
   createOctokit,
   readGithubShareConfigFromEnv,
+  submitMultiFilePullRequest,
   submitNewFilePullRequest,
 } from '../adapters/driven/github.js';
 import {
   assertPathInsideProjectRoot,
+  collectSkillFilesForShare,
   MAX_SHARE_FILE_BYTES,
   resolveAgentMarkdownForShare,
   resolveShareProjectRoot,
-  resolveSkillMarkdownForShare,
 } from './share-cursor-paths.js';
 
 export type ShareCursorGithubResult = {
@@ -20,6 +21,8 @@ export type ShareCursorGithubResult = {
   branch: string;
   path: string;
   bytes: number;
+  file_count?: number;
+  paths?: string[];
 };
 
 export type ShareCursorGithubDeps = {
@@ -77,7 +80,11 @@ function prBodyAgent(params: { repoPath: string; correlationId: string }): strin
   ].join('\n');
 }
 
-function prBodySkill(params: { repoPath: string; correlationId: string }): string {
+function prBodySkill(params: {
+  repoFolderPath: string;
+  fileCount: number;
+  correlationId: string;
+}): string {
   return [
     '## Partilha via MCP (cursor-skill)',
     '',
@@ -87,9 +94,9 @@ function prBodySkill(params: { repoPath: string; correlationId: string }): strin
     '',
     `- **Correlation ID:** ${params.correlationId}`,
     '',
-    '### Ficheiro remoto',
+    '### Pasta remota',
     '',
-    `- \`${params.repoPath}\``,
+    `- \`${params.repoFolderPath}\` (${params.fileCount} ficheiro${params.fileCount === 1 ? '' : 's'})`,
     '',
   ].join('\n');
 }
@@ -154,31 +161,32 @@ export async function shareCursorSkill(
     throw new Error('skill_name is required.');
   }
   const projectRoot = resolveShareProjectRoot(params.project_root, 'cursor-skills');
-  const { sourcePath, repoPath, folder } = resolveSkillMarkdownForShare(projectRoot, skillNameRaw);
-  const content = readUtf8FileLimited(sourcePath, projectRoot);
-  const bytes = Buffer.byteLength(content, 'utf8');
+  const { folder, repoFolderPath, files } = collectSkillFilesForShare(projectRoot, skillNameRaw);
+  const bytes = files.reduce((sum, f) => sum + f.content.length, 0);
+  const paths = files.map((f) => f.repoPath);
   const slug = branchSlugFromSkillFolder(folder);
   const suffix = uniqueSuffix();
   const branch = `feat/share-skill-${slug}-${suffix}`;
   const correlationId = randomUUID();
   const { octokit, config } = resolveDeps(deps);
 
-  const { prUrl, branch: createdBranch } = await submitNewFilePullRequest(octokit, {
+  const { prUrl, branch: createdBranch } = await submitMultiFilePullRequest(octokit, {
     owner: config.owner,
     repo: config.repo,
     baseBranch: config.baseBranch,
     branch,
-    path: repoPath,
-    contentUtf8: content,
+    files: files.map((f) => ({ path: f.repoPath, content: f.content })),
     commitMessage: `feat(skills): share ${folder}`,
     prTitle: `feat(skills): share ${folder}`,
-    prBody: prBodySkill({ repoPath, correlationId }),
+    prBody: prBodySkill({ repoFolderPath, fileCount: files.length, correlationId }),
   });
 
   return {
     pr_url: prUrl,
     branch: createdBranch,
-    path: repoPath,
+    path: repoFolderPath,
     bytes,
+    file_count: files.length,
+    paths,
   };
 }

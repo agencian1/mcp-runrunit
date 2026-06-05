@@ -156,3 +156,178 @@ export async function submitNewFilePullRequest(
     );
   }
 }
+
+export type ShareFileEntry = { path: string; content: Buffer };
+
+export type SubmitMultiFilePrParams = {
+  owner: string;
+  repo: string;
+  baseBranch: string;
+  branch: string;
+  files: ShareFileEntry[];
+  commitMessage: string;
+  prTitle: string;
+  prBody: string;
+};
+
+function authOrPermError(): Error {
+  return new Error(
+    'Falha de autenticação ou permissões com o GitHub. Verifique GITHUB_TOKEN e scopes (contents, pull_requests).',
+  );
+}
+
+/**
+ * Creates a new branch from base, adds multiple files in one commit via Git Data API, opens a PR.
+ */
+export async function submitMultiFilePullRequest(
+  octokit: Octokit,
+  params: SubmitMultiFilePrParams,
+): Promise<{ prUrl: string; branch: string }> {
+  const { owner, repo, baseBranch, branch, files } = params;
+  if (files.length === 0) {
+    throw new Error('GitHub: no files to submit.');
+  }
+
+  let baseCommitSha: string;
+  try {
+    const ref = await octokit.rest.git.getRef({
+      owner,
+      repo,
+      ref: `heads/${baseBranch}`,
+    });
+    baseCommitSha = ref.data.object.sha;
+  } catch (error: unknown) {
+    if (isHttpError(error) && error.status === 404) {
+      throw new Error(
+        `GitHub: base branch "${baseBranch}" was not found in ${owner}/${repo}. Check GITHUB_BASE_BRANCH.`,
+      );
+    }
+    if (isHttpError(error) && (error.status === 401 || error.status === 403)) {
+      throw authOrPermError();
+    }
+    throw new Error('GitHub: could not read the base branch. Try again later.');
+  }
+
+  let baseTreeSha: string;
+  try {
+    const commit = await octokit.rest.git.getCommit({
+      owner,
+      repo,
+      commit_sha: baseCommitSha,
+    });
+    baseTreeSha = commit.data.tree.sha;
+  } catch (error: unknown) {
+    if (isHttpError(error) && (error.status === 401 || error.status === 403)) {
+      throw authOrPermError();
+    }
+    throw new Error('GitHub: could not read the base commit. Try again later.');
+  }
+
+  try {
+    await octokit.rest.git.createRef({
+      owner,
+      repo,
+      ref: `refs/heads/${branch}`,
+      sha: baseCommitSha,
+    });
+  } catch (error: unknown) {
+    if (isHttpError(error) && (error.status === 422 || error.status === 409)) {
+      throw new Error(
+        'Já existe uma submissão com este identificador (branch em conflito). Tente de novo dentro de instantes ou altere o nome.',
+      );
+    }
+    if (isHttpError(error) && (error.status === 401 || error.status === 403)) {
+      throw authOrPermError();
+    }
+    throw new Error('GitHub: could not create the submission branch. Check token permissions.');
+  }
+
+  const treeEntries: Array<{ path: string; mode: '100644'; type: 'blob'; sha: string }> = [];
+  try {
+    for (const file of files) {
+      const blob = await octokit.rest.git.createBlob({
+        owner,
+        repo,
+        content: file.content.toString('base64'),
+        encoding: 'base64',
+      });
+      treeEntries.push({
+        path: file.path,
+        mode: '100644',
+        type: 'blob',
+        sha: blob.data.sha,
+      });
+    }
+  } catch (error: unknown) {
+    if (isHttpError(error) && (error.status === 401 || error.status === 403)) {
+      throw authOrPermError();
+    }
+    throw new Error('GitHub: could not upload file blobs to the repository.');
+  }
+
+  let newTreeSha: string;
+  try {
+    const tree = await octokit.rest.git.createTree({
+      owner,
+      repo,
+      base_tree: baseTreeSha,
+      tree: treeEntries,
+    });
+    newTreeSha = tree.data.sha;
+  } catch (error: unknown) {
+    if (isHttpError(error) && (error.status === 401 || error.status === 403)) {
+      throw authOrPermError();
+    }
+    throw new Error('GitHub: could not create the file tree.');
+  }
+
+  let newCommitSha: string;
+  try {
+    const commit = await octokit.rest.git.createCommit({
+      owner,
+      repo,
+      message: params.commitMessage,
+      tree: newTreeSha,
+      parents: [baseCommitSha],
+    });
+    newCommitSha = commit.data.sha;
+  } catch (error: unknown) {
+    if (isHttpError(error) && (error.status === 401 || error.status === 403)) {
+      throw authOrPermError();
+    }
+    throw new Error('GitHub: could not create the commit.');
+  }
+
+  try {
+    await octokit.rest.git.updateRef({
+      owner,
+      repo,
+      ref: `heads/${branch}`,
+      sha: newCommitSha,
+    });
+  } catch (error: unknown) {
+    if (isHttpError(error) && (error.status === 401 || error.status === 403)) {
+      throw authOrPermError();
+    }
+    throw new Error('GitHub: could not update the submission branch.');
+  }
+
+  try {
+    const pr = await octokit.rest.pulls.create({
+      owner,
+      repo,
+      title: params.prTitle,
+      head: branch,
+      base: baseBranch,
+      body: params.prBody,
+    });
+    return { prUrl: pr.data.html_url, branch };
+  } catch (error: unknown) {
+    if (isHttpError(error) && (error.status === 401 || error.status === 403)) {
+      throw authOrPermError();
+    }
+    throw new Error(
+      'GitHub: the commit was created but opening the pull request failed. Check the repository on GitHub.',
+    );
+  }
+}

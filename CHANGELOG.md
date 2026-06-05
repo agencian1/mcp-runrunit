@@ -4,6 +4,12 @@ All notable changes to the mcp-runrunit package will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.6.3] - 2026-06-05
+
+### Changed
+
+- `runrunit_share_cursor_skill` now opens a PR with the full `cursor-skills/{skill_name}/` folder (all nested files in one commit via Git Data API), not only `SKILL.md`. Response `path` is now the folder (`cursor-skills/{name}/`); new fields `file_count` and `paths`.
+
 ## [1.6.2] - 2026-04-09
 
 ### Fixed

@@ -213,12 +213,12 @@ As skills que fazem upload de imagens (evidências em PRs e comentários Runrun.
 
 ### Cursor (skills e agentes do pacote)
 
-| Ferramenta                       | Descrição                                                                                                                                                                                                          |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `runrunit_install_cursor_skills` | **Só instalação local:** copia pastas de `cursor-skills/` para `~/.cursor/skills` ou `<project_root>/.cursor/skills`. Não usar para “compartilhar no GitHub” — nesse caso use `runrunit_share_cursor_skill`.       |
-| `runrunit_install_cursor_agents` | **Só instalação local:** copia Markdown de `cursor-agents/` para `~/.cursor/agents` ou projeto, preservando o basename. Para propor agente ao repo via PR, use `runrunit_share_cursor_agent`.                      |
-| `runrunit_share_cursor_agent`    | **Partilha com o time (PR):** quando pedirem compartilhar/dividir agente com o time no GitHub. Abre PR com um ficheiro de `cursor-agents/`. Requer `GITHUB_*` no servidor MCP.                                     |
-| `runrunit_share_cursor_skill`    | **Partilha com o time (PR):** quando pedirem compartilhar/dividir skill com o time (ex. `react-best-practices`). Abre PR com `cursor-skills/{skill_name}/SKILL.md`. Mesmos requisitos GitHub que a tool de agente. |
+| Ferramenta                       | Descrição                                                                                                                                                                                                                                                                                                       |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `runrunit_install_cursor_skills` | **Só instalação local:** copia pastas de `cursor-skills/` para `~/.cursor/skills` ou `<project_root>/.cursor/skills`. Não usar para “compartilhar no GitHub” — nesse caso use `runrunit_share_cursor_skill`.                                                                                                    |
+| `runrunit_install_cursor_agents` | **Só instalação local:** copia Markdown de `cursor-agents/` para `~/.cursor/agents` ou projeto, preservando o basename. Para propor agente ao repo via PR, use `runrunit_share_cursor_agent`.                                                                                                                   |
+| `runrunit_share_cursor_agent`    | **Partilha com o time (PR):** quando pedirem compartilhar/dividir agente com o time no GitHub. Abre PR com um ficheiro de `cursor-agents/`. Requer `GITHUB_*` no servidor MCP.                                                                                                                                  |
+| `runrunit_share_cursor_skill`    | **Partilha com o time (PR):** quando pedirem compartilhar/dividir skill com o time (ex. `react-best-practices`). Abre PR com a pasta completa `cursor-skills/{skill_name}/` (SKILL.md, `rules/`, etc.) num único commit. Resposta inclui `file_count` e `paths`. Mesmos requisitos GitHub que a tool de agente. |
 
 ### Skills
 

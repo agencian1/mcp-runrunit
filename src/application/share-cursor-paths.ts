@@ -4,6 +4,23 @@ import path from 'node:path';
 /** Same limit as submit-documents MAX_MARKDOWN_BYTES default. */
 export const MAX_SHARE_FILE_BYTES = 512 * 1024;
 
+/** Total bytes across all files in a skill folder share. */
+export const MAX_SHARE_SKILL_TOTAL_BYTES = 2 * 1024 * 1024;
+
+/** Maximum number of files in a skill folder share. */
+export const MAX_SHARE_SKILL_FILE_COUNT = 200;
+
+export type SkillFileForShare = {
+  repoPath: string;
+  content: Buffer;
+};
+
+export type CollectSkillFilesResult = {
+  folder: string;
+  repoFolderPath: string;
+  files: SkillFileForShare[];
+};
+
 export type AgentMarkdownPlan = {
   destBasename: string;
   sourcePath: string;
@@ -218,4 +235,113 @@ export function resolveSkillMarkdownForShare(
   }
   const repoPath = `cursor-skills/${folder}/SKILL.md`;
   return { sourcePath, repoPath, folder };
+}
+
+function walkSkillFilesForShare(
+  projectRoot: string,
+  skillDir: string,
+  folder: string,
+  relPrefix: string,
+  acc: SkillFileForShare[],
+  totalBytes: { value: number },
+): void {
+  if (acc.length >= MAX_SHARE_SKILL_FILE_COUNT) {
+    throw new Error(
+      `Skill folder exceeds maximum file count (${MAX_SHARE_SKILL_FILE_COUNT}). Split the skill or share manually.`,
+    );
+  }
+
+  let entries: fs.Dirent[];
+  try {
+    entries = fs.readdirSync(skillDir, { withFileTypes: true });
+  } catch (e) {
+    throw new Error(`Could not read skill folder: ${e instanceof Error ? e.message : String(e)}`);
+  }
+
+  for (const ent of entries) {
+    if (ent.name.startsWith('.')) continue;
+
+    const absPath = path.join(skillDir, ent.name);
+    assertPathInsideProjectRoot(projectRoot, absPath);
+
+    let st: fs.Stats;
+    try {
+      st = fs.lstatSync(absPath);
+    } catch (e) {
+      throw new Error(`Could not stat ${ent.name}: ${e instanceof Error ? e.message : String(e)}`);
+    }
+
+    if (st.isSymbolicLink()) {
+      throw new Error(`Symlinks are not allowed in skill folders: ${ent.name}`);
+    }
+
+    const relPath = relPrefix ? `${relPrefix}/${ent.name}` : ent.name;
+
+    if (st.isDirectory()) {
+      walkSkillFilesForShare(projectRoot, absPath, folder, relPath, acc, totalBytes);
+      continue;
+    }
+
+    if (!st.isFile()) continue;
+
+    if (st.size > MAX_SHARE_FILE_BYTES) {
+      throw new Error(`File ${relPath} exceeds maximum size (${MAX_SHARE_FILE_BYTES} bytes).`);
+    }
+
+    let content: Buffer;
+    try {
+      content = fs.readFileSync(absPath);
+    } catch (e) {
+      throw new Error(`Could not read ${relPath}: ${e instanceof Error ? e.message : String(e)}`);
+    }
+
+    totalBytes.value += content.length;
+    if (totalBytes.value > MAX_SHARE_SKILL_TOTAL_BYTES) {
+      throw new Error(
+        `Skill folder exceeds maximum total size (${MAX_SHARE_SKILL_TOTAL_BYTES} bytes). Split the skill or share manually.`,
+      );
+    }
+
+    if (acc.length >= MAX_SHARE_SKILL_FILE_COUNT) {
+      throw new Error(
+        `Skill folder exceeds maximum file count (${MAX_SHARE_SKILL_FILE_COUNT}). Split the skill or share manually.`,
+      );
+    }
+
+    const repoPath = `cursor-skills/${folder}/${relPath.replace(/\\/g, '/')}`;
+    acc.push({ repoPath, content });
+  }
+}
+
+/**
+ * Collects all regular files under cursor-skills/{folder}/ for multi-file GitHub share.
+ */
+export function collectSkillFilesForShare(
+  projectRoot: string,
+  skillName: string,
+): CollectSkillFilesResult {
+  const folder = assertValidSkillFolderName(skillName);
+  const skillDir = path.join(projectRoot, 'cursor-skills', folder);
+  assertPathInsideProjectRoot(projectRoot, skillDir);
+
+  const skillMd = path.join(skillDir, 'SKILL.md');
+  if (!fs.existsSync(skillMd) || !fs.statSync(skillMd).isFile()) {
+    throw new Error(`SKILL.md not found at cursor-skills/${folder}/SKILL.md under project root.`);
+  }
+
+  const files: SkillFileForShare[] = [];
+  const totalBytes = { value: 0 };
+  walkSkillFilesForShare(projectRoot, skillDir, folder, '', files, totalBytes);
+
+  if (files.length === 0) {
+    throw new Error(`No files found in cursor-skills/${folder}/.`);
+  }
+
+  files.sort((a, b) => a.repoPath.localeCompare(b.repoPath));
+
+  return {
+    folder,
+    repoFolderPath: `cursor-skills/${folder}/`,
+    files,
+  };
 }
