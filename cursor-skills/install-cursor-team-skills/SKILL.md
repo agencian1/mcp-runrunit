@@ -18,6 +18,6 @@ description: >-
 
 ## Compartilhar / dividir com o time (GitHub)
 
-Quando o utilizador falar em **compartilhar**, **dividir com o time**, **propor ao repositório**, **publicar a skill para a equipa**, ou equivalente em inglês (**share with the team**), **não** usar `runrunit_install_cursor_skills`. Usar **`runrunit_share_cursor_skill`** com `skill_name` igual ao nome da pasta em `cursor-skills/` (ex.: `react-best-practices`). Essa tool abre um PR com `cursor-skills/{skill_name}/SKILL.md` (requisitos `GITHUB_*` no servidor MCP).
+Quando o utilizador falar em **compartilhar**, **dividir com o time**, **propor ao repositório**, **publicar a skill para a equipa**, ou equivalente em inglês (**share with the team**), **não** usar `runrunit_install_cursor_skills`. Usar **`runrunit_share_cursor_skill`** com `skill_name` igual ao nome da pasta em `cursor-skills/` (ex.: `react-best-practices`). Essa tool abre um PR com a **pasta completa** `cursor-skills/{skill_name}/` (SKILL.md, `rules/`, `templates/`, etc.) num único commit; requisitos `GITHUB_*` no servidor MCP. A instalação local (`runrunit_install_cursor_skills`) continua a copiar a mesma árvore de ficheiros para `~/.cursor/skills`.
 
 Skills que dependem de Cloudinary continuam exigindo `CLOUDINARY_*` no ambiente do MCP.

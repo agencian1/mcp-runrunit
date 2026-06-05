@@ -1,4 +1,4 @@
-import { runrunitFetch } from "../adapters/driven/api.js";
+import { runrunitFetch } from '../adapters/driven/api.js';
 
 export type RunrunitUser = {
   id: string;
@@ -20,7 +20,7 @@ export type RunrunitUser = {
 };
 
 export async function listUsers(): Promise<RunrunitUser[]> {
-  return runrunitFetch<RunrunitUser[]>("users");
+  return runrunitFetch<RunrunitUser[]>('users');
 }
 
 /**
@@ -38,4 +38,3 @@ export async function getUserFromToken(): Promise<RunrunitUser | null> {
 
   return users[0] as RunrunitUser;
 }
-

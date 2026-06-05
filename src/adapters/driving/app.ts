@@ -1,44 +1,37 @@
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
-import { uploadImage as uploadImageCloudinary } from "../../application/cloudinary.js";
-import * as comments from "../../application/comments.js";
-import * as discord from "../../application/discord.js";
-import { detectPlatformFromTask } from "../../application/detect_platform.js";
-import * as devSuggestions from "../../application/dev_suggestions.js";
-import * as projects from "../../application/projects.js";
-import * as tasks from "../../application/tasks.js";
-import { taskUpdateToApiPayload } from "../../infrastructure/mappers/custom_fields_mapper.js";
-import { installCursorSkills } from "../../application/install-cursor-skills.js";
-import { installCursorAgents } from "../../application/install-cursor-agents.js";
-import {
-  shareCursorAgent,
-  shareCursorSkill,
-} from "../../application/share-cursor-github.js";
-import { RunrunitAPIError } from "../driven/api.js";
-import { ShareGithubConfigError } from "../driven/github.js";
-import { captureExceptionWithContext } from "../../observability/sentry.js";
-  
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
+import { uploadImage as uploadImageCloudinary } from '../../application/cloudinary.js';
+import * as comments from '../../application/comments.js';
+import * as discord from '../../application/discord.js';
+import { detectPlatformFromTask } from '../../application/detect_platform.js';
+import * as devSuggestions from '../../application/dev_suggestions.js';
+import * as projects from '../../application/projects.js';
+import * as tasks from '../../application/tasks.js';
+import { taskUpdateToApiPayload } from '../../infrastructure/mappers/custom_fields_mapper.js';
+import { installCursorSkills } from '../../application/install-cursor-skills.js';
+import { installCursorAgents } from '../../application/install-cursor-agents.js';
+import { shareCursorAgent, shareCursorSkill } from '../../application/share-cursor-github.js';
+import { RunrunitAPIError } from '../driven/api.js';
+import { ShareGithubConfigError } from '../driven/github.js';
+import { captureExceptionWithContext } from '../../observability/sentry.js';
 
 export const TOOLS = [
   /**
    * @namedTools runrunit_list_projects
    */
   {
-    name: "runrunit_list_projects",
+    name: 'runrunit_list_projects',
     description:
-      "List all projects from Runrun.it. Optional filters: client_id, project_group_id, is_closed, is_active, page, limit.",
+      'List all projects from Runrun.it. Optional filters: client_id, project_group_id, is_closed, is_active, page, limit.',
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
-        client_id: { type: "number", description: "Filter by client ID" },
-        project_group_id: { type: "number", description: "Filter by project group ID" },
-        is_closed: { type: "boolean", description: "Filter by closed state" },
-        is_active: { type: "boolean", description: "Filter by active state" },
-        page: { type: "number", description: "Page number (default 1)" },
-        limit: { type: "number", description: "Items per page (1-100)" },
+        client_id: { type: 'number', description: 'Filter by client ID' },
+        project_group_id: { type: 'number', description: 'Filter by project group ID' },
+        is_closed: { type: 'boolean', description: 'Filter by closed state' },
+        is_active: { type: 'boolean', description: 'Filter by active state' },
+        page: { type: 'number', description: 'Page number (default 1)' },
+        limit: { type: 'number', description: 'Items per page (1-100)' },
       },
       required: [],
     },
@@ -47,372 +40,399 @@ export const TOOLS = [
    * @namedTools runrunit_list_tasks
    */
   {
-    name: "runrunit_list_tasks",
+    name: 'runrunit_list_tasks',
     description:
-      "List tasks from Runrun.it. Optional filters: ids, user_id, follower_id, responsible_id, assignee_id, filter_id, board_stage_id, project_id, is_closed, is_working_on, sort, sort_dir, page, limit.",
+      'List tasks from Runrun.it. Optional filters: ids, user_id, follower_id, responsible_id, assignee_id, filter_id, board_stage_id, project_id, is_closed, is_working_on, sort, sort_dir, page, limit.',
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
-        ids: { type: "string", description: "Comma-separated task IDs" },
-        user_id: { type: "string", description: "Creator user ID" },
-        follower_id: { type: "string", description: "Follower user ID" },
-        responsible_id: { type: "string", description: "Responsible/assignee user ID (e.g. for 'Minhas partes abertas')" },
-        assignee_id: { type: "string", description: "Assignee/executor principal user ID" },
-        filter_id: { type: "number", description: "ID of a task filter (e.g. 'Minhas partes abertas')" },
-        board_stage_id: { type: "number", description: "Filter by board stage (e.g. Ongoing)" },
-        project_id: { type: "number", description: "Project ID" },
-        is_closed: { type: "boolean", description: "Filter by delivered tasks" },
-        is_working_on: { type: "boolean", description: "Filter by in progress" },
-        sort: { type: "string", description: "Sort field (e.g. close_date, queue_position)" },
-        sort_dir: { type: "string", enum: ["asc", "desc"], description: "Sort direction" },
-        page: { type: "number", description: "Page number (default 1)" },
-        limit: { type: "number", description: "Items per page (1-100)" },
+        ids: { type: 'string', description: 'Comma-separated task IDs' },
+        user_id: { type: 'string', description: 'Creator user ID' },
+        follower_id: { type: 'string', description: 'Follower user ID' },
+        responsible_id: {
+          type: 'string',
+          description: "Responsible/assignee user ID (e.g. for 'Minhas partes abertas')",
+        },
+        assignee_id: { type: 'string', description: 'Assignee/executor principal user ID' },
+        filter_id: {
+          type: 'number',
+          description: "ID of a task filter (e.g. 'Minhas partes abertas')",
+        },
+        board_stage_id: { type: 'number', description: 'Filter by board stage (e.g. Ongoing)' },
+        project_id: { type: 'number', description: 'Project ID' },
+        is_closed: { type: 'boolean', description: 'Filter by delivered tasks' },
+        is_working_on: { type: 'boolean', description: 'Filter by in progress' },
+        sort: { type: 'string', description: 'Sort field (e.g. close_date, queue_position)' },
+        sort_dir: { type: 'string', enum: ['asc', 'desc'], description: 'Sort direction' },
+        page: { type: 'number', description: 'Page number (default 1)' },
+        limit: { type: 'number', description: 'Items per page (1-100)' },
       },
       required: [],
     },
   },
   {
-    name: "runrunit_list_task_filters",
+    name: 'runrunit_list_task_filters',
     description:
       "List all task filters available to the current user. Use to find filter_id for 'Minhas partes abertas' or other filters.",
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {},
       required: [],
     },
   },
   {
-    name: "runrunit_list_board_stages",
+    name: 'runrunit_list_board_stages',
     description:
-      "List board stages (Task, Ongoing, Manager Validation, etc.). Use board_id from a task. Returns stages with id and name — use with runrunit_move_task_stage when moving tasks by stage name.",
+      'List board stages (Task, Ongoing, Manager Validation, etc.). Use board_id from a task. Returns stages with id and name — use with runrunit_move_task_stage when moving tasks by stage name.',
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
-        board_id: { type: "number", description: "Board ID (from task.board_id)" },
+        board_id: { type: 'number', description: 'Board ID (from task.board_id)' },
       },
-      required: ["board_id"],
+      required: ['board_id'],
     },
   },
   /**
    * @namedTools runrunit_move_task_stage
    */
   {
-    name: "runrunit_move_task_stage",
+    name: 'runrunit_move_task_stage',
     description:
       "Moves a task to a board stage (column). Tasks must only advance; backward move is allowed only to 'Task' or 'Blocked Task' (e.g. impediment or not finished). Use board_stage_name or board_stage_id. For stages that require 'Link da branch', fill it first with runrunit_update_task.",
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
-        task_id: { type: "number", description: "Task ID to move" },
+        task_id: { type: 'number', description: 'Task ID to move' },
         board_stage_name: {
-          type: "string",
-          description: "Stage name (e.g. 'Task', 'Ongoing', 'Manager Validation', 'Ready for production'). Partial match, case-insensitive.",
+          type: 'string',
+          description:
+            "Stage name (e.g. 'Task', 'Ongoing', 'Manager Validation', 'Ready for production'). Partial match, case-insensitive.",
         },
-        board_stage_id: { type: "number", description: "Stage ID (from runrunit_list_board_stages)" },
+        board_stage_id: {
+          type: 'number',
+          description: 'Stage ID (from runrunit_list_board_stages)',
+        },
       },
-      required: ["task_id"],
+      required: ['task_id'],
     },
   },
   {
-    name: "runrunit_get_task",
-    description: "Get a single task by ID from Runrun.it.",
+    name: 'runrunit_get_task',
+    description: 'Get a single task by ID from Runrun.it.',
     inputSchema: {
-      type: "object" as const,
-      properties: { id: { type: "number", description: "Task ID" } },
-      required: ["id"],
+      type: 'object' as const,
+      properties: { id: { type: 'number', description: 'Task ID' } },
+      required: ['id'],
     },
   },
   /**
    * @namedTools runrunit_list_subtasks
    */
   {
-    name: "runrunit_list_subtasks",
-    description: "Use for listing subtasks of a task from Runrun.it.",
+    name: 'runrunit_list_subtasks',
+    description: 'Use for listing subtasks of a task from Runrun.it.',
     inputSchema: {
-      type: "object" as const,
-      properties: { task_id: { type: "number", description: "Parent task ID" } },
-      required: ["task_id"],
+      type: 'object' as const,
+      properties: { task_id: { type: 'number', description: 'Parent task ID' } },
+      required: ['task_id'],
     },
   },
   /**
    * @namedTools runrunit_create_task
    */
   {
-    name: "runrunit_create_task",
+    name: 'runrunit_create_task',
     description:
-      "Create a task on Runrun.it in board Ongoing (ID: 96356) in column Task by default and assignee from who is call the tool. Requires title (eg.: [project_name] - task_name) and type_id. Optional: description (rich description via Task Description API, appended to any existing text), project_id, assignments, desired_date, etc.",
+      'Create a task on Runrun.it in board Ongoing (ID: 96356) in column Task by default and assignee from who is call the tool. Requires title (eg.: [project_name] - task_name) and type_id. Optional: description (rich description via Task Description API, appended to any existing text), project_id, assignments, desired_date, etc.',
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
-        title: { type: "string", description: "Task title" },
-        type_id: { type: "number", description: "Task type ID" },
+        title: { type: 'string', description: 'Task title' },
+        type_id: { type: 'number', description: 'Task type ID' },
         description: {
-          type: "string",
+          type: 'string',
           description:
-            "Task description body (optional). Stored via PUT /tasks/:id/description after create; new text is appended after any content already on the task, never replacing it outright.",
+            'Task description body (optional). Stored via PUT /tasks/:id/description after create; new text is appended after any content already on the task, never replacing it outright.',
         },
-        project_id: { type: "number", description: "Project ID" },
-        project_name: { type: "string", description: "Project name" },
-        board_name: { type: "string", description: "Board name" },
-        board_stage_name: { type: "string", description: "Board stage name" },
-        on_going: { type: "boolean", description: "Ongoing task" },
-        desired_date: { type: "string", description: "Desired delivery date (ISO)" },
-        desired_start_date: { type: "string", description: "Desired start date (ISO)" },
-        tag_list: { type: "string", description: "Comma-separated tags" },
+        project_id: { type: 'number', description: 'Project ID' },
+        project_name: { type: 'string', description: 'Project name' },
+        board_name: { type: 'string', description: 'Board name' },
+        board_stage_name: { type: 'string', description: 'Board stage name' },
+        on_going: { type: 'boolean', description: 'Ongoing task' },
+        desired_date: { type: 'string', description: 'Desired delivery date (ISO)' },
+        desired_start_date: { type: 'string', description: 'Desired start date (ISO)' },
+        tag_list: { type: 'string', description: 'Comma-separated tags' },
         assignments: {
-          type: "array",
+          type: 'array',
           items: {
-            type: "object",
+            type: 'object',
             properties: {
-              assignee_id: { type: "string" },
-              team_id: { type: "number" },
+              assignee_id: { type: 'string' },
+              team_id: { type: 'number' },
             },
-            required: ["assignee_id"],
+            required: ['assignee_id'],
           },
-          description: "Assignments",
+          description: 'Assignments',
         },
       },
-      required: ["title", "type_id"],
+      required: ['title', 'type_id'],
     },
   },
   /**
    * @namedTools runrunit_update_task
    */
   {
-    name: "runrunit_update_task",
+    name: 'runrunit_update_task',
     description:
       "Update a task on Runrun.it. Pass task ID and an object with fields to update (e.g. title, desired_date). For the PR/branch link use link_da_branch (URL); it is stored in the custom field 'Link da branch' (custom_32). To move a task between columns (Task, Ongoing, Manager Validation), use runrunit_move_task_stage.",
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
-        id: { type: "number", description: "Task ID" },
+        id: { type: 'number', description: 'Task ID' },
         task: {
-          type: "object",
+          type: 'object',
           description:
             "Fields to update (e.g. { title: 'New title' }, { link_da_branch: 'https://github.com/.../pull/21' }). link_da_branch maps to custom field Link da branch.",
           properties: {
-            title: { type: "string", description: "Task title" },
-            desired_date: { type: "string", description: "Desired date (ISO)" },
+            title: { type: 'string', description: 'Task title' },
+            desired_date: { type: 'string', description: 'Desired date (ISO)' },
             link_da_branch: {
-              type: "string",
-              description: "URL of the PR or branch (stored in custom field 'Link da branch', e.g. https://github.com/org/repo/pull/21)",
+              type: 'string',
+              description:
+                "URL of the PR or branch (stored in custom field 'Link da branch', e.g. https://github.com/org/repo/pull/21)",
             },
           },
           additionalProperties: true,
         },
       },
-      required: ["id", "task"],
+      required: ['id', 'task'],
     },
   },
   /**
    * @namedTools runrunit_delete_task
    */
   {
-    name: "runrunit_delete_task",
-    description: "Delete a task on Runrun.it.",
+    name: 'runrunit_delete_task',
+    description: 'Delete a task on Runrun.it.',
     inputSchema: {
-      type: "object" as const,
-      properties: { id: { type: "number", description: "Task ID" } },
-      required: ["id"],
+      type: 'object' as const,
+      properties: { id: { type: 'number', description: 'Task ID' } },
+      required: ['id'],
     },
   },
   /**
    * @namedTools runrunit_create_workflow
    */
   {
-    name: "runrunit_create_workflow",
-    description: "Create a workflow for a task (starts tracking eligibility). Task must not be closed, ongoing, or already have a workflow.",
+    name: 'runrunit_create_workflow',
+    description:
+      'Create a workflow for a task (starts tracking eligibility). Task must not be closed, ongoing, or already have a workflow.',
     inputSchema: {
-      type: "object" as const,
-      properties: { task_id: { type: "number", description: "Task ID" } },
-      required: ["task_id"],
+      type: 'object' as const,
+      properties: { task_id: { type: 'number', description: 'Task ID' } },
+      required: ['task_id'],
     },
   },
   /**
    * @namedTools runrunit_assignment_play
    */
   {
-    name: "runrunit_assignment_play",
-    description: "Start tracking work on a task (play). Pauses current task if assignee is already working on another. Always ensure that the task is in the Ongoing column (board_stage_id: 96356) before calling this tool.",
+    name: 'runrunit_assignment_play',
+    description:
+      'Start tracking work on a task (play). Pauses current task if assignee is already working on another. Always ensure that the task is in the Ongoing column (board_stage_id: 96356) before calling this tool.',
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
-        task_id: { type: "number", description: "Task ID" },
-        assignment_id: { type: "string", description: "Assignment ID (from task.assignments[].id)" },
+        task_id: { type: 'number', description: 'Task ID' },
+        assignment_id: {
+          type: 'string',
+          description: 'Assignment ID (from task.assignments[].id)',
+        },
       },
-      required: ["task_id", "assignment_id"],
+      required: ['task_id', 'assignment_id'],
     },
   },
   {
-    name: "runrunit_list_task_comments",
-    description: "List all comments on a task in Runrun.it.",
+    name: 'runrunit_list_task_comments',
+    description: 'List all comments on a task in Runrun.it.',
     inputSchema: {
-      type: "object" as const,
-      properties: { task_id: { type: "number", description: "Task ID" } },
-      required: ["task_id"],
+      type: 'object' as const,
+      properties: { task_id: { type: 'number', description: 'Task ID' } },
+      required: ['task_id'],
     },
   },
   /**
    * @namedTools runrunit_get_comment
    */
   {
-    name: "runrunit_get_comment",
-    description: "Get a single comment by ID from Runrun.it.",
+    name: 'runrunit_get_comment',
+    description: 'Get a single comment by ID from Runrun.it.',
     inputSchema: {
-      type: "object" as const,
-      properties: { id: { type: "number", description: "Comment ID" } },
-      required: ["id"],
+      type: 'object' as const,
+      properties: { id: { type: 'number', description: 'Comment ID' } },
+      required: ['id'],
     },
   },
   /**
    * @namedTools runrunit_create_comment
    */
   {
-    name: "runrunit_create_comment",
+    name: 'runrunit_create_comment',
     description:
       "Create a comment on a task in Runrun.it. Format: plain text and raw URLs only (no Markdown). Optional url_antes + url_depois: when both are provided, (1) capture visual evidence (skill registrar-evidencias), (2) upload images (e.g. Cloudinary), (3) append to text plain labels and image URLs (e.g. 'Antes: <url>' and 'Depois: <url>'), (4) call this tool with the enriched text.",
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
-        task_id: { type: "number", description: "Task ID" },
-        text: { type: "string", description: "Comment text (can be enriched with an evidence block when url_antes/url_depois are used)" },
-        url_antes: { type: "string", description: "Optional. URL of the page in the 'before' state; when provided with url_depois, agent should capture evidence and append it to text" },
-        url_depois: { type: "string", description: "Optional. URL of the page in the 'after' state; when provided with url_antes, agent should capture evidence and append it to text" },
+        task_id: { type: 'number', description: 'Task ID' },
+        text: {
+          type: 'string',
+          description:
+            'Comment text (can be enriched with an evidence block when url_antes/url_depois are used)',
+        },
+        url_antes: {
+          type: 'string',
+          description:
+            "Optional. URL of the page in the 'before' state; when provided with url_depois, agent should capture evidence and append it to text",
+        },
+        url_depois: {
+          type: 'string',
+          description:
+            "Optional. URL of the page in the 'after' state; when provided with url_antes, agent should capture evidence and append it to text",
+        },
       },
-      required: ["task_id", "text"],
+      required: ['task_id', 'text'],
     },
   },
   /**
    * @namedTools runrunit_update_comment
    */
   {
-    name: "runrunit_update_comment",
+    name: 'runrunit_update_comment',
     description: "Update a comment's text on Runrun.it.",
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
-        id: { type: "number", description: "Comment ID" },
-        text: { type: "string", description: "New comment text" },
+        id: { type: 'number', description: 'Comment ID' },
+        text: { type: 'string', description: 'New comment text' },
       },
-      required: ["id", "text"],
+      required: ['id', 'text'],
     },
   },
   /**
    * @namedTools runrunit_delete_comment
    */
   {
-    name: "runrunit_delete_comment",
-    description: "Delete a comment on Runrun.it.",
+    name: 'runrunit_delete_comment',
+    description: 'Delete a comment on Runrun.it.',
     inputSchema: {
-      type: "object" as const,
-      properties: { id: { type: "number", description: "Comment ID" } },
-      required: ["id"],
+      type: 'object' as const,
+      properties: { id: { type: 'number', description: 'Comment ID' } },
+      required: ['id'],
     },
   },
   /**
    * @namedTools runrunit_comment_reaction
    */
   {
-    name: "runrunit_comment_reaction",
-    description: "Add a reaction (emoji) to a comment on Runrun.it.",
+    name: 'runrunit_comment_reaction',
+    description: 'Add a reaction (emoji) to a comment on Runrun.it.',
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
-        comment_id: { type: "number", description: "Comment ID" },
-        emoji: { type: "string", description: "Emoji character (e.g. 👍)" },
+        comment_id: { type: 'number', description: 'Comment ID' },
+        emoji: { type: 'string', description: 'Emoji character (e.g. 👍)' },
       },
-      required: ["comment_id", "emoji"],
+      required: ['comment_id', 'emoji'],
     },
   },
   /**
    * @namedTools runrunit_create_external_comment
    */
   {
-    name: "runrunit_create_external_comment",
+    name: 'runrunit_create_external_comment',
     description:
-      "For create a comment in the external/guest channel on a task in Runrun.it, use only text simple, without Markdown. Use this for comments shared with external clients (channel_name: guest).",
+      'For create a comment in the external/guest channel on a task in Runrun.it, use only text simple, without Markdown. Use this for comments shared with external clients (channel_name: guest).',
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
-        task_id: { type: "number", description: "Task ID" },
-        text: { type: "string", description: "Comment text" },
+        task_id: { type: 'number', description: 'Task ID' },
+        text: { type: 'string', description: 'Comment text' },
       },
-      required: ["task_id", "text"],
+      required: ['task_id', 'text'],
     },
   },
   /**
    * @namedTools runrunit_suggest_devs_with_free_queue
    */
   {
-    name: "runrunit_suggest_devs_with_free_queue",
+    name: 'runrunit_suggest_devs_with_free_queue',
     description:
-      "Sugere desenvolvedores com fila mais livre com base em tarefas na coluna Task, considerando estimativas e filtros opcionais (time, projeto, tags).",
+      'Sugere desenvolvedores com fila mais livre com base em tarefas na coluna Task, considerando estimativas e filtros opcionais (time, projeto, tags).',
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
         limit: {
-          type: "number",
-          description: "Número máximo de devs sugeridos (1 a 10, padrão 3).",
+          type: 'number',
+          description: 'Número máximo de devs sugeridos (1 a 10, padrão 3).',
           minimum: 1,
           maximum: 10,
         },
         team_id: {
-          type: "string",
-          description: "ID de time para filtrar desenvolvedores.",
+          type: 'string',
+          description: 'ID de time para filtrar desenvolvedores.',
         },
         tribe_id: {
-          type: "string",
-          description: "ID de tribo para filtrar desenvolvedores.",
+          type: 'string',
+          description: 'ID de tribo para filtrar desenvolvedores.',
         },
         squad_id: {
-          type: "string",
-          description: "ID de squad para filtrar desenvolvedores.",
+          type: 'string',
+          description: 'ID de squad para filtrar desenvolvedores.',
         },
         project_tag: {
-          type: "string",
-          description: "Tag de projeto para filtrar tarefas.",
+          type: 'string',
+          description: 'Tag de projeto para filtrar tarefas.',
         },
         project_id: {
-          type: "number",
-          description: "ID de projeto para filtrar tarefas.",
+          type: 'number',
+          description: 'ID de projeto para filtrar tarefas.',
         },
         developer_ids: {
-          type: "array",
-          items: { type: "string" },
-          description:
-            "Lista explícita de IDs de desenvolvedores candidatos (Runrun.it).",
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Lista explícita de IDs de desenvolvedores candidatos (Runrun.it).',
         },
         only_active_devs: {
-          type: "boolean",
+          type: 'boolean',
           description:
-            "Se verdadeiro, tenta considerar apenas desenvolvedores ativos (por exemplo, não de férias).",
+            'Se verdadeiro, tenta considerar apenas desenvolvedores ativos (por exemplo, não de férias).',
         },
         board_id: {
-          type: "number",
+          type: 'number',
           description:
-            "ID do board Kanban onde está a coluna Task. Necessário se task_stage_ids não for informado.",
+            'ID do board Kanban onde está a coluna Task. Necessário se task_stage_ids não for informado.',
         },
         task_stage_ids: {
-          type: "array",
-          items: { type: "number" },
+          type: 'array',
+          items: { type: 'number' },
           description:
-            "IDs de estágios/colunas que representam a coluna Task. Se não informado, tenta identificar por convenção de nome no board informado.",
+            'IDs de estágios/colunas que representam a coluna Task. Se não informado, tenta identificar por convenção de nome no board informado.',
         },
         load_strategy: {
-          type: "string",
-          enum: ["tasks_and_time", "only_tasks", "only_time"],
+          type: 'string',
+          enum: ['tasks_and_time', 'only_tasks', 'only_time'],
           description:
-            "Estratégia de cálculo de carga: tasks_and_time (padrão), only_tasks ou only_time.",
+            'Estratégia de cálculo de carga: tasks_and_time (padrão), only_tasks ou only_time.',
         },
         include_zero_tasks: {
-          type: "boolean",
+          type: 'boolean',
           description:
-            "Se verdadeiro, inclui devs elegíveis sem tarefas na coluna Task (padrão true).",
+            'Se verdadeiro, inclui devs elegíveis sem tarefas na coluna Task (padrão true).',
         },
         only_developers: {
-          type: "boolean",
+          type: 'boolean',
           description:
-            "Se verdadeiro, considera apenas desenvolvedores; exclui Gestor, Social, Inovação, etc. (padrão true).",
+            'Se verdadeiro, considera apenas desenvolvedores; exclui Gestor, Social, Inovação, etc. (padrão true).',
         },
       },
       required: [],
@@ -422,56 +442,57 @@ export const TOOLS = [
    * @namedTools runrunit_project_detect_platform
    */
   {
-    name: "runrunit_project_detect_platform",
+    name: 'runrunit_project_detect_platform',
     description:
-      "Identifies the project platform based on task tags in Runrun.it (Node, Python, Ruby, Go, Rust, etc.) and suggests the command to upload the development environment. The platform is defined by task tags (tags_data/tag_list), not by repository files.",
+      'Identifies the project platform based on task tags in Runrun.it (Node, Python, Ruby, Go, Rust, etc.) and suggests the command to upload the development environment. The platform is defined by task tags (tags_data/tag_list), not by repository files.',
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
         task_id: {
-          type: "number",
-          description: "ID da task no Runrun.it. As tags dessa task definem a plataforma (ex.: node, react, python).",
+          type: 'number',
+          description:
+            'ID da task no Runrun.it. As tags dessa task definem a plataforma (ex.: node, react, python).',
         },
       },
-      required: ["task_id"],
+      required: ['task_id'],
     },
   },
   /**
    * @namedTools runrunit_install_cursor_skills
    */
   {
-    name: "runrunit_install_cursor_skills",
+    name: 'runrunit_install_cursor_skills',
     description:
-      "Local install only: copies bundled Cursor skills from mcp-runrunit (cursor-skills/) into ~/.cursor/skills or project .cursor/skills (os.homedir). Use when the user wants to sync skills onto their machine (onboarding, pull package skills locally). Prefer dry_run:true first. NOT for sharing via GitHub or “compartilhar / dividir com o time” in the repo — that is runrunit_share_cursor_skill. Optional skill_names, target global|project, project_root, source_dir.",
+      'Local install only: copies bundled Cursor skills from mcp-runrunit (cursor-skills/) into ~/.cursor/skills or project .cursor/skills (os.homedir). Use when the user wants to sync skills onto their machine (onboarding, pull package skills locally). Prefer dry_run:true first. NOT for sharing via GitHub or “compartilhar / dividir com o time” in the repo — that is runrunit_share_cursor_skill. Optional skill_names, target global|project, project_root, source_dir.',
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
         dry_run: {
-          type: "boolean",
+          type: 'boolean',
           description:
-            "If true, only lists what would be copied (no writes). Recommended before first sync.",
+            'If true, only lists what would be copied (no writes). Recommended before first sync.',
         },
         skill_names: {
-          type: "array",
-          items: { type: "string" },
+          type: 'array',
+          items: { type: 'string' },
           description:
-            "Optional folder names under cursor-skills to copy (e.g. registrar-evidencias). If omitted, copies every subfolder that contains SKILL.md.",
+            'Optional folder names under cursor-skills to copy (e.g. registrar-evidencias). If omitted, copies every subfolder that contains SKILL.md.',
         },
         target: {
-          type: "string",
-          enum: ["global", "project"],
+          type: 'string',
+          enum: ['global', 'project'],
           description:
-            "global = ~/.cursor/skills (default). project = <project_root>/.cursor/skills — requires project_root when target is project.",
+            'global = ~/.cursor/skills (default). project = <project_root>/.cursor/skills — requires project_root when target is project.',
         },
         project_root: {
-          type: "string",
+          type: 'string',
           description:
-            "Absolute path to the project root when target is project. Ignored when target is global.",
+            'Absolute path to the project root when target is project. Ignored when target is global.',
         },
         source_dir: {
-          type: "string",
+          type: 'string',
           description:
-            "Optional absolute path to a cursor-skills directory. If omitted, resolves next to the installed mcp-runrunit package.",
+            'Optional absolute path to a cursor-skills directory. If omitted, resolves next to the installed mcp-runrunit package.',
         },
       },
       required: [],
@@ -481,38 +502,38 @@ export const TOOLS = [
    * @namedTools runrunit_install_cursor_agents
    */
   {
-    name: "runrunit_install_cursor_agents",
+    name: 'runrunit_install_cursor_agents',
     description:
-      "Local install only: copies agent markdown from mcp-runrunit (cursor-agents/) into ~/.cursor/agents (flat files, preserves basename including .agent.md). Use dry_run:true first. NOT for compartilhar/dividir com o time via GitHub — use runrunit_share_cursor_agent for a PR. Optional agent_names, target, project_root, source_dir.",
+      'Local install only: copies agent markdown from mcp-runrunit (cursor-agents/) into ~/.cursor/agents (flat files, preserves basename including .agent.md). Use dry_run:true first. NOT for compartilhar/dividir com o time via GitHub — use runrunit_share_cursor_agent for a PR. Optional agent_names, target, project_root, source_dir.',
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
         dry_run: {
-          type: "boolean",
+          type: 'boolean',
           description:
-            "If true, only lists what would be copied (no writes). Recommended before first sync.",
+            'If true, only lists what would be copied (no writes). Recommended before first sync.',
         },
         agent_names: {
-          type: "array",
-          items: { type: "string" },
+          type: 'array',
+          items: { type: 'string' },
           description:
-            "Optional destination basenames to copy (e.g. mentor.agent.md, kieran-typescript-reviewer.md). Stems without .md are accepted. If omitted, copies every root *.md and every subfolder with exactly one markdown file.",
+            'Optional destination basenames to copy (e.g. mentor.agent.md, kieran-typescript-reviewer.md). Stems without .md are accepted. If omitted, copies every root *.md and every subfolder with exactly one markdown file.',
         },
         target: {
-          type: "string",
-          enum: ["global", "project"],
+          type: 'string',
+          enum: ['global', 'project'],
           description:
-            "global = ~/.cursor/agents (default). project = <project_root>/.cursor/agents — requires project_root when target is project.",
+            'global = ~/.cursor/agents (default). project = <project_root>/.cursor/agents — requires project_root when target is project.',
         },
         project_root: {
-          type: "string",
+          type: 'string',
           description:
-            "Absolute path to the project root when target is project. Ignored when target is global.",
+            'Absolute path to the project root when target is project. Ignored when target is global.',
         },
         source_dir: {
-          type: "string",
+          type: 'string',
           description:
-            "Optional absolute path to a cursor-agents directory. If omitted, resolves next to the installed mcp-runrunit package.",
+            'Optional absolute path to a cursor-agents directory. If omitted, resolves next to the installed mcp-runrunit package.',
         },
       },
       required: [],
@@ -522,71 +543,80 @@ export const TOOLS = [
    * @namedTools runrunit_upload_image_cloudinary
    */
   {
-    name: "runrunit_upload_image_cloudinary",
+    name: 'runrunit_upload_image_cloudinary',
     description:
-      "Faz upload de uma imagem para a Cloudinary e retorna a URL pública (secure_url). Usa as variáveis CLOUDINARY_* já configuradas no MCP (ex.: em mcp.json). Use para screenshots, evidências, PRs e comentários.",
+      'Faz upload de uma imagem para a Cloudinary e retorna a URL pública (secure_url). Usa as variáveis CLOUDINARY_* já configuradas no MCP (ex.: em mcp.json). Use para screenshots, evidências, PRs e comentários.',
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
         file_path: {
-          type: "string",
-          description: "Caminho absoluto ou relativo do arquivo de imagem no disco (ex.: path retornado por browser_take_screenshot).",
+          type: 'string',
+          description:
+            'Caminho absoluto ou relativo do arquivo de imagem no disco (ex.: path retornado por browser_take_screenshot).',
         },
         public_id: {
-          type: "string",
-          description: "ID público opcional na Cloudinary (ex.: pr-evidencia-desktop, docs-screenshot-1).",
+          type: 'string',
+          description:
+            'ID público opcional na Cloudinary (ex.: pr-evidencia-desktop, docs-screenshot-1).',
         },
       },
-      required: ["file_path"],
+      required: ['file_path'],
     },
   },
   /**
    * @namedTools runrunit_discord_send_message
    */
   {
-    name: "runrunit_discord_send_message",
+    name: 'runrunit_discord_send_message',
     description:
-      "Send a message to a Discord channel. Use for execution history or notifications. Requires BOT_RUNRUNIT_REPORT and channel_id.",
+      'Send a message to a Discord channel. Use for execution history or notifications. Requires BOT_RUNRUNIT_REPORT and channel_id.',
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
-        channel_id: { type: "string", description: "Discord channel ID" },
-        content: { type: "string", description: "Message text (max 2000 characters)" },
-        task_id: { type: "number", description: "Optional Runrun.it task ID for context" },
-        project_id: { type: "number", description: "Optional project ID for context" },
+        channel_id: { type: 'string', description: 'Discord channel ID' },
+        content: { type: 'string', description: 'Message text (max 2000 characters)' },
+        task_id: { type: 'number', description: 'Optional Runrun.it task ID for context' },
+        project_id: { type: 'number', description: 'Optional project ID for context' },
       },
-      required: ["channel_id", "content"],
+      required: ['channel_id', 'content'],
     },
   },
   /**
    * @namedTools runrunit_discord_create_channel
    */
   {
-    name: "runrunit_discord_create_channel",
+    name: 'runrunit_discord_create_channel',
     description:
       "Create a text channel in the Discord server (guild) if not exists, use comparison with name 'Client 1' -> 'client-1' to avoid create duplicate channels. Use guild_id from env (DISCORD_GUILD_ID) or pass explicitly. One channel per client pattern.",
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
-        name: { type: "string", description: "Channel name (slug, e.g. client-name alaways for legible, ex: 'Client 1' -> 'client-1')" },
-        guild_id: { type: "string", description: "Discord guild (server) ID (optional if DISCORD_GUILD_ID set)" },
-        parent_id: { type: "string", description: "Category channel ID (optional)" },
-        topic: { type: "string", description: "Channel topic (optional)" },
+        name: {
+          type: 'string',
+          description:
+            "Channel name (slug, e.g. client-name alaways for legible, ex: 'Client 1' -> 'client-1')",
+        },
+        guild_id: {
+          type: 'string',
+          description: 'Discord guild (server) ID (optional if DISCORD_GUILD_ID set)',
+        },
+        parent_id: { type: 'string', description: 'Category channel ID (optional)' },
+        topic: { type: 'string', description: 'Channel topic (optional)' },
       },
-      required: ["name"],
+      required: ['name'],
     },
   },
   /**
    * @namedTools runrunit_discord_list_channels
    */
   {
-    name: "runrunit_discord_list_channels",
+    name: 'runrunit_discord_list_channels',
     description:
-      "List channels in the Discord server. Uses DISCORD_GUILD_ID or resolves from DISCORD_CHANNEL_ID.",
+      'List channels in the Discord server. Uses DISCORD_GUILD_ID or resolves from DISCORD_CHANNEL_ID.',
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
-        guild_id: { type: "string", description: "Discord guild ID (optional if env set)" },
+        guild_id: { type: 'string', description: 'Discord guild ID (optional if env set)' },
       },
       required: [],
     },
@@ -595,15 +625,18 @@ export const TOOLS = [
    * @namedTools runrunit_discord_get_or_create_channel
    */
   {
-    name: "runrunit_discord_get_or_create_channel",
+    name: 'runrunit_discord_get_or_create_channel',
     description:
       "Get or create a Discord text channel for a Runrun.it client (1 channel per client, use client_name always avaliable transform to slug. ex: 'Client 1' -> 'client-1'). Returns channel_id and channel_name. Use before runrunit_discord_send_message to ensure the channel exists.",
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
-        client_id: { type: "string", description: "Runrun.it client ID (or number as string)" },
-        client_name: { type: "string", description: "Client name (used for channel name if client_id not provided)" },
-        guild_id: { type: "string", description: "Discord guild ID (optional)" },
+        client_id: { type: 'string', description: 'Runrun.it client ID (or number as string)' },
+        client_name: {
+          type: 'string',
+          description: 'Client name (used for channel name if client_id not provided)',
+        },
+        guild_id: { type: 'string', description: 'Discord guild ID (optional)' },
       },
       required: [],
     },
@@ -612,58 +645,58 @@ export const TOOLS = [
    * @namedTools runrunit_share_cursor_agent
    */
   {
-    name: "runrunit_share_cursor_agent",
+    name: 'runrunit_share_cursor_agent',
     description:
-      "Use when the user wants to share a Cursor agent with the team through GitHub (e.g. compartilhar agente com o time, dividir com o time, propor ao repositório, share agent with the team via PR). Opens a pull request with one markdown file from cursor-agents/. For copying agents into ~/.cursor/agents locally, use runrunit_install_cursor_agents instead. Requires GITHUB_TOKEN, GITHUB_REPO_OWNER, GITHUB_REPO_NAME on the MCP server host only; never pass credentials via this tool.",
+      'Use when the user wants to share a Cursor agent with the team through GitHub (e.g. compartilhar agente com o time, dividir com o time, propor ao repositório, share agent with the team via PR). Opens a pull request with one markdown file from cursor-agents/. For copying agents into ~/.cursor/agents locally, use runrunit_install_cursor_agents instead. Requires GITHUB_TOKEN, GITHUB_REPO_OWNER, GITHUB_REPO_NAME on the MCP server host only; never pass credentials via this tool.',
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
         agent_name: {
-          type: "string",
+          type: 'string',
           description:
-            "Agent file name or stem (e.g. security-auditor or security-auditor.md) matching a file under cursor-agents/.",
+            'Agent file name or stem (e.g. security-auditor or security-auditor.md) matching a file under cursor-agents/.',
         },
         project_root: {
-          type: "string",
+          type: 'string',
           description:
-            "Optional absolute path to project root containing cursor-agents/. If omitted, walks up from cwd.",
+            'Optional absolute path to project root containing cursor-agents/. If omitted, walks up from cwd.',
         },
       },
-      required: ["agent_name"],
+      required: ['agent_name'],
     },
   },
   /**
    * @namedTools runrunit_share_cursor_skill
    */
   {
-    name: "runrunit_share_cursor_skill",
+    name: 'runrunit_share_cursor_skill',
     description:
-      "Primary tool when the user wants to share a Cursor skill with the team via GitHub: compartilhar skill, dividir com o time, propor ao repo, publicar skill para a equipe, share skill with the team, open a PR for teammates. Opens a pull request that adds or updates cursor-skills/{skill_name}/SKILL.md (single file in the PR; add rules/ etc. in follow-up commits if needed). Do not use runrunit_install_cursor_skills for this — that only copies folders to local ~/.cursor/skills. Same GitHub env as runrunit_share_cursor_agent (token on MCP host only).",
+      'Primary tool when the user wants to share a Cursor skill with the team via GitHub: compartilhar skill, dividir com o time, propor ao repo, publicar skill para a equipe, share skill with the team, open a PR for teammates. Opens a pull request that adds or updates the full cursor-skills/{skill_name}/ folder (SKILL.md, rules/, templates/, scripts/, etc.) in one atomic commit. Do not use runrunit_install_cursor_skills for this — that only copies folders to local ~/.cursor/skills. Same GitHub env as runrunit_share_cursor_agent (token on MCP host only).',
     inputSchema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
         skill_name: {
-          type: "string",
+          type: 'string',
           description:
-            "Folder name under cursor-skills/ (e.g. react-best-practices, upload-image-cloudinary). Matches the directory that contains SKILL.md.",
+            'Folder name under cursor-skills/ (e.g. react-best-practices, upload-image-cloudinary). Matches the directory that contains SKILL.md.',
         },
         project_root: {
-          type: "string",
+          type: 'string',
           description:
-            "Optional absolute path to project root containing cursor-skills/. If omitted, walks up from cwd.",
+            'Optional absolute path to project root containing cursor-skills/. If omitted, walks up from cwd.',
         },
       },
-      required: ["skill_name"],
+      required: ['skill_name'],
     },
   },
 ];
 
-function textContent(text: string): { type: "text"; text: string }[] {
-  return [{ type: "text", text }];
+function textContent(text: string): { type: 'text'; text: string }[] {
+  return [{ type: 'text', text }];
 }
 
 /** Stages allowed when moving backward (return). Only these two are permitted. */
-const ALLOWED_BACKWARD_STAGE_NAMES = ["task", "blocked task"];
+const ALLOWED_BACKWARD_STAGE_NAMES = ['task', 'blocked task'];
 
 function resolveStageByName(
   stages: Array<{ id: number; name: string }>,
@@ -673,9 +706,7 @@ function resolveStageByName(
   const exact = stages.find((s) => s.name.toLowerCase() === normalized);
   if (exact) return exact.id;
   const partial = stages.find(
-    (s) =>
-      s.name.toLowerCase().includes(normalized) ||
-      normalized.includes(s.name.toLowerCase()),
+    (s) => s.name.toLowerCase().includes(normalized) || normalized.includes(s.name.toLowerCase()),
   );
   return partial?.id ?? null;
 }
@@ -691,7 +722,7 @@ function validateStageMove(
   targetStage: StageWithPosition,
 ): string | null {
   if (currentStage.id === targetStage.id) {
-    return "Task is already in this stage. No move needed.";
+    return 'Task is already in this stage. No move needed.';
   }
   const isForward = targetStage.position > currentStage.position;
   if (isForward) return null;
@@ -710,14 +741,14 @@ function validateStageMove(
 export function createMcpServer(): Server {
   const server = new Server(
     {
-      name: "mcp-runrunit",
-      version: "1.0.0",
+      name: 'mcp-runrunit',
+      version: '1.0.0',
     },
     {
       capabilities: {
         tools: {},
       },
-    }
+    },
   );
 
   server.setRequestHandler(ListToolsRequestSchema, async () => ({
@@ -732,7 +763,7 @@ export function createMcpServer(): Server {
       let result: unknown;
 
       switch (name) {
-        case "runrunit_list_projects": {
+        case 'runrunit_list_projects': {
           const params = {
             client_id: a.client_id as number | undefined,
             project_group_id: a.project_group_id as number | undefined,
@@ -744,7 +775,7 @@ export function createMcpServer(): Server {
           result = await projects.listProjects(params);
           break;
         }
-        case "runrunit_list_tasks": {
+        case 'runrunit_list_tasks': {
           const params = {
             ids: a.ids as string | undefined,
             user_id: a.user_id as string | undefined,
@@ -757,29 +788,29 @@ export function createMcpServer(): Server {
             is_closed: a.is_closed as boolean | undefined,
             is_working_on: a.is_working_on as boolean | undefined,
             sort: a.sort as string | undefined,
-            sort_dir: a.sort_dir as "asc" | "desc" | undefined,
+            sort_dir: a.sort_dir as 'asc' | 'desc' | undefined,
             page: a.page as number | undefined,
             limit: a.limit as number | undefined,
           };
           result = await tasks.listTasks(params);
           break;
         }
-        case "runrunit_list_task_filters":
+        case 'runrunit_list_task_filters':
           result = await tasks.listTaskFilters();
           break;
-        case "runrunit_list_board_stages":
+        case 'runrunit_list_board_stages':
           result = await tasks.listBoardStages(Number(a.board_id));
           break;
-        case "runrunit_move_task_stage": {
+        case 'runrunit_move_task_stage': {
           const taskId = Number(a.task_id);
           const boardStageId = a.board_stage_id as number | undefined;
           const boardStageName = a.board_stage_name as string | undefined;
           if (
             (boardStageId == null || !Number.isInteger(boardStageId)) &&
-            (boardStageName == null || String(boardStageName).trim() === "")
+            (boardStageName == null || String(boardStageName).trim() === '')
           ) {
             result = {
-              error: "Provide either board_stage_id or board_stage_name to move the task.",
+              error: 'Provide either board_stage_id or board_stage_name to move the task.',
               task_id: taskId,
             };
             break;
@@ -792,7 +823,7 @@ export function createMcpServer(): Server {
           if (boardId == null || !Number.isInteger(boardId)) {
             result = {
               error:
-                "Task has no board_id; cannot resolve or validate stage. Use board_stage_id from runrunit_list_board_stages.",
+                'Task has no board_id; cannot resolve or validate stage. Use board_stage_id from runrunit_list_board_stages.',
               task_id: taskId,
             };
             break;
@@ -804,7 +835,7 @@ export function createMcpServer(): Server {
           }>;
           const stagesWithPosition: StageWithPosition[] = stagesRaw.map((s) => ({
             id: Number(s.id),
-            name: String(s.name ?? ""),
+            name: String(s.name ?? ''),
             position: Number(s.position ?? 0),
           }));
           const stages = stagesWithPosition.map((s) => ({ id: s.id, name: s.name }));
@@ -819,11 +850,11 @@ export function createMcpServer(): Server {
               };
               break;
             }
-          } else if (boardStageName != null && String(boardStageName).trim() !== "") {
+          } else if (boardStageName != null && String(boardStageName).trim() !== '') {
             const resolvedId = resolveStageByName(stages, boardStageName);
             if (resolvedId == null) {
               result = {
-                error: `No board stage matching '${boardStageName}'. Available stages: ${stages.map((s) => `${s.name} (id: ${s.id})`).join(", ")}`,
+                error: `No board stage matching '${boardStageName}'. Available stages: ${stages.map((s) => `${s.name} (id: ${s.id})`).join(', ')}`,
                 task_id: taskId,
                 board_id: boardId,
               };
@@ -833,16 +864,14 @@ export function createMcpServer(): Server {
           }
           if (targetStage == null) {
             result = {
-              error: "Could not resolve target stage.",
+              error: 'Could not resolve target stage.',
               task_id: taskId,
             };
             break;
           }
           const currentStageId = task?.board_stage_id;
           const currentStage =
-            currentStageId != null
-              ? stagesWithPosition.find((s) => s.id === currentStageId)
-              : null;
+            currentStageId != null ? stagesWithPosition.find((s) => s.id === currentStageId) : null;
           if (currentStage == null) {
             result = await tasks.moveTask(taskId, targetStage.id);
             break;
@@ -860,13 +889,13 @@ export function createMcpServer(): Server {
           result = await tasks.moveTask(taskId, targetStage.id);
           break;
         }
-        case "runrunit_get_task":
+        case 'runrunit_get_task':
           result = await tasks.getTask(Number(a.id));
           break;
-        case "runrunit_list_subtasks":
+        case 'runrunit_list_subtasks':
           result = await tasks.listSubtasks(Number(a.task_id));
           break;
-        case "runrunit_create_task": {
+        case 'runrunit_create_task': {
           result = await tasks.createTask({
             task: {
               title: String(a.title),
@@ -881,57 +910,57 @@ export function createMcpServer(): Server {
               project_name: String(a.project_name),
               on_going: a.on_going as boolean | undefined,
               desired_date: a.desired_date != null ? String(a.desired_date) : undefined,
-              desired_start_date: a.desired_start_date != null ? String(a.desired_start_date) : undefined,
+              desired_start_date:
+                a.desired_start_date != null ? String(a.desired_start_date) : undefined,
               tag_list: a.tag_list != null ? String(a.tag_list) : undefined,
-              assignments: a.assignments as Array<{ assignee_id: string; team_id?: number }> | undefined,
+              assignments: a.assignments as
+                | Array<{ assignee_id: string; team_id?: number }>
+                | undefined,
             },
           });
           break;
         }
-        case "runrunit_update_task": {
+        case 'runrunit_update_task': {
           const taskPayload = taskUpdateToApiPayload(a.task as Record<string, unknown>);
           result = await tasks.updateTask(Number(a.id), { task: taskPayload });
           break;
         }
-        case "runrunit_delete_task":
+        case 'runrunit_delete_task':
           await tasks.deleteTask(Number(a.id));
           result = { deleted: true, id: a.id };
           break;
-        case "runrunit_create_workflow":
+        case 'runrunit_create_workflow':
           result = await tasks.createWorkflow(Number(a.task_id));
           break;
-        case "runrunit_assignment_play":
+        case 'runrunit_assignment_play':
           result = await tasks.assignmentPlay(Number(a.task_id), String(a.assignment_id));
           break;
-        case "runrunit_list_task_comments":
+        case 'runrunit_list_task_comments':
           result = await comments.listTaskComments(Number(a.task_id));
           break;
-        case "runrunit_get_comment":
+        case 'runrunit_get_comment':
           result = await comments.getComment(Number(a.id));
           break;
-        case "runrunit_create_comment":
+        case 'runrunit_create_comment':
           result = await comments.createComment({
             task_id: Number(a.task_id),
             text: String(a.text),
           });
           break;
-        case "runrunit_update_comment":
+        case 'runrunit_update_comment':
           result = await comments.updateComment(Number(a.id), String(a.text));
           break;
-        case "runrunit_delete_comment":
+        case 'runrunit_delete_comment':
           await comments.deleteComment(Number(a.id));
           result = { deleted: true, id: a.id };
           break;
-        case "runrunit_comment_reaction":
+        case 'runrunit_comment_reaction':
           result = await comments.commentReaction(Number(a.comment_id), String(a.emoji));
           break;
-        case "runrunit_create_external_comment":
-          result = await comments.createExternalComment(
-            Number(a.task_id),
-            String(a.text),
-          );
+        case 'runrunit_create_external_comment':
+          result = await comments.createExternalComment(Number(a.task_id), String(a.text));
           break;
-        case "runrunit_suggest_devs_with_free_queue": {
+        case 'runrunit_suggest_devs_with_free_queue': {
           const params = {
             limit: a.limit as number | undefined,
             team_id: a.team_id as string | undefined,
@@ -944,9 +973,9 @@ export function createMcpServer(): Server {
             board_id: a.board_id as number | undefined,
             task_stage_ids: a.task_stage_ids as number[] | undefined,
             load_strategy: a.load_strategy as
-              | "tasks_and_time"
-              | "only_tasks"
-              | "only_time"
+              | 'tasks_and_time'
+              | 'only_tasks'
+              | 'only_time'
               | undefined,
             include_zero_tasks: a.include_zero_tasks as boolean | undefined,
             only_developers: a.only_developers as boolean | undefined,
@@ -954,22 +983,24 @@ export function createMcpServer(): Server {
           result = await devSuggestions.suggestDevsWithFreeQueue(params);
           break;
         }
-        case "runrunit_project_detect_platform": {
+        case 'runrunit_project_detect_platform': {
           const taskId = Number(a.task_id);
           if (!Number.isInteger(taskId) || taskId < 1) {
             result = {
               detected: false,
-              message: "task_id deve ser um número inteiro positivo (ID da task no Runrun.it).",
+              message: 'task_id deve ser um número inteiro positivo (ID da task no Runrun.it).',
             };
             break;
           }
-          const task = (await tasks.getTask(taskId)) as Parameters<typeof detectPlatformFromTask>[0];
+          const task = (await tasks.getTask(taskId)) as Parameters<
+            typeof detectPlatformFromTask
+          >[0];
           const detected = detectPlatformFromTask(task);
           if (detected === null) {
             result = {
               detected: false,
               message:
-                "Nenhuma plataforma conhecida encontrada nas tags da task. Adicione tags como node, react, python, php, go, rust, etc. na task no Runrun.it para identificar a plataforma.",
+                'Nenhuma plataforma conhecida encontrada nas tags da task. Adicione tags como node, react, python, php, go, rust, etc. na task no Runrun.it para identificar a plataforma.',
               task_id: taskId,
             };
           } else {
@@ -987,67 +1018,52 @@ export function createMcpServer(): Server {
           }
           break;
         }
-        case "runrunit_upload_image_cloudinary": {
+        case 'runrunit_upload_image_cloudinary': {
           result = await uploadImageCloudinary(
             String(a.file_path),
-            a.public_id != null ? String(a.public_id) : undefined
+            a.public_id != null ? String(a.public_id) : undefined,
           );
           break;
         }
-        case "runrunit_install_cursor_skills": {
-          const targetRaw = a.target != null ? String(a.target).trim() : "";
-          const target =
-            targetRaw === "project"
-              ? ("project" as const)
-              : ("global" as const);
+        case 'runrunit_install_cursor_skills': {
+          const targetRaw = a.target != null ? String(a.target).trim() : '';
+          const target = targetRaw === 'project' ? ('project' as const) : ('global' as const);
           result = installCursorSkills({
             dry_run: a.dry_run === true,
             skill_names: Array.isArray(a.skill_names)
               ? (a.skill_names as unknown[]).map((x) => String(x))
               : undefined,
             target,
-            project_root:
-              a.project_root != null ? String(a.project_root) : undefined,
-            source_dir:
-              a.source_dir != null ? String(a.source_dir) : undefined,
+            project_root: a.project_root != null ? String(a.project_root) : undefined,
+            source_dir: a.source_dir != null ? String(a.source_dir) : undefined,
           });
           break;
         }
-        case "runrunit_install_cursor_agents": {
-          const targetAgentsRaw =
-            a.target != null ? String(a.target).trim() : "";
+        case 'runrunit_install_cursor_agents': {
+          const targetAgentsRaw = a.target != null ? String(a.target).trim() : '';
           const targetAgents =
-            targetAgentsRaw === "project"
-              ? ("project" as const)
-              : ("global" as const);
+            targetAgentsRaw === 'project' ? ('project' as const) : ('global' as const);
           result = installCursorAgents({
             dry_run: a.dry_run === true,
             agent_names: Array.isArray(a.agent_names)
               ? (a.agent_names as unknown[]).map((x) => String(x))
               : undefined,
             target: targetAgents,
-            project_root:
-              a.project_root != null ? String(a.project_root) : undefined,
-            source_dir:
-              a.source_dir != null ? String(a.source_dir) : undefined,
+            project_root: a.project_root != null ? String(a.project_root) : undefined,
+            source_dir: a.source_dir != null ? String(a.source_dir) : undefined,
           });
           break;
         }
-        case "runrunit_discord_send_message": {
-          result = await discord.sendMessage(
-            String(a.channel_id),
-            String(a.content),
-            {
-              taskId: a.task_id != null ? Number(a.task_id) : undefined,
-              projectId: a.project_id != null ? Number(a.project_id) : undefined,
-            }
-          );
+        case 'runrunit_discord_send_message': {
+          result = await discord.sendMessage(String(a.channel_id), String(a.content), {
+            taskId: a.task_id != null ? Number(a.task_id) : undefined,
+            projectId: a.project_id != null ? Number(a.project_id) : undefined,
+          });
           break;
         }
-        case "runrunit_discord_create_channel": {
+        case 'runrunit_discord_create_channel': {
           const guildId =
-            (a.guild_id as string | undefined)?.trim() ||
-            (await discord.getDefaultGuildId());
+            (a.guild_id as string | undefined)?.trim() || (await discord.getDefaultGuildId());
           result = await discord.createChannel({
             name: String(a.name),
             guildId,
@@ -1056,14 +1072,13 @@ export function createMcpServer(): Server {
           });
           break;
         }
-        case "runrunit_discord_list_channels": {
+        case 'runrunit_discord_list_channels': {
           const guildId =
-            (a.guild_id as string | undefined)?.trim() ||
-            (await discord.getDefaultGuildId());
+            (a.guild_id as string | undefined)?.trim() || (await discord.getDefaultGuildId());
           result = await discord.listChannels(guildId);
           break;
         }
-        case "runrunit_discord_get_or_create_channel": {
+        case 'runrunit_discord_get_or_create_channel': {
           result = await discord.getOrCreateChannelForClient({
             clientId: (a.client_id as string | undefined)?.trim() || undefined,
             clientName: (a.client_name as string | undefined)?.trim() || undefined,
@@ -1071,19 +1086,17 @@ export function createMcpServer(): Server {
           });
           break;
         }
-        case "runrunit_share_cursor_agent": {
+        case 'runrunit_share_cursor_agent': {
           result = await shareCursorAgent({
-            agent_name: String(a.agent_name ?? ""),
-            project_root:
-              a.project_root != null ? String(a.project_root) : undefined,
+            agent_name: String(a.agent_name ?? ''),
+            project_root: a.project_root != null ? String(a.project_root) : undefined,
           });
           break;
         }
-        case "runrunit_share_cursor_skill": {
+        case 'runrunit_share_cursor_skill': {
           result = await shareCursorSkill({
-            skill_name: String(a.skill_name ?? ""),
-            project_root:
-              a.project_root != null ? String(a.project_root) : undefined,
+            skill_name: String(a.skill_name ?? ''),
+            project_root: a.project_root != null ? String(a.project_root) : undefined,
           });
           break;
         }
@@ -1101,8 +1114,8 @@ export function createMcpServer(): Server {
       captureExceptionWithContext(err, {
         tags: {
           tool_name: name,
-          error_kind: "tool_execution",
-          runtime_mode: process.env.MCP_RUNTIME_MODE ?? "unknown",
+          error_kind: 'tool_execution',
+          runtime_mode: process.env.MCP_RUNTIME_MODE ?? 'unknown',
         },
         extra: {
           toolArguments: args,
@@ -1113,7 +1126,7 @@ export function createMcpServer(): Server {
         err instanceof ShareGithubConfigError
           ? err.message
           : err instanceof RunrunitAPIError
-            ? `${err.message}${err.body ? ` ${JSON.stringify(err.body)}` : ""}`
+            ? `${err.message}${err.body ? ` ${JSON.stringify(err.body)}` : ''}`
             : err instanceof Error
               ? err.message
               : String(err);

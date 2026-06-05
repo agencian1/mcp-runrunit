@@ -1,27 +1,24 @@
-__GET
+\_\_GET
 
 #### /api/v1.0/enterprises/:id
 
-####  Show details for requesting user's enterprise 
+#### Show details for requesting user's enterprise
 
 ## Request
 
 #### Route
-    
-    
+
     GET /api/v1.0/enterprises/acme-458
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
-    
-    
+
     curl -g "[https://runrun.it/api/v1.0/enterprises/acme-458](https://runrun.it/api/v1.0/enterprises/acme-458)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -34,79 +31,76 @@ __GET
 
 #### Response Fields
 
-Name | Description | type  
----|---|---  
-id  | ID of enterprise | string  
-name  | Name of enterprise | string  
-avatar_url  | Enterprise avatar url | url  
-phone  | Enterprise phone | string  
-country  | Enterprise country | string  
-company_size  | Enterprise size | string  
-company_sector  | Enterprise sector | string  
-attachments_sum  | Total size of all stored documents in bytes | float  
-total_users_sum  | Total of users in account | integer  
-total_guests_sum  | Total of guests in account | integer  
-remaining_attachment_space  | Total space remaining for documents in bytes | float  
-logo_url  | Logo of enterprise | string  
-alt_id  | Constant size ID (internal use only) | string  
-oid  | Constant size ID (internal use only) | string  
-support_phone  | Call this number to contact Runrun.it | string  
-trial_days_left  | Days left to the date of trial period end, if it's a trial plan | date  
-disabled_reason  | Why account is disabled | string  
-disabled_at  | Disabled date | datetime  
-currency_symbol  | Currency symbol (ISO 4217) | string  
-created_at  | Enterprise creation date | datetime  
-master_user_id  | ID of the account creator | string  
-using_temporary_edition  | Is enterprise using a temporary edition in subscription? | boolean  
-temporary_edition_expiration  | Date when the temporary edition will expire | datetime  
-signup_completed  | True if signup completed | boolean  
-signup_qualified  | True if signup qualified | boolean  
-time_zone  | Enterprise time zone | string  
-language  | Enterprise language | string  
-should_see_promo_modal  | True if Enterprise should see promo modal (internal use only) | boolean  
-master_user_position  | Enterprise master user position | string  
-subscription_expiration_date  | Internal use only | date  
-invite_user_link_code  | Internal use only | string  
-is_beta_tester  | Internal use only | boolean  
-trial_triggered_by  | Name of the feature that triggered the trial plan | string  
-allow_ignore_board_dashboard_limitations  | Allow ignore board dashboard limitations | boolean  
-default_board_id  | Internal use only | integer  
-use_board_feature  | Internal use only | boolean  
-optional_use_board_feature  | Internal use only | boolean  
-plan[id]  | ID of plan | integer  
-plan[name_pt]  | Plan name in Portuguese | string  
-plan[name_en]  | Plan name in English | string  
-plan[name_es]  | Plan name in Spanish | string  
-plan[max_storage]  | Total available size for documents in bytes | float  
-plan[max_users]  | Total number of users which can be active | integer  
-plan[max_guests]  | Total number of guests which can be active | integer  
-plan[max_open_tasks]  | Limit of open tasks in the account | integer  
-plan[max_assignees_per_task]  | Limit of assignees per task | integer  
-plan[max_boards]  | Limit of boards in account | integer  
-plan[max_widgets_per_dashboard]  | Limit of widgets per dashboard | integer  
-plan[max_widgets_per_boards_dashboard]  | Limit of widgets per boards dashboard | integer  
-plan[max_document_size]  | Max size in bytes for documents | float  
-plan[max_period_days]  | Max period days | integer  
-plan[is_free]  | Is a free plan? | boolean  
-plan[is_trial]  | Is a trial plan? | boolean  
-plan[can_use_mobile]  | Can use mobile? | boolean  
-plan[category]  | Plan category | string  
-plan[is_eligible_for_temporary_edition]  | Plan eligibility for temporary edition | boolean  
-  
+| Name                                     | Description                                                     | type     |
+| ---------------------------------------- | --------------------------------------------------------------- | -------- |
+| id                                       | ID of enterprise                                                | string   |
+| name                                     | Name of enterprise                                              | string   |
+| avatar_url                               | Enterprise avatar url                                           | url      |
+| phone                                    | Enterprise phone                                                | string   |
+| country                                  | Enterprise country                                              | string   |
+| company_size                             | Enterprise size                                                 | string   |
+| company_sector                           | Enterprise sector                                               | string   |
+| attachments_sum                          | Total size of all stored documents in bytes                     | float    |
+| total_users_sum                          | Total of users in account                                       | integer  |
+| total_guests_sum                         | Total of guests in account                                      | integer  |
+| remaining_attachment_space               | Total space remaining for documents in bytes                    | float    |
+| logo_url                                 | Logo of enterprise                                              | string   |
+| alt_id                                   | Constant size ID (internal use only)                            | string   |
+| oid                                      | Constant size ID (internal use only)                            | string   |
+| support_phone                            | Call this number to contact Runrun.it                           | string   |
+| trial_days_left                          | Days left to the date of trial period end, if it's a trial plan | date     |
+| disabled_reason                          | Why account is disabled                                         | string   |
+| disabled_at                              | Disabled date                                                   | datetime |
+| currency_symbol                          | Currency symbol (ISO 4217)                                      | string   |
+| created_at                               | Enterprise creation date                                        | datetime |
+| master_user_id                           | ID of the account creator                                       | string   |
+| using_temporary_edition                  | Is enterprise using a temporary edition in subscription?        | boolean  |
+| temporary_edition_expiration             | Date when the temporary edition will expire                     | datetime |
+| signup_completed                         | True if signup completed                                        | boolean  |
+| signup_qualified                         | True if signup qualified                                        | boolean  |
+| time_zone                                | Enterprise time zone                                            | string   |
+| language                                 | Enterprise language                                             | string   |
+| should_see_promo_modal                   | True if Enterprise should see promo modal (internal use only)   | boolean  |
+| master_user_position                     | Enterprise master user position                                 | string   |
+| subscription_expiration_date             | Internal use only                                               | date     |
+| invite_user_link_code                    | Internal use only                                               | string   |
+| is_beta_tester                           | Internal use only                                               | boolean  |
+| trial_triggered_by                       | Name of the feature that triggered the trial plan               | string   |
+| allow_ignore_board_dashboard_limitations | Allow ignore board dashboard limitations                        | boolean  |
+| default_board_id                         | Internal use only                                               | integer  |
+| use_board_feature                        | Internal use only                                               | boolean  |
+| optional_use_board_feature               | Internal use only                                               | boolean  |
+| plan[id]                                 | ID of plan                                                      | integer  |
+| plan[name_pt]                            | Plan name in Portuguese                                         | string   |
+| plan[name_en]                            | Plan name in English                                            | string   |
+| plan[name_es]                            | Plan name in Spanish                                            | string   |
+| plan[max_storage]                        | Total available size for documents in bytes                     | float    |
+| plan[max_users]                          | Total number of users which can be active                       | integer  |
+| plan[max_guests]                         | Total number of guests which can be active                      | integer  |
+| plan[max_open_tasks]                     | Limit of open tasks in the account                              | integer  |
+| plan[max_assignees_per_task]             | Limit of assignees per task                                     | integer  |
+| plan[max_boards]                         | Limit of boards in account                                      | integer  |
+| plan[max_widgets_per_dashboard]          | Limit of widgets per dashboard                                  | integer  |
+| plan[max_widgets_per_boards_dashboard]   | Limit of widgets per boards dashboard                           | integer  |
+| plan[max_document_size]                  | Max size in bytes for documents                                 | float    |
+| plan[max_period_days]                    | Max period days                                                 | integer  |
+| plan[is_free]                            | Is a free plan?                                                 | boolean  |
+| plan[is_trial]                           | Is a trial plan?                                                | boolean  |
+| plan[can_use_mobile]                     | Can use mobile?                                                 | boolean  |
+| plan[category]                           | Plan category                                                   | string   |
+| plan[is_eligible_for_temporary_edition]  | Plan eligibility for temporary edition                          | boolean  |
+
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3372
 
 #### Body
-    
-    
+
     {
       "id": "acme-458",
       "name": "Acme 458",
@@ -141,7 +135,7 @@ plan[is_eligible_for_temporary_edition]  | Plan eligibility for temporary editio
       "invite_user_link_code": null,
       "is_beta_tester": false,
       "trial_triggered_by": [
-    
+
       ],
       "allow_ignore_board_dashboard_limitations": false,
       "default_board_id": null,
@@ -225,36 +219,33 @@ plan[is_eligible_for_temporary_edition]  | Plan eligibility for temporary editio
       }
     }
 
-__PUT
+\_\_PUT
 
 #### /api/v1.0/enterprises/:id
 
-####  Update enterprise 
+#### Update enterprise
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-enterprise[id] required | ID of enterprise | string  
-  
+| Name                    | Description      | type   |
+| ----------------------- | ---------------- | ------ |
+| enterprise[id] required | ID of enterprise | string |
+
 ## Request
 
 #### Route
-    
-    
+
     PUT /api/v1.0/enterprises/acme-459
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "enterprise": {
         "name": "New name"
@@ -262,8 +253,7 @@ enterprise[id] required | ID of enterprise | string
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/enterprises/acme-459](https://runrun.it/api/v1.0/enterprises/acme-459)" -d '{"enterprise":{"name":"New name"}}' -X PUT \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -275,19 +265,16 @@ enterprise[id] required | ID of enterprise | string
 [Simulated Response](/api/documentation/simulate/enterprises/update_enterprise)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3372
 
 #### Body
-    
-    
+
     {
       "id": "acme-459",
       "name": "New name",
@@ -322,7 +309,7 @@ enterprise[id] required | ID of enterprise | string
       "invite_user_link_code": null,
       "is_beta_tester": false,
       "trial_triggered_by": [
-    
+
       ],
       "allow_ignore_board_dashboard_limitations": false,
       "default_board_id": null,

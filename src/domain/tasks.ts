@@ -17,7 +17,7 @@ export type ListTasksParams = {
   is_closed?: boolean;
   is_working_on?: boolean;
   sort?: string;
-  sort_dir?: "asc" | "desc";
+  sort_dir?: 'asc' | 'desc';
   page?: number;
   limit?: number;
   bypass_status_default?: boolean;

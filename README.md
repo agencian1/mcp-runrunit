@@ -41,13 +41,13 @@ flowchart LR
 
 ### Estrutura de pastas
 
-| Pasta / Arquivos | Papel |
-|------------------|--------|
-| `src/index.ts`, `src/server.ts` | Pontos de entrada (adaptadores de transporte stdio e HTTP) |
-| `src/domain/` | Domínio (tipos e portas para evolução futura) |
-| `src/application/` | Núcleo de aplicação: `tasks.ts`, `comments.ts` (casos de uso) |
-| `src/adapters/driving/` | Adaptador de entrada: `app.ts` (MCP — definição de tools e handler CallTool) |
-| `src/adapters/driven/` | Adaptador de saída: `api.ts` (cliente HTTP Runrun.it) |
+| Pasta / Arquivos                | Papel                                                                        |
+| ------------------------------- | ---------------------------------------------------------------------------- |
+| `src/index.ts`, `src/server.ts` | Pontos de entrada (adaptadores de transporte stdio e HTTP)                   |
+| `src/domain/`                   | Domínio (tipos e portas para evolução futura)                                |
+| `src/application/`              | Núcleo de aplicação: `tasks.ts`, `comments.ts` (casos de uso)                |
+| `src/adapters/driving/`         | Adaptador de entrada: `app.ts` (MCP — definição de tools e handler CallTool) |
+| `src/adapters/driven/`          | Adaptador de saída: `api.ts` (cliente HTTP Runrun.it)                        |
 
 A separação permite trocar o transporte (stdio vs HTTP) sem alterar o núcleo e, no futuro, mockar ou trocar a implementação da API Runrun.it para testes ou outros backends.
 
@@ -108,7 +108,7 @@ Exemplo de configuração (ajuste o caminho para o seu projeto):
   "mcpServers": {
     "runrunit": {
       "command": "node",
-      // Use o caminho absoluto para `dist/index.js` no seu ambiente. 
+      // Use o caminho absoluto para `dist/index.js` no seu ambiente.
       "args": ["caminho-do-repositório-local/mcp-runrunit/dist/index.js"],
       "env": {
         "RUNRUNIT_APP_KEY": "sua_app_key",
@@ -176,77 +176,75 @@ As skills que fazem upload de imagens (evidências em PRs e comentários Runrun.
 
 ### Tasks
 
-| Ferramenta | Descrição |
-|------------|-----------|
-| `runrunit_list_tasks` | Lista tarefas com filtros opcionais (ids, responsible_id, assignee_id, filter_id, board_stage_id, project_id, etc.) |
-| `runrunit_list_task_filters` | Lista filtros de tarefas (para obter filter_id de "Minhas partes abertas") |
-| `runrunit_list_board_stages` | Lista stages do board (Task, Ongoing, Manager Validation) — use com runrunit_move_task_stage ao mover por nome |
-| `runrunit_move_task_stage` | Move uma tarefa para uma etapa/coluna do board (task_id + board_stage_id ou board_stage_name). Para etapas que exigem "Link da branch", preencher antes com runrunit_update_task |
-| `runrunit_get_task` | Retorna uma tarefa pelo ID |
-| `runrunit_list_subtasks` | Lista subtarefas de uma tarefa |
-| `runrunit_create_task` | Cria tarefa (obrigatório: title, type_id; opcional: project_id, assignments, desired_date, etc.) |
-| `runrunit_update_task` | Atualiza tarefa (id + objeto com campos a atualizar, ex.: title, desired_date, link_da_branch). Para mover entre colunas use runrunit_move_task_stage |
-| `runrunit_delete_task` | Remove uma tarefa |
-| `runrunit_create_workflow` | Cria workflow para uma tarefa (permite iniciar tracking) |
-| `runrunit_assignment_play` | Inicia tracking (play) em um assignment de tarefa |
+| Ferramenta                   | Descrição                                                                                                                                                                        |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `runrunit_list_tasks`        | Lista tarefas com filtros opcionais (ids, responsible_id, assignee_id, filter_id, board_stage_id, project_id, etc.)                                                              |
+| `runrunit_list_task_filters` | Lista filtros de tarefas (para obter filter_id de "Minhas partes abertas")                                                                                                       |
+| `runrunit_list_board_stages` | Lista stages do board (Task, Ongoing, Manager Validation) — use com runrunit_move_task_stage ao mover por nome                                                                   |
+| `runrunit_move_task_stage`   | Move uma tarefa para uma etapa/coluna do board (task_id + board_stage_id ou board_stage_name). Para etapas que exigem "Link da branch", preencher antes com runrunit_update_task |
+| `runrunit_get_task`          | Retorna uma tarefa pelo ID                                                                                                                                                       |
+| `runrunit_list_subtasks`     | Lista subtarefas de uma tarefa                                                                                                                                                   |
+| `runrunit_create_task`       | Cria tarefa (obrigatório: title, type_id; opcional: project_id, assignments, desired_date, etc.)                                                                                 |
+| `runrunit_update_task`       | Atualiza tarefa (id + objeto com campos a atualizar, ex.: title, desired_date, link_da_branch). Para mover entre colunas use runrunit_move_task_stage                            |
+| `runrunit_delete_task`       | Remove uma tarefa                                                                                                                                                                |
+| `runrunit_create_workflow`   | Cria workflow para uma tarefa (permite iniciar tracking)                                                                                                                         |
+| `runrunit_assignment_play`   | Inicia tracking (play) em um assignment de tarefa                                                                                                                                |
 
 ### Comments
 
-| Ferramenta | Descrição |
-|------------|-----------|
-| `runrunit_list_task_comments` | Lista comentários de uma tarefa |
-| `runrunit_get_comment` | Retorna um comentário pelo ID |
-| `runrunit_create_comment` | Cria comentário em tarefa (task_id, text) |
+| Ferramenta                         | Descrição                                                                                 |
+| ---------------------------------- | ----------------------------------------------------------------------------------------- |
+| `runrunit_list_task_comments`      | Lista comentários de uma tarefa                                                           |
+| `runrunit_get_comment`             | Retorna um comentário pelo ID                                                             |
+| `runrunit_create_comment`          | Cria comentário em tarefa (task_id, text)                                                 |
 | `runrunit_create_external_comment` | Cria comentário na sessão externa/guest (compartilhada com clientes; channel_name: guest) |
-| `runrunit_update_comment` | Edita o texto de um comentário |
-| `runrunit_delete_comment` | Remove um comentário |
-| `runrunit_comment_reaction` | Adiciona reação (emoji) a um comentário |
+| `runrunit_update_comment`          | Edita o texto de um comentário                                                            |
+| `runrunit_delete_comment`          | Remove um comentário                                                                      |
+| `runrunit_comment_reaction`        | Adiciona reação (emoji) a um comentário                                                   |
 
 ### Discord
 
-| Ferramenta | Descrição |
-|------------|-----------|
-| `runrunit_discord_send_message` | Envia mensagem em um canal do Discord (channel_id, content; opcional task_id, project_id). Requer BOT_RUNRUNIT_REPORT. |
-| `runrunit_discord_create_channel` | Cria um canal de texto no servidor (guild). Parâmetros: name (slug, ex.: client-1); opcional guild_id, parent_id, topic. Usa DISCORD_GUILD_ID se guild_id não for passado. |
-| `runrunit_discord_list_channels` | Lista canais do servidor Discord. guild_id opcional (usa DISCORD_GUILD_ID ou resolve por DISCORD_CHANNEL_ID). |
+| Ferramenta                               | Descrição                                                                                                                                                                                         |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `runrunit_discord_send_message`          | Envia mensagem em um canal do Discord (channel_id, content; opcional task_id, project_id). Requer BOT_RUNRUNIT_REPORT.                                                                            |
+| `runrunit_discord_create_channel`        | Cria um canal de texto no servidor (guild). Parâmetros: name (slug, ex.: client-1); opcional guild_id, parent_id, topic. Usa DISCORD_GUILD_ID se guild_id não for passado.                        |
+| `runrunit_discord_list_channels`         | Lista canais do servidor Discord. guild_id opcional (usa DISCORD_GUILD_ID ou resolve por DISCORD_CHANNEL_ID).                                                                                     |
 | `runrunit_discord_get_or_create_channel` | Obtém ou cria um canal por cliente Runrun.it (1 canal por cliente). client_id ou client_name (ex.: "Client 1" → slug client-1). Retorna channel_id e channel_name; use antes de enviar mensagens. |
 
 ### Cursor (skills e agentes do pacote)
 
-| Ferramenta | Descrição |
-|------------|-----------|
-| `runrunit_install_cursor_skills` | **Só instalação local:** copia pastas de `cursor-skills/` para `~/.cursor/skills` ou `<project_root>/.cursor/skills`. Não usar para “compartilhar no GitHub” — nesse caso use `runrunit_share_cursor_skill`. |
-| `runrunit_install_cursor_agents` | **Só instalação local:** copia Markdown de `cursor-agents/` para `~/.cursor/agents` ou projeto, preservando o basename. Para propor agente ao repo via PR, use `runrunit_share_cursor_agent`. |
-| `runrunit_share_cursor_agent` | **Partilha com o time (PR):** quando pedirem compartilhar/dividir agente com o time no GitHub. Abre PR com um ficheiro de `cursor-agents/`. Requer `GITHUB_*` no servidor MCP. |
-| `runrunit_share_cursor_skill` | **Partilha com o time (PR):** quando pedirem compartilhar/dividir skill com o time (ex. `react-best-practices`). Abre PR com `cursor-skills/{skill_name}/SKILL.md`. Mesmos requisitos GitHub que a tool de agente. |
+| Ferramenta                       | Descrição                                                                                                                                                                                                                                                                                                       |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `runrunit_install_cursor_skills` | **Só instalação local:** copia pastas de `cursor-skills/` para `~/.cursor/skills` ou `<project_root>/.cursor/skills`. Não usar para “compartilhar no GitHub” — nesse caso use `runrunit_share_cursor_skill`.                                                                                                    |
+| `runrunit_install_cursor_agents` | **Só instalação local:** copia Markdown de `cursor-agents/` para `~/.cursor/agents` ou projeto, preservando o basename. Para propor agente ao repo via PR, use `runrunit_share_cursor_agent`.                                                                                                                   |
+| `runrunit_share_cursor_agent`    | **Partilha com o time (PR):** quando pedirem compartilhar/dividir agente com o time no GitHub. Abre PR com um ficheiro de `cursor-agents/`. Requer `GITHUB_*` no servidor MCP.                                                                                                                                  |
+| `runrunit_share_cursor_skill`    | **Partilha com o time (PR):** quando pedirem compartilhar/dividir skill com o time (ex. `react-best-practices`). Abre PR com a pasta completa `cursor-skills/{skill_name}/` (SKILL.md, `rules/`, etc.) num único commit. Resposta inclui `file_count` e `paths`. Mesmos requisitos GitHub que a tool de agente. |
 
 ### Skills
 
 Skills em `cursor-skills/`:
 
-| Skill | Descrição |
-|-------|-----------|
-| `code-reviewer` | Revisão de código alinhada aos padrões da agência. Use ao revisar PRs, sugerir melhorias ou validar implementações. |
-| `registrar-evidencias` | Captura screenshots em múltiplos viewports (mobile, tablet, desktop) a partir de URLs "antes" e "depois". Usar para evidências visuais, comparar antes/depois, documentar mudanças de UI ou preparar imagens para PRs e relatórios. |
-| `upload-image-cloudinary` | Upload de imagens para Cloudinary e retorno de URLs públicas. Usar quando screenshots ou evidências precisarem ser hospedadas (ex.: body da PR, docs). Requer CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY e CLOUDINARY_API_SECRET. |
-| `comentar-task-runrunit` | Orquestra evidências e comentário na tarefa do Runrun.it: captura antes/depois, upload no Cloudinary, opcionalmente abre PR e cria comentário na task com resumo, passo a passo de teste e links; grava link_da_branch na task se houver PR. |
-| `create-pr-github` | Cria um pull request bem estruturado, com descrição, rótulos, revisores e evidências visuais. Inclui preparar branch, descrição, checklist e output obrigatório (link da PR, branch, ambiente de destino). |
-| `install-cursor-team-skills` | Orienta `runrunit_install_cursor_skills` (cópia local) e distingue de `runrunit_share_cursor_skill` (PR no GitHub quando pedirem compartilhar com o time). |
-| `react-best-practices` | Checklist e regras de performance para React e Next.js (Vercel). Use ao editar TSX/JSX, revisar componentes ou otimizar bundle e render. Inclui ficheiros detalhados em `rules/` e o documento compilado `AGENTS.md`. |
+| Skill                        | Descrição                                                                                                                                                                                                                                    |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `code-reviewer`              | Revisão de código alinhada aos padrões da agência. Use ao revisar PRs, sugerir melhorias ou validar implementações.                                                                                                                          |
+| `registrar-evidencias`       | Captura screenshots em múltiplos viewports (mobile, tablet, desktop) a partir de URLs "antes" e "depois". Usar para evidências visuais, comparar antes/depois, documentar mudanças de UI ou preparar imagens para PRs e relatórios.          |
+| `upload-image-cloudinary`    | Upload de imagens para Cloudinary e retorno de URLs públicas. Usar quando screenshots ou evidências precisarem ser hospedadas (ex.: body da PR, docs). Requer CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY e CLOUDINARY_API_SECRET.             |
+| `comentar-task-runrunit`     | Orquestra evidências e comentário na tarefa do Runrun.it: captura antes/depois, upload no Cloudinary, opcionalmente abre PR e cria comentário na task com resumo, passo a passo de teste e links; grava link_da_branch na task se houver PR. |
+| `create-pr-github`           | Cria um pull request bem estruturado, com descrição, rótulos, revisores e evidências visuais. Inclui preparar branch, descrição, checklist e output obrigatório (link da PR, branch, ambiente de destino).                                   |
+| `install-cursor-team-skills` | Orienta `runrunit_install_cursor_skills` (cópia local) e distingue de `runrunit_share_cursor_skill` (PR no GitHub quando pedirem compartilhar com o time).                                                                                   |
+| `react-best-practices`       | Checklist e regras de performance para React e Next.js (Vercel). Use ao editar TSX/JSX, revisar componentes ou otimizar bundle e render. Inclui ficheiros detalhados em `rules/` e o documento compilado `AGENTS.md`.                        |
 
 ### Agents
 
-
-| Agente | Nome exibido | Descrição | Quando usar |
-|--------|--------------|-----------|-------------|
-| **context-bridge** | Doc-Brief (Implementation Brief) | Filtro de documentação técnica: extrai lógica de implementação, assinaturas e dependências em Implementation Briefs de alta densidade; remove marketing e redundância. | Quando precisar transformar documentação longa em um resumo técnico pronto para implementação (Quick Start, Core Logic, API Reference, Gotchas). |
-| **kieran-typescript-reviewer** | kieran-typescript-reviewer | Revisa código TypeScript com barra de qualidade alta em type safety, padrões modernos e manutenibilidade. | Após implementar features, modificar código ou criar novos componentes TypeScript; para garantir convenções e boas práticas. |
-| **mentor** | Mentor mode | Ajuda a mentorar o engenheiro com orientação e suporte, sem editar código. | Quando quiser desafiar premissas, fazer perguntas socráticas e guiar a solução sem dar a resposta pronta. |
-| **performance-optimizer** | performance-optimizer | Especialista em otimização de performance, profiling, Core Web Vitals e otimização de bundle. | Para melhorar velocidade, reduzir tamanho de bundle e otimizar runtime; termos: performance, optimize, speed, slow, memory, cpu, benchmark, lighthouse. |
-| **prd** | Create PRD Chat Mode | Gera um PRD (Product Requirements Document) em Markdown com user stories, critérios de aceite, considerações técnicas e métricas; opcionalmente cria issues no GitHub. | Para documentar requisitos de produto de forma estruturada e, se desejado, gerar issues a partir das user stories. |
-| **toph** | Toph | Especialista em acessibilidade web (WCAG 2.1/2.2), UX inclusiva e testes de a11y. | Para revisar acessibilidade, teclado, foco, ARIA, formulários, mídia, testes com leitores de tela e ferramentas (axe, pa11y, Lighthouse). |
-| **security-reviewer** | security-reviewer | Revisor focado em segurança: vulnerabilidades e boas práticas. | Para checar injeção (SQL, XSS, comandos), autenticação/autorização, dados sensíveis, criptografia, dependências e validação de entrada. |
-
+| Agente                         | Nome exibido                     | Descrição                                                                                                                                                              | Quando usar                                                                                                                                             |
+| ------------------------------ | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **context-bridge**             | Doc-Brief (Implementation Brief) | Filtro de documentação técnica: extrai lógica de implementação, assinaturas e dependências em Implementation Briefs de alta densidade; remove marketing e redundância. | Quando precisar transformar documentação longa em um resumo técnico pronto para implementação (Quick Start, Core Logic, API Reference, Gotchas).        |
+| **kieran-typescript-reviewer** | kieran-typescript-reviewer       | Revisa código TypeScript com barra de qualidade alta em type safety, padrões modernos e manutenibilidade.                                                              | Após implementar features, modificar código ou criar novos componentes TypeScript; para garantir convenções e boas práticas.                            |
+| **mentor**                     | Mentor mode                      | Ajuda a mentorar o engenheiro com orientação e suporte, sem editar código.                                                                                             | Quando quiser desafiar premissas, fazer perguntas socráticas e guiar a solução sem dar a resposta pronta.                                               |
+| **performance-optimizer**      | performance-optimizer            | Especialista em otimização de performance, profiling, Core Web Vitals e otimização de bundle.                                                                          | Para melhorar velocidade, reduzir tamanho de bundle e otimizar runtime; termos: performance, optimize, speed, slow, memory, cpu, benchmark, lighthouse. |
+| **prd**                        | Create PRD Chat Mode             | Gera um PRD (Product Requirements Document) em Markdown com user stories, critérios de aceite, considerações técnicas e métricas; opcionalmente cria issues no GitHub. | Para documentar requisitos de produto de forma estruturada e, se desejado, gerar issues a partir das user stories.                                      |
+| **toph**                       | Toph                             | Especialista em acessibilidade web (WCAG 2.1/2.2), UX inclusiva e testes de a11y.                                                                                      | Para revisar acessibilidade, teclado, foco, ARIA, formulários, mídia, testes com leitores de tela e ferramentas (axe, pa11y, Lighthouse).               |
+| **security-reviewer**          | security-reviewer                | Revisor focado em segurança: vulnerabilidades e boas práticas.                                                                                                         | Para checar injeção (SQL, XSS, comandos), autenticação/autorização, dados sensíveis, criptografia, dependências e validação de entrada.                 |
 
 ## Contexto para o agente (uso assertivo das tools)
 

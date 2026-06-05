@@ -59,12 +59,12 @@ O filtro "Minhas partes abertas" é um filtro de tarefas que lista apenas as dem
 
 Após obter os IDs, você pode documentá-los na regra ou em um arquivo de configuração:
 
-| Variável | Valor de exemplo |
-|----------|------------------|
-| `board_stage_id_task` | 1 |
-| `board_stage_id_ongoing` | 2 |
-| `board_stage_id_manager_validation` | 3 |
-| `custom_field_link_branch` | custom_4 |
-| `filter_id_minhas_partes` | 42 |
+| Variável                            | Valor de exemplo |
+| ----------------------------------- | ---------------- |
+| `board_stage_id_task`               | 1                |
+| `board_stage_id_ongoing`            | 2                |
+| `board_stage_id_manager_validation` | 3                |
+| `custom_field_link_branch`          | custom_4         |
+| `filter_id_minhas_partes`           | 42               |
 
 Cada pessoa deve ajustar esses valores conforme seu projeto e board no Runrunit.

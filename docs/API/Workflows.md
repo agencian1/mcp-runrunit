@@ -1,29 +1,34 @@
-__GET
+\_\_GET
+
 #### /api/v1.0/workflows
 
-####  Show a task workflow 
+#### Show a task workflow
 
 ## Parameters
 
-Name | Description  
----|---  
-task_id required | ID of the task the workflow belongs to  
+| Name             | Description                            |
+| ---------------- | -------------------------------------- |
+| task_id required | ID of the task the workflow belongs to |
 
 ## Request
 
 #### Route
+
     GET /api/v1.0/workflows?task_id=1
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Query Parameters
+
     task_id=1
 
 #### cURL
+
     curl -g "[https://runrun.it/api/v1.0/workflows?task_id=1](https://runrun.it/api/v1.0/workflows?task_id=1)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -35,13 +40,16 @@ task_id required | ID of the task the workflow belongs to
 [Simulated Response](/api/documentation/simulate/workflows/show_a_task_workflow)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 138
 
 #### Body
+
     {
       "id": 1,
       "workable_id": 1,
@@ -52,30 +60,33 @@ task_id required | ID of the task the workflow belongs to
       "is_first_element": true
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/workflows
 
-####  Create a task workflow 
+#### Create a task workflow
 
 ## Parameters
 
-Name | Description  
----|---  
-task_id required | ID of the task the workflow will be associated  
-  
+| Name             | Description                                    |
+| ---------------- | ---------------------------------------------- |
+| task_id required | ID of the task the workflow will be associated |
+
 ## Request
 
 #### Route
+
     POST /api/v1.0/workflows
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
+
     {
       "task_id": 1,
       "workflow": {
@@ -83,6 +94,7 @@ task_id required | ID of the task the workflow will be associated
     }
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/workflows](https://runrun.it/api/v1.0/workflows)" -d '{"task_id":1,"workflow":{}}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -94,13 +106,16 @@ task_id required | ID of the task the workflow will be associated
 [Simulated Response](/api/documentation/simulate/workflows/create_a_task_workflow)
 
 #### Status
+
     201
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 138
 
 #### Body
+
     {
       "id": 1,
       "workable_id": 1,
@@ -111,35 +126,39 @@ task_id required | ID of the task the workflow will be associated
       "is_first_element": true
     }
 
-__DELETE
+\_\_DELETE
 
 #### /api/v1.0/workflows
 
-####  Destroy task workflow 
+#### Destroy task workflow
 
 ## Parameters
 
-Name | Description  
----|---  
-task_id required | ID of the task the workflow belongs to  
-  
+| Name             | Description                            |
+| ---------------- | -------------------------------------- |
+| task_id required | ID of the task the workflow belongs to |
+
 ## Request
 
 #### Route
+
     DELETE /api/v1.0/workflows
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
+
     {
       "task_id": 1
     }
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/workflows](https://runrun.it/api/v1.0/workflows)" -d '{"task_id":1}' -X DELETE \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -151,38 +170,42 @@ task_id required | ID of the task the workflow belongs to
 [Simulated Response](/api/documentation/simulate/workflows/destroy_task_workflow)
 
 #### Status
+
     204
 
 #### Headers
 
-
-__GET
+\_\_GET
 
 #### /api/v1.0/workflows
 
-####  Show a task_template workflow 
+#### Show a task_template workflow
 
 ## Parameters
 
-Name | Description  
----|---  
-task_template_id required | ID of the task_template the workflow belongs to  
-  
+| Name                      | Description                                     |
+| ------------------------- | ----------------------------------------------- |
+| task_template_id required | ID of the task_template the workflow belongs to |
+
 ## Request
 
-#### Route    
+#### Route
+
     GET /api/v1.0/workflows?task_template_id=1
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Query Parameters
+
     task_template_id=1
 
 #### cURL
+
     curl -g "[https://runrun.it/api/v1.0/workflows?task_template_id=1](https://runrun.it/api/v1.0/workflows?task_template_id=1)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -194,13 +217,16 @@ task_template_id required | ID of the task_template the workflow belongs to
 [Simulated Response](/api/documentation/simulate/workflows/show_a_task_template_workflow)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 158
 
-#### Body    
+#### Body
+
     {
       "id": 1,
       "workable_id": 1,
@@ -211,30 +237,33 @@ task_template_id required | ID of the task_template the workflow belongs to
       "is_first_element": true
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/workflows
 
-####  Create a task_template workflow 
+#### Create a task_template workflow
 
 ## Parameters
 
-Name | Description  
----|---  
-task_template_id required | ID of the task_template the workflow will be associated  
-  
+| Name                      | Description                                             |
+| ------------------------- | ------------------------------------------------------- |
+| task_template_id required | ID of the task_template the workflow will be associated |
+
 ## Request
 
 #### Route
+
     POST /api/v1.0/workflows
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
+
     {
       "task_template_id": 2,
       "workflow": {
@@ -242,6 +271,7 @@ task_template_id required | ID of the task_template the workflow will be associa
     }
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/workflows](https://runrun.it/api/v1.0/workflows)" -d '{"task_template_id":2,"workflow":{}}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -253,13 +283,16 @@ task_template_id required | ID of the task_template the workflow will be associa
 [Simulated Response](/api/documentation/simulate/workflows/create_a_task_template_workflow)
 
 #### Status
+
     201
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 158
 
 #### Body
+
     {
       "id": 1,
       "workable_id": 2,
@@ -270,35 +303,39 @@ task_template_id required | ID of the task_template the workflow will be associa
       "is_first_element": true
     }
 
-__DELETE
+\_\_DELETE
 
 #### /api/v1.0/workflows
 
-####  Destroy task_template workflow 
+#### Destroy task_template workflow
 
 ## Parameters
 
-Name | Description  
----|---  
-task_template_id required | ID of the task_template the workflow belongs to  
-  
+| Name                      | Description                                     |
+| ------------------------- | ----------------------------------------------- |
+| task_template_id required | ID of the task_template the workflow belongs to |
+
 ## Request
 
-#### Route    
+#### Route
+
     DELETE /api/v1.0/workflows
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
+
     {
       "task_template_id": 3
     }
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/workflows](https://runrun.it/api/v1.0/workflows)" -d '{"task_template_id":3}' -X DELETE \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -309,8 +346,10 @@ task_template_id required | ID of the task_template the workflow belongs to
 
 [Simulated Response](/api/documentation/simulate/workflows/destroy_task_template_workflow)
 
-#### Status    
+#### Status
+
     204
 
 #### Headers
+
 ...

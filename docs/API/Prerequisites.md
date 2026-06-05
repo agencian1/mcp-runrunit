@@ -1,27 +1,30 @@
-__GET
+\_\_GET
 
 #### /api/v1.0/tasks/:task_id/prerequisites
 
-####  List all task prerequisites from a task 
+#### List all task prerequisites from a task
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-task_id required | ID of the task | integer  
-  
+| Name             | Description    | type    |
+| ---------------- | -------------- | ------- |
+| task_id required | ID of the task | integer |
+
 ## Request
 
 #### Route
+
     GET /api/v1.0/tasks/1/prerequisites
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
+
     curl -g "[https://runrun.it/api/v1.0/tasks/1/prerequisites](https://runrun.it/api/v1.0/tasks/1/prerequisites)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -33,13 +36,16 @@ task_id required | ID of the task | integer
 [Simulated Response](/api/documentation/simulate/prerequisites/list_all_task_prerequisites_from_a_task)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3937
 
 #### Body
+
     [
       {
         "id": 2,
@@ -75,7 +81,7 @@ task_id required | ID of the task | integer
         "evaluation_status": null,
         "attachments_count": 0,
         "tags_data": [
-    
+
         ],
         "client_name": "Test client 397",
         "client_id": 2,
@@ -115,10 +121,10 @@ task_id required | ID of the task | integer
         "points": null,
         "reestimate_count": 0,
         "parent_ids": [
-    
+
         ],
         "opened_parent_ids": [
-    
+
         ],
         "parents_max_desired_date": null,
         "child_ids": [
@@ -128,10 +134,10 @@ task_id required | ID of the task | integer
         "checklist_id": null,
         "is_shared": false,
         "sharing_details": [
-    
+
         ],
         "subtask_ids": [
-    
+
         ],
         "subtasks_count": 0,
         "subtasks_closed_count": 0,
@@ -153,7 +159,7 @@ task_id required | ID of the task | integer
         "form_id": null,
         "board_stage_data": {
           "fields_data": [
-    
+
           ],
           "use_elapsed_time": false,
           "sla_elapsed_time": null,
@@ -178,14 +184,14 @@ task_id required | ID of the task | integer
         "estimated_delivery_date_updated": false,
         "last_estimated_at": null,
         "task_tags": [
-    
+
         ],
         "approved": null,
         "task_status_id": 4,
         "task_status_name": "Board Stage 1166",
         "tag_list": "",
         "tags": [
-    
+
         ],
         "scheduled_start_time": null,
         "is_scheduled": false,
@@ -220,37 +226,41 @@ task_id required | ID of the task | integer
       }
     ]
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:task_id/prerequisites
 
-####  Add a task prerequisite to a task 
+#### Add a task prerequisite to a task
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-task_id required | ID of the task | integer  
-  
+| Name             | Description    | type    |
+| ---------------- | -------------- | ------- |
+| task_id required | ID of the task | integer |
+
 ## Request
 
 #### Route
+
     POST /api/v1.0/tasks/1/prerequisites
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
+
     {
       "prerequisite": {
         "id": 2
       }
     }
 
-#### cURL   
+#### cURL
+
     curl "[https://runrun.it/api/v1.0/tasks/1/prerequisites](https://runrun.it/api/v1.0/tasks/1/prerequisites)" -d '{"prerequisite":{"id":2}}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -262,13 +272,16 @@ task_id required | ID of the task | integer
 [Simulated Response](/api/documentation/simulate/prerequisites/add_a_task_prerequisite_to_a_task)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3936
 
 #### Body
+
     {
       "id": 1,
       "title": "Bla 409",
@@ -303,7 +316,7 @@ task_id required | ID of the task | integer
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 398",
       "client_id": 1,
@@ -350,16 +363,16 @@ task_id required | ID of the task | integer
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -381,7 +394,7 @@ task_id required | ID of the task | integer
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -406,14 +419,14 @@ task_id required | ID of the task | integer
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 1169",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -445,35 +458,38 @@ task_id required | ID of the task | integer
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__DELETE
+\_\_DELETE
 
 #### /api/v1.0/tasks/:task_id/prerequisites/:id
 
-####  Remove a task prerequisite from a task 
+#### Remove a task prerequisite from a task
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-task_id required | ID of the task | integer  
-id required | ID of the task prerequisite | integer  
-  
+| Name             | Description                 | type    |
+| ---------------- | --------------------------- | ------- |
+| task_id required | ID of the task              | integer |
+| id required      | ID of the task prerequisite | integer |
+
 ## Request
 
 #### Route
+
     DELETE /api/v1.0/tasks/1/prerequisites/2
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
-#### cURL    
+#### cURL
+
     curl "[https://runrun.it/api/v1.0/tasks/1/prerequisites/2](https://runrun.it/api/v1.0/tasks/1/prerequisites/2)" -d '' -X DELETE \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -485,13 +501,16 @@ id required | ID of the task prerequisite | integer
 [Simulated Response](/api/documentation/simulate/prerequisites/remove_a_task_prerequisite_from_a_task)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3934
 
 #### Body
+
     {
       "id": 1,
       "title": "Bla 411",
@@ -526,7 +545,7 @@ id required | ID of the task prerequisite | integer
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 400",
       "client_id": 1,
@@ -566,23 +585,23 @@ id required | ID of the task prerequisite | integer
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -604,7 +623,7 @@ id required | ID of the task prerequisite | integer
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -629,14 +648,14 @@ id required | ID of the task prerequisite | integer
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 1175",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -668,34 +687,37 @@ id required | ID of the task prerequisite | integer
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__GET
+\_\_GET
 
 #### /api/v1.0/task_templates/:task_template_id/prerequisites
 
-####  List all task template prerequisites from a task template 
+#### List all task template prerequisites from a task template
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-task_template_id required | ID of the task template | integer  
-  
+| Name                      | Description             | type    |
+| ------------------------- | ----------------------- | ------- |
+| task_template_id required | ID of the task template | integer |
+
 ## Request
 
 #### Route
+
     GET /api/v1.0/task_templates/1/prerequisites
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
+
     curl -g "[https://runrun.it/api/v1.0/task_templates/1/prerequisites](https://runrun.it/api/v1.0/task_templates/1/prerequisites)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -707,13 +729,16 @@ task_template_id required | ID of the task template | integer
 [Simulated Response](/api/documentation/simulate/prerequisites/list_all_task_template_prerequisites_from_a_task_template)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 498
 
 #### Body
+
     [
       {
         "id": 2,
@@ -726,17 +751,17 @@ task_template_id required | ID of the task template | integer
         "project_template_id": 1,
         "tag_list": "",
         "tags_data": [
-    
+
         ],
         "created_at": "2026-03-04T16:57:47-03:00",
         "follower_ids": [
-    
+
         ],
         "is_assigned": true,
         "team_name": null,
         "type_name": "TaskType 478",
         "subtasks_data": [
-    
+
         ],
         "responsible_id": null,
         "assignments": [
@@ -753,30 +778,33 @@ task_template_id required | ID of the task template | integer
       }
     ]
 
-__POST
+\_\_POST
 
 #### /api/v1.0/task_templates/:task_template_id/prerequisites
 
-####  Add a task template prerequisite to a task template 
+#### Add a task template prerequisite to a task template
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-task_template_id required | ID of the task template | integer  
-  
+| Name                      | Description             | type    |
+| ------------------------- | ----------------------- | ------- |
+| task_template_id required | ID of the task template | integer |
+
 ## Request
 
 #### Route
+
     POST /api/v1.0/task_templates/3/prerequisites
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
+
     {
       "prerequisite": {
         "id": 4
@@ -784,6 +812,7 @@ task_template_id required | ID of the task template | integer
     }
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/task_templates/3/prerequisites](https://runrun.it/api/v1.0/task_templates/3/prerequisites)" -d '{"prerequisite":{"id":4}}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -795,13 +824,16 @@ task_template_id required | ID of the task template | integer
 [Simulated Response](/api/documentation/simulate/prerequisites/add_a_task_template_prerequisite_to_a_task_template)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 496
 
 #### Body
+
     {
       "id": 3,
       "title": "Task Template",
@@ -813,17 +845,17 @@ task_template_id required | ID of the task template | integer
       "project_template_id": 1,
       "tag_list": "",
       "tags_data": [
-    
+
       ],
       "created_at": "2026-03-04T16:57:48-03:00",
       "follower_ids": [
-    
+
       ],
       "is_assigned": true,
       "team_name": null,
       "type_name": "TaskType 479",
       "subtasks_data": [
-    
+
       ],
       "responsible_id": null,
       "assignments": [
@@ -839,31 +871,34 @@ task_template_id required | ID of the task template | integer
       "workflow_id": null
     }
 
-__DELETE
+\_\_DELETE
 
 #### /api/v1.0/task_templates/:task_template_id/prerequisites/:id
 
-####  Remove a task template prerequisite from a task template 
+#### Remove a task template prerequisite from a task template
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-task_template_id required | ID of the task template | integer  
-id required | ID of the task template prerequisite | integer  
-  
+| Name                      | Description                          | type    |
+| ------------------------- | ------------------------------------ | ------- |
+| task_template_id required | ID of the task template              | integer |
+| id required               | ID of the task template prerequisite | integer |
+
 ## Request
 
 #### Route
+
     DELETE /api/v1.0/task_templates/5/prerequisites/6
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/task_templates/5/prerequisites/6](https://runrun.it/api/v1.0/task_templates/5/prerequisites/6)" -d '' -X DELETE \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -875,13 +910,16 @@ id required | ID of the task template prerequisite | integer
 [Simulated Response](/api/documentation/simulate/prerequisites/remove_a_task_template_prerequisite_from_a_task_template)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 496
 
 #### Body
+
     {
       "id": 5,
       "title": "Task Template",
@@ -893,17 +931,17 @@ id required | ID of the task template prerequisite | integer
       "project_template_id": 1,
       "tag_list": "",
       "tags_data": [
-    
+
       ],
       "created_at": "2026-03-04T16:57:49-03:00",
       "follower_ids": [
-    
+
       ],
       "is_assigned": true,
       "team_name": null,
       "type_name": "TaskType 481",
       "subtasks_data": [
-    
+
       ],
       "responsible_id": null,
       "assignments": [

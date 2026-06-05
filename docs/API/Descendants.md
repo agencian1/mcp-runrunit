@@ -1,28 +1,30 @@
-
-
-__GET
+\_\_GET
 
 #### /api/v1.0/tasks/:task_id/descendants
 
-####  List all task descendants from a task 
+#### List all task descendants from a task
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-task_id required | ID of the task | integer  
-  
+| Name             | Description    | type    |
+| ---------------- | -------------- | ------- |
+| task_id required | ID of the task | integer |
+
 ## Request
 
-#### Route  
+#### Route
+
     GET /api/v1.0/tasks/2/descendants
 
-#### Headers   
+#### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
+
 #### cURL
+
     curl -g "[https://runrun.it/api/v1.0/tasks/2/descendants](https://runrun.it/api/v1.0/tasks/2/descendants)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -33,14 +35,17 @@ task_id required | ID of the task | integer
 
 [Simulated Response](/api/documentation/simulate/descendants/list_all_task_descendants_from_a_task)
 
-#### Status    
+#### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3935
 
 #### Body
+
     [
       {
         "id": 1,
@@ -76,7 +81,7 @@ task_id required | ID of the task | integer
         "evaluation_status": null,
         "attachments_count": 0,
         "tags_data": [
-    
+
         ],
         "client_name": "Test client 259",
         "client_id": 1,
@@ -146,14 +151,14 @@ task_id required | ID of the task | integer
         "custom_fields": {},
         "form_id": null,
         "board_stage_data": {
-	        "fields_data": [
-	          ],
-	          "use_elapsed_time": false,
-	          "sla_elapsed_time": null,
-	          "sla_elapsed_time_unit": null,
-	          "use_last_activity": false,
-	          "sla_last_activity_time": null,
-	          "sla_last_activity_time_unit": null
+            "fields_data": [
+              ],
+              "use_elapsed_time": false,
+              "sla_elapsed_time": null,
+              "sla_elapsed_time_unit": null,
+              "use_last_activity": false,
+              "sla_last_activity_time": null,
+              "sla_last_activity_time_unit": null
         },
         "last_activity_at": "2026-03-04T16:59:39-03:00",
         "automation_id": null,
@@ -209,30 +214,34 @@ task_id required | ID of the task | integer
         ]
       }
     ]
-    
-__POST
+
+\_\_POST
+
 #### /api/v1.0/tasks/:task_id/descendants
 
-####  Add a descendant task to a task 
+#### Add a descendant task to a task
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-task_id required | ID of the task | integer  
+| Name             | Description    | type    |
+| ---------------- | -------------- | ------- |
+| task_id required | ID of the task | integer |
 
 ## Request
 
 #### Route
+
     POST /api/v1.0/tasks/1/descendants
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
-#### Body   
+#### Body
+
     {
       "descendant": {
         "id": 2
@@ -240,8 +249,7 @@ task_id required | ID of the task | integer
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1/descendants](https://runrun.it/api/v1.0/tasks/1/descendants)" -d '{"descendant":{"id":2}}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -252,14 +260,17 @@ task_id required | ID of the task | integer
 
 [Simulated Response](/api/documentation/simulate/descendants/add_a_descendant_task_to_a_task)
 
-#### Status    
+#### Status
+
     200
 
-#### Headers    
+#### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3932
 
-#### Body    
+#### Body
+
     {
       "id": 1,
       "title": "Bla 315",
@@ -421,29 +432,33 @@ task_id required | ID of the task | integer
       ]
     }
 
-__DELETE
+\_\_DELETE
+
 #### /api/v1.0/tasks/:task_id/descendants/:id
 
-####  Remove a descendant task from a task 
+#### Remove a descendant task from a task
 
 ## Parameters
 
 | Name             | Description    | type    |
 | ---------------- | -------------- | ------- |
 | task_id required | ID of the task | integer |
-  
+
 ## Request
 
 #### Route
+
     DELETE /api/v1.0/tasks/2/descendants/1
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/tasks/2/descendants/1](https://runrun.it/api/v1.0/tasks/2/descendants/1)" -d '' -X DELETE \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -455,13 +470,16 @@ __DELETE
 [Simulated Response](/api/documentation/simulate/descendants/remove_a_descendant_task_from_a_task)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3931
 
 #### Body
+
     {
       "id": 2,
       "title": "Bla 318",
@@ -496,7 +514,7 @@ __DELETE
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 264",
       "client_id": 2,
@@ -536,23 +554,23 @@ __DELETE
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -574,7 +592,7 @@ __DELETE
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -599,14 +617,14 @@ __DELETE
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 4,
       "task_status_name": "Board Stage 764",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,

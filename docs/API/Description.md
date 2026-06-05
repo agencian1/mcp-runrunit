@@ -1,41 +1,37 @@
-## __Description
+## \_\_Description
 
-__GET
+\_\_GET
 
 #### /api/v1.0/descriptions
 
-####  Query Multiple Descriptions 
+#### Query Multiple Descriptions
 
 ## Parameters
 
-Name | Description  
----|---  
-task_template_ids  | IDs of Task Templates if belongs  
-project_ids  | IDs of Projects if belongs  
-  
+| Name              | Description                      |
+| ----------------- | -------------------------------- |
+| task_template_ids | IDs of Task Templates if belongs |
+| project_ids       | IDs of Projects if belongs       |
+
 ## Request
 
 #### Route
-    
-    
+
     GET /api/v1.0/descriptions?project_ids=1%2C2
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Query Parameters
-    
-    
+
     project_ids=1,2
 
 #### cURL
-    
-    
+
     curl -g "[https://runrun.it/api/v1.0/descriptions?project_ids=1%2C2](https://runrun.it/api/v1.0/descriptions?project_ids=1%2C2)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -47,19 +43,16 @@ project_ids  | IDs of Projects if belongs
 [Simulated Response](/api/documentation/simulate/description/query_multiple_descriptions)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 316
 
 #### Body
-    
-    
+
     [
       {
         "project_id": 1,
@@ -79,43 +72,39 @@ project_ids  | IDs of Projects if belongs
       }
     ]
 
-__GET
+\_\_GET
 
 #### /api/v1.0/descriptions
 
-####  Query Single Project Description 
+#### Query Single Project Description
 
 ## Parameters
 
-Name | Description  
----|---  
-task_draft_id  | Task draft  
-task_template_id  | Task template  
-project_id  | Project  
-  
+| Name             | Description   |
+| ---------------- | ------------- |
+| task_draft_id    | Task draft    |
+| task_template_id | Task template |
+| project_id       | Project       |
+
 ## Request
 
 #### Route
-    
-    
+
     GET /api/v1.0/descriptions?project_id=1
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Query Parameters
-    
-    
+
     project_id=1
 
 #### cURL
-    
-    
+
     curl -g "[https://runrun.it/api/v1.0/descriptions?project_id=1](https://runrun.it/api/v1.0/descriptions?project_id=1)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -127,19 +116,16 @@ project_id  | Project
 [Simulated Response](/api/documentation/simulate/description/query_single_project_description)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 154
 
 #### Body
-    
-    
+
     {
       "project_id": 1,
       "description": "Cool Project",
@@ -149,43 +135,39 @@ project_id  | Project
       "locked_at": null
     }
 
-__GET
+\_\_GET
 
 #### /api/v1.0/descriptions
 
-####  Query Single Task Template Description 
+#### Query Single Task Template Description
 
 ## Parameters
 
-Name | Description  
----|---  
-task_draft_id  | Task draft  
-task_template_id  | Task template  
-project_id  | Project  
-  
+| Name             | Description   |
+| ---------------- | ------------- |
+| task_draft_id    | Task draft    |
+| task_template_id | Task template |
+| project_id       | Project       |
+
 ## Request
 
 #### Route
-    
-    
+
     GET /api/v1.0/descriptions?task_template_id=12
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Query Parameters
-    
-    
+
     task_template_id=12
 
 #### cURL
-    
-    
+
     curl -g "[https://runrun.it/api/v1.0/descriptions?task_template_id=12](https://runrun.it/api/v1.0/descriptions?task_template_id=12)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -197,19 +179,16 @@ project_id  | Project
 [Simulated Response](/api/documentation/simulate/description/query_single_task_template_description)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 161
 
 #### Body
-    
-    
+
     {
       "task_template_id": 12,
       "description": "Awesome Task",
@@ -219,36 +198,33 @@ project_id  | Project
       "locked_at": null
     }
 
-__PUT
+\_\_PUT
 
 #### /api/v1.0/descriptions
 
-####  Update Project Description 
+#### Update Project Description
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-description[description] required | The text of the description | text  
-  
+| Name                              | Description                 | type |
+| --------------------------------- | --------------------------- | ---- |
+| description[description] required | The text of the description | text |
+
 ## Request
 
 #### Route
-    
-    
+
     PUT /api/v1.0/descriptions
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "description": {
         "project_id": 1,
@@ -257,8 +233,7 @@ description[description] required | The text of the description | text
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/descriptions](https://runrun.it/api/v1.0/descriptions)" -d '{"description":{"project_id":1,"description":"Another Awesome Project Description"}}' -X PUT \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -270,19 +245,16 @@ description[description] required | The text of the description | text
 [Simulated Response](/api/documentation/simulate/description/update_project_description)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 177
 
 #### Body
-    
-    
+
     {
       "project_id": 1,
       "description": "Another Awesome Project Description",
@@ -292,36 +264,33 @@ description[description] required | The text of the description | text
       "locked_at": null
     }
 
-__PUT
+\_\_PUT
 
 #### /api/v1.0/descriptions
 
-####  Update Task Template Description 
+#### Update Task Template Description
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-description[description] required | The text of the description | text  
-  
+| Name                              | Description                 | type |
+| --------------------------------- | --------------------------- | ---- |
+| description[description] required | The text of the description | text |
+
 ## Request
 
 #### Route
-    
-    
+
     PUT /api/v1.0/descriptions
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "description": {
         "task_template_id": 13,
@@ -330,8 +299,7 @@ description[description] required | The text of the description | text
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/descriptions](https://runrun.it/api/v1.0/descriptions)" -d '{"description":{"task_template_id":13,"description":"Another Awesome Project Description"}}' -X PUT \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -343,19 +311,16 @@ description[description] required | The text of the description | text
 [Simulated Response](/api/documentation/simulate/description/update_task_template_description)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 184
 
 #### Body
-    
-    
+
     {
       "task_template_id": 13,
       "description": "Another Awesome Project Description",

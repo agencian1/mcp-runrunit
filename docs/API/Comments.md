@@ -1,27 +1,24 @@
-__GET
+\_\_GET
 
 #### /api/v1.0/tasks/:task_id/comments
 
-####  List comments on a task 
+#### List comments on a task
 
 ## Request
 
 #### Route
-    
-    
+
     GET /api/v1.0/tasks/1/comments
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
-    
-    
+
     curl -g "[https://runrun.it/api/v1.0/tasks/1/comments](https://runrun.it/api/v1.0/tasks/1/comments)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -33,19 +30,16 @@ __GET
 [Simulated Response](/api/documentation/simulate/comments/list_comments_on_a_task)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 1301
 
 #### Body
-    
-    
+
     [
       {
         "id": 2,
@@ -75,10 +69,10 @@ __GET
         "is_legacy": false,
         "media": null,
         "documents": [
-    
+
         ],
         "reactions": [
-    
+
         ],
         "is_automation_message": false,
         "related_task_ids": null
@@ -111,40 +105,37 @@ __GET
         "is_legacy": false,
         "media": null,
         "documents": [
-    
+
         ],
         "reactions": [
-    
+
         ],
         "is_automation_message": false,
         "related_task_ids": null
       }
     ]
 
-__GET
+\_\_GET
 
 #### /api/v1.0/comments/:id
 
-####  Show a specific comment 
+#### Show a specific comment
 
 ## Request
 
 #### Route
-    
-    
+
     GET /api/v1.0/comments/1
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
-    
-    
+
     curl -g "[https://runrun.it/api/v1.0/comments/1](https://runrun.it/api/v1.0/comments/1)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -156,19 +147,16 @@ __GET
 [Simulated Response](/api/documentation/simulate/comments/show_a_specific_comment)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 659
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "user_id": "coyote-1038",
@@ -197,47 +185,43 @@ __GET
       "is_legacy": false,
       "media": null,
       "documents": [
-    
+
       ],
       "reactions": [
-    
+
       ],
       "is_automation_message": false,
       "related_task_ids": null
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/comments
 
-####  Create a new comment 
+#### Create a new comment
 
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/comments
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "task_id": 1,
       "text": "Comment text"
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/comments](https://runrun.it/api/v1.0/comments)" -d '{"task_id":1,"text":"Comment text"}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -249,19 +233,16 @@ __POST
 [Simulated Response](/api/documentation/simulate/comments/create_a_new_comment)
 
 #### Status
-    
-    
+
     201
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 659
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "user_id": "coyote-1040",
@@ -290,47 +271,43 @@ __POST
       "is_legacy": false,
       "media": null,
       "documents": [
-    
+
       ],
       "reactions": [
-    
+
       ],
       "is_automation_message": false,
       "related_task_ids": null
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/comments
 
-####  Create a new comment 
+#### Create a new comment
 
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/comments
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "task_id": 1,
       "text": "Comment text"
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/comments](https://runrun.it/api/v1.0/comments)" -d '{"task_id":1,"text":"Comment text"}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -342,19 +319,16 @@ __POST
 [Simulated Response](/api/documentation/simulate/comments/create_a_new_comment)
 
 #### Status
-    
-    
+
     201
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 659
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "user_id": "coyote-1040",
@@ -383,47 +357,43 @@ __POST
       "is_legacy": false,
       "media": null,
       "documents": [
-    
+
       ],
       "reactions": [
-    
+
       ],
       "is_automation_message": false,
       "related_task_ids": null
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/comments
 
-####  Create a new project comment 
+#### Create a new project comment
 
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/comments
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "project_id": 1,
       "text": "comment"
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/comments](https://runrun.it/api/v1.0/comments)" -d '{"project_id":1,"text":"comment"}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -435,19 +405,16 @@ __POST
 [Simulated Response](/api/documentation/simulate/comments/create_a_new_project_comment)
 
 #### Status
-    
-    
+
     201
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 663
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "user_id": "coyote-1043",
@@ -476,46 +443,42 @@ __POST
       "is_legacy": false,
       "media": null,
       "documents": [
-    
+
       ],
       "reactions": [
-    
+
       ],
       "is_automation_message": false,
       "related_task_ids": null
     }
 
-__PUT
+\_\_PUT
 
 #### /api/v1.0/comments/:id
 
-####  Update a comment 
+#### Update a comment
 
 ## Request
 
 #### Route
-    
-    
+
     PUT /api/v1.0/comments/1
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "text": "New text"
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/comments/1](https://runrun.it/api/v1.0/comments/1)" -d '{"text":"New text"}' -X PUT \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -527,19 +490,16 @@ __PUT
 [Simulated Response](/api/documentation/simulate/comments/update_a_comment)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 678
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "user_id": "coyote-1044",
@@ -568,39 +528,36 @@ __PUT
       "is_legacy": false,
       "media": null,
       "documents": [
-    
+
       ],
       "reactions": [
-    
+
       ],
       "is_automation_message": false,
       "related_task_ids": null
     }
 
-__DELETE
+\_\_DELETE
 
 #### /api/v1.0/comments/:id
 
-####  Destroy a comment 
+#### Destroy a comment
 
 ## Request
 
 #### Route
-    
-    
+
     DELETE /api/v1.0/comments/1
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/comments/1](https://runrun.it/api/v1.0/comments/1)" -d '' -X DELETE \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -612,44 +569,38 @@ __DELETE
 [Simulated Response](/api/documentation/simulate/comments/destroy_a_comment)
 
 #### Status
-    
-    
+
     204
 
 #### Headers
 
-
-__POST
+\_\_POST
 
 #### /api/v1.0/comments/:id/reaction
 
-####  Reaction to a comment 
+#### Reaction to a comment
 
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/comments/1/reaction
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "emoji": "👨"
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/comments/1/reaction](https://runrun.it/api/v1.0/comments/1/reaction)" -d '{"emoji":"👨"}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -661,19 +612,16 @@ __POST
 [Simulated Response](/api/documentation/simulate/comments/reaction_to_a_comment)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 739
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "user_id": "coyote-1048",
@@ -702,7 +650,7 @@ __POST
       "is_legacy": false,
       "media": null,
       "documents": [
-    
+
       ],
       "reactions": [
         {
