@@ -24,7 +24,7 @@
     "build": "tsc",
     "bundle": "node scripts/bundle.mjs",
     "postbuild": "node scripts/bundle.mjs",
-    "prepare": "npm run build",
+    "prepare": "husky && npm run build",
     "prepublishOnly": "npm run build",
     "start": "node --env-file=.env --import ./dist/instrument-http.js dist/server.js",
     "dev": "npm run build && node --env-file=.env --import ./dist/instrument-http.js dist/server.js",
