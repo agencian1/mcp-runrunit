@@ -1,15 +1,9 @@
-import { runrunitFetch } from "../adapters/driven/api.js";
+import { runrunitFetch } from '../adapters/driven/api.js';
 
-export type LoadStrategy = "tasks_and_time" | "only_tasks" | "only_time";
+export type LoadStrategy = 'tasks_and_time' | 'only_tasks' | 'only_time';
 
 /** Termos de cargo/área que excluem o usuário quando only_developers = true (case-insensitive). */
-const DEFAULT_EXCLUDED_ROLE_TERMS = [
-  "gestor",
-  "gestora",
-  "social",
-  "inovação",
-  "inovacao",
-];
+const DEFAULT_EXCLUDED_ROLE_TERMS = ['gestor', 'gestora', 'social', 'inovação', 'inovacao'];
 
 export type SuggestDevsInput = {
   limit?: number;
@@ -50,7 +44,7 @@ type TaskAssignment = {
   team_id: number | null;
   current_estimate_seconds?: number | null;
   time_worked?: number | null;
-   is_closed?: boolean | null;
+  is_closed?: boolean | null;
 };
 
 type Task = {
@@ -68,7 +62,7 @@ export type DeveloperSuggestion = {
   developer_name: string;
   task_count_in_task_column: number;
   total_estimated_load: number;
-  load_unit: "hours" | "tasks";
+  load_unit: 'hours' | 'tasks';
   justification: string;
   tasks?: Array<{ id: number; title: string }>;
 };
@@ -92,17 +86,15 @@ export type SuggestDevsResult =
     };
 
 async function fetchUsers(): Promise<User[]> {
-  return runrunitFetch<User[]>("users");
+  return runrunitFetch<User[]>('users');
 }
 
 async function fetchBoardStages(boardId: number): Promise<BoardStage[]> {
   return runrunitFetch<BoardStage[]>(`boards/${boardId}/stages`);
 }
 
-async function fetchTasks(params: {
-  project_id?: number;
-}): Promise<Task[]> {
-  return runrunitFetch<Task[]>("tasks", {
+async function fetchTasks(params: { project_id?: number }): Promise<Task[]> {
+  return runrunitFetch<Task[]>('tasks', {
     query: {
       project_id: params.project_id,
       is_closed: false,
@@ -120,21 +112,16 @@ function normalizeLimit(limit?: number): number {
   return n;
 }
 
-function resolveTaskStageIds(
-  input: SuggestDevsInput,
-  stages: BoardStage[]
-): number[] {
+function resolveTaskStageIds(input: SuggestDevsInput, stages: BoardStage[]): number[] {
   if (input.task_stage_ids && input.task_stage_ids.length > 0) {
     return input.task_stage_ids;
   }
 
-  const candidates = stages.filter((stage) =>
-    stage.name.toLowerCase().includes("task")
-  );
+  const candidates = stages.filter((stage) => stage.name.toLowerCase().includes('task'));
 
   if (candidates.length === 0) {
     throw new Error(
-      "Não foi possível identificar a coluna \"Task\" automaticamente. Informe explicitamente os IDs de estágio em task_stage_ids ou ajuste a configuração do board."
+      'Não foi possível identificar a coluna "Task" automaticamente. Informe explicitamente os IDs de estágio em task_stage_ids ou ajuste a configuração do board.',
     );
   }
 
@@ -150,9 +137,9 @@ function isUserActive(user: User, onlyActiveDevs?: boolean): boolean {
 function getRoleFromUser(user: User): string {
   const role = user.role?.trim();
   if (role) return role;
-  const dash = user.name.indexOf(" - ");
+  const dash = user.name.indexOf(' - ');
   if (dash >= 0) return user.name.slice(dash + 3).trim();
-  return "";
+  return '';
 }
 
 /** Verifica se o usuário deve ser excluído por cargo (Gestor, Social, Inovação, etc.). */
@@ -163,41 +150,38 @@ function isExcludedByRole(user: User, onlyDevelopers: boolean): boolean {
   return DEFAULT_EXCLUDED_ROLE_TERMS.some((term) => role.includes(term));
 }
 
-function userMatchesFilters(
-  user: User,
-  input: SuggestDevsInput
-): boolean {
+function userMatchesFilters(user: User, input: SuggestDevsInput): boolean {
   if (!isUserActive(user, input.only_active_devs)) return false;
   if (isExcludedByRole(user, input.only_developers !== false)) return false;
 
   const name = user.name.toLowerCase();
   const nonDeveloperKeywords = [
-    "gestor",
-    "manager",
-    "coord ",
-    "coordenador",
-    "coordenadora",
-    "chapter lead",
-    "lead ",
-    "líder",
-    "liderança",
-    "head ",
-    "director",
-    "diretor",
-    "diretora",
-    "social media",
-    "marketing",
-    "ux ",
-    "designer",
-    "product ",
-    "po ",
-    "pm ",
-    "analista de negócios",
-    "business",
-    "suporte",
-    "support",
-    "customer success",
-    "cs ",
+    'gestor',
+    'manager',
+    'coord ',
+    'coordenador',
+    'coordenadora',
+    'chapter lead',
+    'lead ',
+    'líder',
+    'liderança',
+    'head ',
+    'director',
+    'diretor',
+    'diretora',
+    'social media',
+    'marketing',
+    'ux ',
+    'designer',
+    'product ',
+    'po ',
+    'pm ',
+    'analista de negócios',
+    'business',
+    'suporte',
+    'support',
+    'customer success',
+    'cs ',
   ];
 
   if (nonDeveloperKeywords.some((keyword) => name.includes(keyword))) {
@@ -235,7 +219,7 @@ function taskMatchesFilters(task: Task, input: SuggestDevsInput): boolean {
 
   if (input.project_tag && task.tags_data && task.tags_data.length > 0) {
     const hasTag = task.tags_data.some(
-      (tag) => tag.name.toLowerCase() === input.project_tag!.toLowerCase()
+      (tag) => tag.name.toLowerCase() === input.project_tag!.toLowerCase(),
     );
     if (!hasTag) return false;
   }
@@ -248,25 +232,22 @@ function isTaskInTaskStages(task: Task, taskStageIds: number[]): boolean {
   return taskStageIds.includes(task.board_stage_id);
 }
 
-function computeAssignmentLoadSeconds(
-  assignment: TaskAssignment,
-  strategy: LoadStrategy
-): number {
+function computeAssignmentLoadSeconds(assignment: TaskAssignment, strategy: LoadStrategy): number {
   const estimate = assignment.current_estimate_seconds ?? undefined;
   const worked = assignment.time_worked ?? undefined;
 
-  if (strategy === "only_tasks") {
+  if (strategy === 'only_tasks') {
     return 1;
   }
 
-  if (strategy === "only_time") {
-    if (typeof estimate === "number" && estimate > 0) return estimate;
-    if (typeof worked === "number" && worked > 0) return worked;
+  if (strategy === 'only_time') {
+    if (typeof estimate === 'number' && estimate > 0) return estimate;
+    if (typeof worked === 'number' && worked > 0) return worked;
     return 3600;
   }
 
-  if (typeof estimate === "number" && estimate > 0) return estimate;
-  if (typeof worked === "number" && worked > 0) return worked;
+  if (typeof estimate === 'number' && estimate > 0) return estimate;
+  if (typeof worked === 'number' && worked > 0) return worked;
   return 3600;
 }
 
@@ -275,12 +256,11 @@ function secondsToHours(value: number): number {
 }
 
 export async function suggestDevsWithFreeQueue(
-  input: SuggestDevsInput
+  input: SuggestDevsInput,
 ): Promise<SuggestDevsResult> {
   try {
     const limit = normalizeLimit(input.limit);
-    const loadStrategy: LoadStrategy = input.load_strategy ?? "tasks_and_time";
-    const includeZeroTasks = input.include_zero_tasks ?? true;
+    const loadStrategy: LoadStrategy = input.load_strategy ?? 'tasks_and_time';
     // Default board: Ongoing (ID 96356) when none is provided.
     const boardId = input.board_id ?? 96356;
 
@@ -299,21 +279,18 @@ export async function suggestDevsWithFreeQueue(
 
     if (taskStageIds.length === 0) {
       return {
-        error_code: "TASK_STAGE_NOT_RESOLVED",
+        error_code: 'TASK_STAGE_NOT_RESOLVED',
         message:
-          "Não foi possível identificar a coluna \"Task\". Informe board_id e/ou task_stage_ids para configurar corretamente.",
+          'Não foi possível identificar a coluna "Task". Informe board_id e/ou task_stage_ids para configurar corretamente.',
       };
     }
 
-    const eligibleUsers = users.filter((user) =>
-      userMatchesFilters(user, input)
-    );
+    const eligibleUsers = users.filter((user) => userMatchesFilters(user, input));
 
     if (eligibleUsers.length === 0) {
       return {
         developers: [],
-        message:
-          "Nenhum desenvolvedor elegível encontrado com os filtros atuais.",
+        message: 'Nenhum desenvolvedor elegível encontrado com os filtros atuais.',
         filters_applied: {
           limit,
           team_id: input.team_id,
@@ -335,9 +312,7 @@ export async function suggestDevsWithFreeQueue(
     const eligibleUserIds = new Set(eligibleUsers.map((u) => u.id));
 
     const tasksInTaskStage = tasks.filter(
-      (task) =>
-        isTaskInTaskStages(task, taskStageIds) &&
-        taskMatchesFilters(task, input)
+      (task) => isTaskInTaskStages(task, taskStageIds) && taskMatchesFilters(task, input),
     );
 
     const loadByDev = new Map<
@@ -371,10 +346,7 @@ export async function suggestDevsWithFreeQueue(
           }
         }
 
-        const loadSeconds = computeAssignmentLoadSeconds(
-          assignment,
-          loadStrategy
-        );
+        const loadSeconds = computeAssignmentLoadSeconds(assignment, loadStrategy);
 
         const current = loadByDev.get(devId) ?? {
           taskCount: 0,
@@ -403,25 +375,25 @@ export async function suggestDevsWithFreeQueue(
           developer_name: user.name,
           task_count_in_task_column: 0,
           total_estimated_load: 0,
-          load_unit: "hours",
-          justification: "Nenhuma tarefa na coluna Task no momento.",
+          load_unit: 'hours',
+          justification: 'Nenhuma tarefa na coluna Task no momento.',
           tasks: [],
         });
         continue;
       }
 
       let totalLoad: number;
-      let loadUnit: "hours" | "tasks";
+      let loadUnit: 'hours' | 'tasks';
       let justification: string;
 
-      if (loadStrategy === "only_tasks") {
+      if (loadStrategy === 'only_tasks') {
         totalLoad = aggregate.taskCount;
-        loadUnit = "tasks";
+        loadUnit = 'tasks';
         justification = `${aggregate.taskCount} tarefas na coluna Task.`;
       } else {
         const hours = secondsToHours(aggregate.totalSeconds);
         totalLoad = hours;
-        loadUnit = "hours";
+        loadUnit = 'hours';
         justification = `${aggregate.taskCount} tarefas na coluna Task, carga total aproximada de ${hours} horas.`;
       }
 
@@ -440,7 +412,7 @@ export async function suggestDevsWithFreeQueue(
       return {
         developers: [],
         message:
-          "Não há tarefas na coluna Task neste momento; todos os devs parecem estar livres ou sem tarefas ativas nesse estágio.",
+          'Não há tarefas na coluna Task neste momento; todos os devs parecem estar livres ou sem tarefas ativas nesse estágio.',
         filters_applied: {
           limit,
           team_id: input.team_id,
@@ -493,13 +465,12 @@ export async function suggestDevsWithFreeQueue(
     };
   } catch (error) {
     return {
-      error_code: "UNEXPECTED_ERROR",
+      error_code: 'UNEXPECTED_ERROR',
       message:
         error instanceof Error
           ? `Falha ao sugerir desenvolvedores: ${error.message}`
-          : "Falha desconhecida ao sugerir desenvolvedores.",
+          : 'Falha desconhecida ao sugerir desenvolvedores.',
       details: error instanceof Error ? { name: error.name } : undefined,
     };
   }
 }
-

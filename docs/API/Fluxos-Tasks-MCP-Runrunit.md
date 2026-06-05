@@ -17,8 +17,8 @@ flowchart LR
   C --> D[Escolher filter_id para list_tasks]
 ```
 
-| Entrada | Saída típica |
-|--------|----------------|
+| Entrada | Saída típica                         |
+| ------- | ------------------------------------ |
 | Nenhuma | Array de filtros: `id`, `name`, etc. |
 
 **Uso no fluxo:** Primeiro passo para listar "minhas tarefas" → obter `filter_id` do filtro "Minhas partes abertas".
@@ -36,11 +36,11 @@ flowchart LR
   C --> D[Filtrar Ongoing / escolher task para iniciar]
 ```
 
-| Entrada comum | Descrição |
-|---------------|-----------|
-| `filter_id` | ID do filtro (ex.: Minhas partes abertas) |
+| Entrada comum    | Descrição                                              |
+| ---------------- | ------------------------------------------------------ |
+| `filter_id`      | ID do filtro (ex.: Minhas partes abertas)              |
 | `board_stage_id` | Filtrar por coluna (Task, Ongoing, Manager Validation) |
-| `responsible_id` | Tarefas onde o usuário é responsável |
+| `responsible_id` | Tarefas onde o usuário é responsável                   |
 
 **Fluxo típico:** `runrunit_list_task_filters` → obter `filter_id` → `runrunit_list_tasks(filter_id)` → inspecionar tasks e `board_stage_id`/nome do stage para detectar Ongoing.
 
@@ -57,8 +57,8 @@ flowchart LR
   C --> D[list_board_stages / update_task / assignment_play]
 ```
 
-| Entrada | Saída relevante |
-|--------|------------------|
+| Entrada       | Saída relevante                                                    |
+| ------------- | ------------------------------------------------------------------ |
 | `id` (number) | `board_id`, `board_stage_id`, `assignments[]` (com `id` para play) |
 
 **Uso no fluxo:** Antes de mover tarefa (precisa de `board_id` para `list_board_stages`); antes de dar play (precisa de `assignments[].id`).
@@ -76,8 +76,8 @@ flowchart LR
   C --> D[runrunit_update_task com board_stage_id]
 ```
 
-| Entrada | Saída |
-|--------|--------|
+| Entrada                         | Saída                         |
+| ------------------------------- | ----------------------------- |
 | `board_id` (de `task.board_id`) | Array de stages: `id`, `name` |
 
 **Regra:** Sempre que for mover tarefa entre colunas, obter os stages com esta ferramenta e usar o `id` do stage de destino em `runrunit_update_task`.
@@ -97,9 +97,9 @@ flowchart LR
   C --> D[Opcional: update_task / create_workflow / ...]
 ```
 
-| Entrada obrigatória | Entrada opcional |
-|---------------------|------------------|
-| `title`, `type_id` | `project_id`, `assignments`, `desired_date`, `tag_list`, etc. |
+| Entrada obrigatória | Entrada opcional                                              |
+| ------------------- | ------------------------------------------------------------- |
+| `title`, `type_id`  | `project_id`, `assignments`, `desired_date`, `tag_list`, etc. |
 
 ---
 
@@ -114,10 +114,10 @@ flowchart LR
   C --> D[Task na nova coluna]
 ```
 
-| Entrada | Uso |
-|--------|-----|
-| `id`, `task: { board_stage_id }` | Mover para Task, Ongoing ou Manager Validation |
-| `id`, `task: { title, desired_date, ... }` | Editar outros campos |
+| Entrada                                    | Uso                                            |
+| ------------------------------------------ | ---------------------------------------------- |
+| `id`, `task: { board_stage_id }`           | Mover para Task, Ongoing ou Manager Validation |
+| `id`, `task: { title, desired_date, ... }` | Editar outros campos                           |
 
 **Obter `board_stage_id`:** `runrunit_get_task` → `board_id` → `runrunit_list_board_stages(board_id)` → escolher `id` pelo `name` (Task, Ongoing, Manager Validation).
 
@@ -158,7 +158,7 @@ flowchart LR
 #### Passo 1 — Reajuste: mover tarefa em Ongoing
 
 1. **Listar tarefas em Ongoing do usuário:** usar `runrunit_list_task_filters` (obter filtro "Minhas partes abertas") → `runrunit_list_tasks` com `filter_id` e/ou `assignee_id` do usuário; filtrar no resultado as tasks em que o stage é **Ongoing** (por `board_stage_id` ou `board_stage_name`).
-2. **Se existir tarefa em Ongoing:** perguntar ao usuário: *"A tarefa [nome] que está em Ongoing será movida para Task ou para Manager Validation?"*
+2. **Se existir tarefa em Ongoing:** perguntar ao usuário: _"A tarefa [nome] que está em Ongoing será movida para Task ou para Manager Validation?"_
 3. **Se o usuário disser Manager Validation:**
    - Verificar se o campo personalizado **"Link da branch ou GTM"** está preenchido na tarefa (ex.: em `task.custom_fields` ou equivalente na API).
    - Se **não** estiver preenchido: solicitar o link ao usuário e atualizar a tarefa com `runrunit_update_task` passando o valor nesse campo personalizado (consultar `custom_field_link_branch` ou nome/ID do campo no projeto).
@@ -211,8 +211,8 @@ flowchart TD
   Reajuste --> CreateWorkflow
 ```
 
-| Entrada | Condição |
-|--------|----------|
+| Entrada   | Condição                                                   |
+| --------- | ---------------------------------------------------------- |
 | `task_id` | Tarefa não fechada, não ongoing, sem workflow já existente |
 
 **Resumo:** Primeiro reajustar a eventual tarefa em Ongoing (listar por assignee na coluna Ongoing → perguntar destino → se Manager Validation, validar/preencher "Link da branch" → mover). Depois executar `create_workflow` e o restante do fluxo de iniciar demanda.
@@ -230,9 +230,9 @@ flowchart LR
   C --> D[Tracking rodando]
 ```
 
-| Entrada | Origem |
-|--------|--------|
-| `task_id` | ID da tarefa a iniciar |
+| Entrada         | Origem                                           |
+| --------------- | ------------------------------------------------ |
+| `task_id`       | ID da tarefa a iniciar                           |
 | `assignment_id` | `task.assignments[].id` (do usuário responsável) |
 
 **Regra:** Se o usuário já estiver com outra tarefa em play, a API pode pausar a atual e iniciar a nova.
@@ -308,13 +308,13 @@ flowchart LR
   C --> D[Atribuir tarefas / planejamento]
 ```
 
-| Entrada opcional | Descrição |
-|------------------|-----------|
-| `board_id` | Board onde está a coluna Task |
-| `task_stage_ids` | IDs dos estágios "Task" |
-| `team_id`, `tribe_id`, `squad_id` | Filtrar por time/tribo/squad |
-| `limit` | Máximo de devs sugeridos (1–10) |
-| `include_zero_tasks` | Incluir devs sem tarefas na coluna Task |
+| Entrada opcional                  | Descrição                               |
+| --------------------------------- | --------------------------------------- |
+| `board_id`                        | Board onde está a coluna Task           |
+| `task_stage_ids`                  | IDs dos estágios "Task"                 |
+| `team_id`, `tribe_id`, `squad_id` | Filtrar por time/tribo/squad            |
+| `limit`                           | Máximo de devs sugeridos (1–10)         |
+| `include_zero_tasks`              | Incluir devs sem tarefas na coluna Task |
 
 ---
 
@@ -366,12 +366,12 @@ flowchart TD
   Reajuste --> Git --> Runrunit
 ```
 
-| Etapa | Ferramentas MCP (em ordem) |
-|-------|----------------------------|
-| 0 | `runrunit_list_task_filters` → `runrunit_list_tasks` → `runrunit_get_task` (Ongoing) → `runrunit_list_board_stages` → `runrunit_update_task` (tirar a outra de Ongoing) |
-| 1 | Git (checkout, pull, branch) |
-| 2a | **PRIMEIRO:** `runrunit_get_task` → `runrunit_list_board_stages` → `runrunit_update_task` (mover a task solicitada para Ongoing) |
-| 2b | **DEPOIS:** `runrunit_create_workflow` → `runrunit_assignment_play` (tracking) |
+| Etapa | Ferramentas MCP (em ordem)                                                                                                                                              |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0     | `runrunit_list_task_filters` → `runrunit_list_tasks` → `runrunit_get_task` (Ongoing) → `runrunit_list_board_stages` → `runrunit_update_task` (tirar a outra de Ongoing) |
+| 1     | Git (checkout, pull, branch)                                                                                                                                            |
+| 2a    | **PRIMEIRO:** `runrunit_get_task` → `runrunit_list_board_stages` → `runrunit_update_task` (mover a task solicitada para Ongoing)                                        |
+| 2b    | **DEPOIS:** `runrunit_create_workflow` → `runrunit_assignment_play` (tracking)                                                                                          |
 
 **CRÍTICO:** A ordem é sempre: (1) tirar a outra de Ongoing → (2) mover a nova para Ongoing → (3) tracking. **NUNCA** fazer só tracking.
 

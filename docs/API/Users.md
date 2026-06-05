@@ -1,28 +1,31 @@
+\_\_GET
 
-__GET
 #### /api/v1.0/users
 
-####  List all Users 
+#### List all Users
 
 List all enterprise users based on the priviligies of the user_token owner.
 
-Permission | JSON attribute | Response  
----|---|---  
-Flagged as Administrator on Runrun.it | `is_master: true` | return a list of all users  
-Not flagged as Administrator on Runrun.it | `is_master: false` | return a list of teammates  
-  
+| Permission                                | JSON attribute     | Response                   |
+| ----------------------------------------- | ------------------ | -------------------------- |
+| Flagged as Administrator on Runrun.it     | `is_master: true`  | return a list of all users |
+| Not flagged as Administrator on Runrun.it | `is_master: false` | return a list of teammates |
+
 ## Request
 
 #### Route
+
     GET /api/v1.0/users
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
+
     curl -g "[https://runrun.it/api/v1.0/users](https://runrun.it/api/v1.0/users)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -35,65 +38,68 @@ Not flagged as Administrator on Runrun.it | `is_master: false` | return a list o
 
 #### Response Fields
 
-Name | Description | type  
----|---|---  
-id  | User's ID | string  
-name  | User's full name | string  
-email  | User's email | string  
-avatar_url  | User's chosen profile photo | url  
-avatar_large_url  | User's chosen profile photo | url  
-cost_hour  | Current user cost per hour | decimal  
-is_master  | User is an administrator | boolean  
-is_manager  | User is a manager | boolean  
-is_auditor  | User is an auditor | boolean  
-can_create_client_project_and_task_types  | User has permission to create client, projects and task types | boolean  
-can_create_boards  | User has permission to create boards | boolean  
-is_blocked_on_mobile  | User has mobile apps access blocked | boolean  
-bypass_block_by_time_worked  | User ignore the blocking rule for time worked | boolean  
-time_zone  | IANA Time Zone Database zone name | string  
-position  | Job position in company | string  
-on_vacation  | User currently on vacation | boolean  
-birthday  | User's birthday | date  
-phone  | User phone | string  
-gender  | User gender | string  
-marital_status  | User marital status | string  
-created_at  | User creation date | datetime  
-in_company_since  | Joining date in company | date  
-is_certified  | Whether the user has passed RR Starter certification | boolean  
-is_certified_expert  | Whether the user has passed RR Expert certification | boolean  
-language  | User preference language | string  
-alt_id  | Constant size ID (internal use only) | string  
-oid  | Constant size ID (internal use only) | string  
-budget_manager  | Can edit project extra costs | boolean  
-shifts  | User shifts | array  
-is_mensurable  | Can process RR Ratings? | boolean  
-blocked_by_time_worked_at  | When the user is blocked for being out of the acceptable worked time defined by the company | datetime  
-demanders_count  | Demanders count | integer  
-partners_count  | Partners count | integer  
-has_all_users_as_partners  | True if user has all users as partners | boolean  
-has_all_users_as_demanders  | True if has all users as demanders | boolean  
-password_updated_at  | Last time user password was updated | datetime  
-password_expired_at  | Time when the user password was considered expired | datetime  
-shift_work_time_per_week  | Shift work time (in seconds) per week | integer  
-admin_runrunit_roles  | Runrun.it admin roles (internal use only) | array  
-team_ids  | Ids from teams that the user belongs to | array  
-led_team_ids  | Ids from teams the user leads | array  
-legacy_on_vacation  | Internal use only | boolean  
-is_eligible_to_access_reports  | User can access enterprise reports | boolean  
-is_eligible_to_whatsapp  | User can access whatsapp integration | boolean  
-theme  | [Deprecated] Use preferences.theme | string  
-task_list_background_image_url  | [Deprecated] Use preferences.task_list_background_image_url | string  
-skip_time_adjust_on_task_assignment_deliver  | [Deprecated] Use preferences.skip_time_adjust_on_task_assignment_deliver | boolean  
-time_tracking_mode  | [Deprecated] Use 'time_tracking_mode' from enterprise | string  
-  
+| Name                                        | Description                                                                                 | type     |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------- | -------- |
+| id                                          | User's ID                                                                                   | string   |
+| name                                        | User's full name                                                                            | string   |
+| email                                       | User's email                                                                                | string   |
+| avatar_url                                  | User's chosen profile photo                                                                 | url      |
+| avatar_large_url                            | User's chosen profile photo                                                                 | url      |
+| cost_hour                                   | Current user cost per hour                                                                  | decimal  |
+| is_master                                   | User is an administrator                                                                    | boolean  |
+| is_manager                                  | User is a manager                                                                           | boolean  |
+| is_auditor                                  | User is an auditor                                                                          | boolean  |
+| can_create_client_project_and_task_types    | User has permission to create client, projects and task types                               | boolean  |
+| can_create_boards                           | User has permission to create boards                                                        | boolean  |
+| is_blocked_on_mobile                        | User has mobile apps access blocked                                                         | boolean  |
+| bypass_block_by_time_worked                 | User ignore the blocking rule for time worked                                               | boolean  |
+| time_zone                                   | IANA Time Zone Database zone name                                                           | string   |
+| position                                    | Job position in company                                                                     | string   |
+| on_vacation                                 | User currently on vacation                                                                  | boolean  |
+| birthday                                    | User's birthday                                                                             | date     |
+| phone                                       | User phone                                                                                  | string   |
+| gender                                      | User gender                                                                                 | string   |
+| marital_status                              | User marital status                                                                         | string   |
+| created_at                                  | User creation date                                                                          | datetime |
+| in_company_since                            | Joining date in company                                                                     | date     |
+| is_certified                                | Whether the user has passed RR Starter certification                                        | boolean  |
+| is_certified_expert                         | Whether the user has passed RR Expert certification                                         | boolean  |
+| language                                    | User preference language                                                                    | string   |
+| alt_id                                      | Constant size ID (internal use only)                                                        | string   |
+| oid                                         | Constant size ID (internal use only)                                                        | string   |
+| budget_manager                              | Can edit project extra costs                                                                | boolean  |
+| shifts                                      | User shifts                                                                                 | array    |
+| is_mensurable                               | Can process RR Ratings?                                                                     | boolean  |
+| blocked_by_time_worked_at                   | When the user is blocked for being out of the acceptable worked time defined by the company | datetime |
+| demanders_count                             | Demanders count                                                                             | integer  |
+| partners_count                              | Partners count                                                                              | integer  |
+| has_all_users_as_partners                   | True if user has all users as partners                                                      | boolean  |
+| has_all_users_as_demanders                  | True if has all users as demanders                                                          | boolean  |
+| password_updated_at                         | Last time user password was updated                                                         | datetime |
+| password_expired_at                         | Time when the user password was considered expired                                          | datetime |
+| shift_work_time_per_week                    | Shift work time (in seconds) per week                                                       | integer  |
+| admin_runrunit_roles                        | Runrun.it admin roles (internal use only)                                                   | array    |
+| team_ids                                    | Ids from teams that the user belongs to                                                     | array    |
+| led_team_ids                                | Ids from teams the user leads                                                               | array    |
+| legacy_on_vacation                          | Internal use only                                                                           | boolean  |
+| is_eligible_to_access_reports               | User can access enterprise reports                                                          | boolean  |
+| is_eligible_to_whatsapp                     | User can access whatsapp integration                                                        | boolean  |
+| theme                                       | [Deprecated] Use preferences.theme                                                          | string   |
+| task_list_background_image_url              | [Deprecated] Use preferences.task_list_background_image_url                                 | string   |
+| skip_time_adjust_on_task_assignment_deliver | [Deprecated] Use preferences.skip_time_adjust_on_task_assignment_deliver                    | boolean  |
+| time_tracking_mode                          | [Deprecated] Use 'time_tracking_mode' from enterprise                                       | string   |
+
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 5328
 
 #### Body
+
     [
       {
         "id": "coyote-164",
@@ -199,10 +205,10 @@ time_tracking_mode  | [Deprecated] Use 'time_tracking_mode' from enterprise | st
         "password_expired_at": null,
         "shift_work_time_per_week": 144000,
         "team_ids": [
-    
+
         ],
         "led_team_ids": [
-    
+
         ],
         "is_eligible_to_access_reports": false,
         "is_eligible_to_whatsapp": false,
@@ -321,10 +327,10 @@ time_tracking_mode  | [Deprecated] Use 'time_tracking_mode' from enterprise | st
         "password_expired_at": null,
         "shift_work_time_per_week": 144000,
         "team_ids": [
-    
+
         ],
         "led_team_ids": [
-    
+
         ],
         "is_eligible_to_access_reports": false,
         "is_eligible_to_whatsapp": false,
@@ -341,32 +347,35 @@ time_tracking_mode  | [Deprecated] Use 'time_tracking_mode' from enterprise | st
       }
     ]
 
-__GET
+\_\_GET
 
 #### /api/v1.0/users/:user_id
 
-####  Get a user by id 
+#### Get a user by id
 
 Get a user by id
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-user_id required | User's ID | string  
-  
+| Name             | Description | type   |
+| ---------------- | ----------- | ------ |
+| user_id required | User's ID   | string |
+
 ## Request
 
 #### Route
+
     GET /api/v1.0/users/coyote-189
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
+
     curl -g "[https://runrun.it/api/v1.0/users/coyote-189](https://runrun.it/api/v1.0/users/coyote-189)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -379,65 +388,68 @@ user_id required | User's ID | string
 
 #### Response Fields
 
-Name | Description | type  
----|---|---  
-id  | User's ID | string  
-name  | User's full name | string  
-email  | User's email | string  
-avatar_url  | User's chosen profile photo | url  
-avatar_large_url  | User's chosen profile photo | url  
-cost_hour  | Current user cost per hour | decimal  
-is_master  | User is an administrator | boolean  
-is_manager  | User is a manager | boolean  
-is_auditor  | User is an auditor | boolean  
-can_create_client_project_and_task_types  | User has permission to create client, projects and task types | boolean  
-can_create_boards  | User has permission to create boards | boolean  
-is_blocked_on_mobile  | User has mobile apps access blocked | boolean  
-bypass_block_by_time_worked  | User ignore the blocking rule for time worked | boolean  
-time_zone  | IANA Time Zone Database zone name | string  
-position  | Job position in company | string  
-on_vacation  | User currently on vacation | boolean  
-birthday  | User's birthday | date  
-phone  | User phone | string  
-gender  | User gender | string  
-marital_status  | User marital status | string  
-created_at  | User creation date | datetime  
-in_company_since  | Joining date in company | date  
-is_certified  | Whether the user has passed RR Starter certification | boolean  
-is_certified_expert  | Whether the user has passed RR Expert certification | boolean  
-language  | User preference language | string  
-alt_id  | Constant size ID (internal use only) | string  
-oid  | Constant size ID (internal use only) | string  
-budget_manager  | Can edit project extra costs | boolean  
-shifts  | User shifts | array  
-is_mensurable  | Can process RR Ratings? | boolean  
-blocked_by_time_worked_at  | When the user is blocked for being out of the acceptable worked time defined by the company | datetime  
-demanders_count  | Demanders count | integer  
-partners_count  | Partners count | integer  
-has_all_users_as_partners  | True if user has all users as partners | boolean  
-has_all_users_as_demanders  | True if has all users as demanders | boolean  
-password_updated_at  | Last time user password was updated | datetime  
-password_expired_at  | Time when the user password was considered expired | datetime  
-shift_work_time_per_week  | Shift work time (in seconds) per week | integer  
-admin_runrunit_roles  | Runrun.it admin roles (internal use only) | array  
-team_ids  | Ids from teams that the user belongs to | array  
-led_team_ids  | Ids from teams the user leads | array  
-legacy_on_vacation  | Internal use only | boolean  
-is_eligible_to_access_reports  | User can access enterprise reports | boolean  
-is_eligible_to_whatsapp  | User can access whatsapp integration | boolean  
-theme  | [Deprecated] Use preferences.theme | string  
-task_list_background_image_url  | [Deprecated] Use preferences.task_list_background_image_url | string  
-skip_time_adjust_on_task_assignment_deliver  | [Deprecated] Use preferences.skip_time_adjust_on_task_assignment_deliver | boolean  
-time_tracking_mode  | [Deprecated] Use 'time_tracking_mode' from enterprise | string  
-  
+| Name                                        | Description                                                                                 | type     |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------- | -------- |
+| id                                          | User's ID                                                                                   | string   |
+| name                                        | User's full name                                                                            | string   |
+| email                                       | User's email                                                                                | string   |
+| avatar_url                                  | User's chosen profile photo                                                                 | url      |
+| avatar_large_url                            | User's chosen profile photo                                                                 | url      |
+| cost_hour                                   | Current user cost per hour                                                                  | decimal  |
+| is_master                                   | User is an administrator                                                                    | boolean  |
+| is_manager                                  | User is a manager                                                                           | boolean  |
+| is_auditor                                  | User is an auditor                                                                          | boolean  |
+| can_create_client_project_and_task_types    | User has permission to create client, projects and task types                               | boolean  |
+| can_create_boards                           | User has permission to create boards                                                        | boolean  |
+| is_blocked_on_mobile                        | User has mobile apps access blocked                                                         | boolean  |
+| bypass_block_by_time_worked                 | User ignore the blocking rule for time worked                                               | boolean  |
+| time_zone                                   | IANA Time Zone Database zone name                                                           | string   |
+| position                                    | Job position in company                                                                     | string   |
+| on_vacation                                 | User currently on vacation                                                                  | boolean  |
+| birthday                                    | User's birthday                                                                             | date     |
+| phone                                       | User phone                                                                                  | string   |
+| gender                                      | User gender                                                                                 | string   |
+| marital_status                              | User marital status                                                                         | string   |
+| created_at                                  | User creation date                                                                          | datetime |
+| in_company_since                            | Joining date in company                                                                     | date     |
+| is_certified                                | Whether the user has passed RR Starter certification                                        | boolean  |
+| is_certified_expert                         | Whether the user has passed RR Expert certification                                         | boolean  |
+| language                                    | User preference language                                                                    | string   |
+| alt_id                                      | Constant size ID (internal use only)                                                        | string   |
+| oid                                         | Constant size ID (internal use only)                                                        | string   |
+| budget_manager                              | Can edit project extra costs                                                                | boolean  |
+| shifts                                      | User shifts                                                                                 | array    |
+| is_mensurable                               | Can process RR Ratings?                                                                     | boolean  |
+| blocked_by_time_worked_at                   | When the user is blocked for being out of the acceptable worked time defined by the company | datetime |
+| demanders_count                             | Demanders count                                                                             | integer  |
+| partners_count                              | Partners count                                                                              | integer  |
+| has_all_users_as_partners                   | True if user has all users as partners                                                      | boolean  |
+| has_all_users_as_demanders                  | True if has all users as demanders                                                          | boolean  |
+| password_updated_at                         | Last time user password was updated                                                         | datetime |
+| password_expired_at                         | Time when the user password was considered expired                                          | datetime |
+| shift_work_time_per_week                    | Shift work time (in seconds) per week                                                       | integer  |
+| admin_runrunit_roles                        | Runrun.it admin roles (internal use only)                                                   | array    |
+| team_ids                                    | Ids from teams that the user belongs to                                                     | array    |
+| led_team_ids                                | Ids from teams the user leads                                                               | array    |
+| legacy_on_vacation                          | Internal use only                                                                           | boolean  |
+| is_eligible_to_access_reports               | User can access enterprise reports                                                          | boolean  |
+| is_eligible_to_whatsapp                     | User can access whatsapp integration                                                        | boolean  |
+| theme                                       | [Deprecated] Use preferences.theme                                                          | string   |
+| task_list_background_image_url              | [Deprecated] Use preferences.task_list_background_image_url                                 | string   |
+| skip_time_adjust_on_task_assignment_deliver | [Deprecated] Use preferences.skip_time_adjust_on_task_assignment_deliver                    | boolean  |
+| time_tracking_mode                          | [Deprecated] Use 'time_tracking_mode' from enterprise                                       | string   |
+
 #### Status
+
     200
 
-#### Headers    
+#### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 2664
 
 #### Body
+
     {
       "id": "coyote-189",
       "name": "Coyote 189",
@@ -542,10 +554,10 @@ time_tracking_mode  | [Deprecated] Use 'time_tracking_mode' from enterprise | st
       "password_expired_at": null,
       "shift_work_time_per_week": 144000,
       "team_ids": [
-    
+
       ],
       "led_team_ids": [
-    
+
       ],
       "is_eligible_to_access_reports": false,
       "is_eligible_to_whatsapp": false,
@@ -561,35 +573,38 @@ time_tracking_mode  | [Deprecated] Use 'time_tracking_mode' from enterprise | st
       }
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/users
 
-####  Create a user 
+#### Create a user
 
 Create a user on an existing account. Upon creation a temporary password will be created and sent to the new user by email. Any locale settings (language, time zone, etc.) will be the same as the user issuing the API call. If the account has reached the maximum number of users a 403 Forbidden will be returned. The `make_my_partner` and `make_everybody_mutual_partners` flags are a convenience for when you may wish to assign tasks to the new user immediately (the same can be accomplished with the Partners API calls).
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-user[name] required | User's full name | string  
-user[email] required | User's email | string  
-make_my_partner  | Flag to make the new user a partner of the creating user | boolean  
-make_everybody_mutual_partners  | Flag to make the new user a mutual partner of everybody in enterprise. If not set, defaults to enterprise's configuration | boolean  
-  
+| Name                           | Description                                                                                                               | type    |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | ------- |
+| user[name] required            | User's full name                                                                                                          | string  |
+| user[email] required           | User's email                                                                                                              | string  |
+| make_my_partner                | Flag to make the new user a partner of the creating user                                                                  | boolean |
+| make_everybody_mutual_partners | Flag to make the new user a mutual partner of everybody in enterprise. If not set, defaults to enterprise's configuration | boolean |
+
 ## Request
 
 #### Route
+
     POST /api/v1.0/users
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
-#### Body    
+#### Body
+
     {
       "user": {
         "name": "Jon Smith",
@@ -599,6 +614,7 @@ make_everybody_mutual_partners  | Flag to make the new user a mutual partner of 
     }
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/users](https://runrun.it/api/v1.0/users)" -d '{"user":{"name":"Jon Smith","email":"[john@smith.com](mailto:john@smith.com)","source":"my_source_value"}}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -610,13 +626,16 @@ make_everybody_mutual_partners  | Flag to make the new user a mutual partner of 
 [Simulated Response](/api/documentation/simulate/users/create_a_user)
 
 #### Status
+
     201
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 2654
 
 #### Body
+
     {
       "id": "jon-smith",
       "name": "Jon Smith",
@@ -721,10 +740,10 @@ make_everybody_mutual_partners  | Flag to make the new user a mutual partner of 
       "password_expired_at": null,
       "shift_work_time_per_week": 135000,
       "team_ids": [
-    
+
       ],
       "led_team_ids": [
-    
+
       ],
       "is_eligible_to_access_reports": false,
       "is_eligible_to_whatsapp": false,
@@ -740,32 +759,35 @@ make_everybody_mutual_partners  | Flag to make the new user a mutual partner of 
       }
     }
 
-__PUT
+\_\_PUT
 
 #### /api/v1.0/users/:id
 
-####  Update a user 
+#### Update a user
 
 Update a user
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-user[id] required | User's ID | string  
-  
+| Name              | Description | type   |
+| ----------------- | ----------- | ------ |
+| user[id] required | User's ID   | string |
+
 ## Request
 
 #### Route
+
     PUT /api/v1.0/users/jon-smith
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
+
     {
       "user": {
         "name": "Steve Jobs",
@@ -774,8 +796,7 @@ user[id] required | User's ID | string
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/users/jon-smith](https://runrun.it/api/v1.0/users/jon-smith)" -d '{"user":{"name":"Steve Jobs","time_zone":"Asia/Brunei"}}' -X PUT \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -787,13 +808,16 @@ user[id] required | User's ID | string
 [Simulated Response](/api/documentation/simulate/users/update_a_user)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 2652
 
 #### Body
+
     {
       "id": "jon-smith",
       "name": "Steve Jobs",
@@ -898,10 +922,10 @@ user[id] required | User's ID | string
       "password_expired_at": null,
       "shift_work_time_per_week": 144000,
       "team_ids": [
-    
+
       ],
       "led_team_ids": [
-    
+
       ],
       "is_eligible_to_access_reports": false,
       "is_eligible_to_whatsapp": false,

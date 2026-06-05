@@ -7,7 +7,7 @@
 
 /** Semantic key → API custom field key (e.g. custom_32) */
 export const CUSTOM_FIELD_API_KEYS: Record<string, string> = {
-  link_da_branch: "custom_32",
+  link_da_branch: 'custom_32',
 };
 
 /** API custom field key → semantic key (for reading task responses) */
@@ -24,7 +24,7 @@ interface CustomFieldObject {
 }
 
 function isCustomFieldObject(v: unknown): v is CustomFieldObject {
-  return typeof v === "object" && v !== null && "label" in v;
+  return typeof v === 'object' && v !== null && 'label' in v;
 }
 
 /** Extracts the usable value from a custom field (handles both plain and object shapes). */
@@ -63,7 +63,7 @@ export function taskUpdateToApiPayload(task: TaskUpdatePayload): TaskUpdatePaylo
  */
 export function taskFromApiToSemantic(task: TaskUpdatePayload): TaskUpdatePayload {
   const customFields = task.custom_fields as Record<string, unknown> | undefined;
-  if (!customFields || typeof customFields !== "object") return task;
+  if (!customFields || typeof customFields !== 'object') return task;
 
   const result = { ...task };
   const mappedCustom: Record<string, unknown> = {};

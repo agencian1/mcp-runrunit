@@ -1,4 +1,4 @@
-import { Octokit } from "@octokit/rest";
+import { Octokit } from '@octokit/rest';
 
 export type GithubShareConfig = {
   token: string;
@@ -12,9 +12,9 @@ export class ShareGithubConfigError extends Error {
 
   constructor(missingVars: string[]) {
     super(
-      `GitHub share is not configured. Set these environment variables on the MCP server host (never pass a token via tools): ${missingVars.join(", ")}`,
+      `GitHub share is not configured. Set these environment variables on the MCP server host (never pass a token via tools): ${missingVars.join(', ')}`,
     );
-    this.name = "ShareGithubConfigError";
+    this.name = 'ShareGithubConfigError';
     this.missingVars = missingVars;
   }
 }
@@ -24,14 +24,13 @@ export function readGithubShareConfigFromEnv(): GithubShareConfig {
   const token = process.env.GITHUB_TOKEN?.trim();
   const owner = process.env.GITHUB_REPO_OWNER?.trim();
   const repo = process.env.GITHUB_REPO_NAME?.trim();
-  if (!token) missing.push("GITHUB_TOKEN");
-  if (!owner) missing.push("GITHUB_REPO_OWNER");
-  if (!repo) missing.push("GITHUB_REPO_NAME");
+  if (!token) missing.push('GITHUB_TOKEN');
+  if (!owner) missing.push('GITHUB_REPO_OWNER');
+  if (!repo) missing.push('GITHUB_REPO_NAME');
   if (missing.length > 0) {
     throw new ShareGithubConfigError(missing);
   }
-  const baseBranch =
-    process.env.GITHUB_BASE_BRANCH?.trim() || "main";
+  const baseBranch = process.env.GITHUB_BASE_BRANCH?.trim() || 'main';
   return {
     token: token!,
     owner: owner!,
@@ -46,10 +45,10 @@ export function createOctokit(token: string): Octokit {
 
 function isHttpError(e: unknown): e is { status: number; message?: string } {
   return (
-    typeof e === "object" &&
+    typeof e === 'object' &&
     e !== null &&
-    "status" in e &&
-    typeof (e as { status: unknown }).status === "number"
+    'status' in e &&
+    typeof (e as { status: unknown }).status === 'number'
   );
 }
 
@@ -73,7 +72,7 @@ export async function submitNewFilePullRequest(
   params: SubmitNewFilePrParams,
 ): Promise<{ prUrl: string; branch: string }> {
   const { owner, repo, baseBranch, branch, path } = params;
-  const contentB64 = Buffer.from(params.contentUtf8, "utf8").toString("base64");
+  const contentB64 = Buffer.from(params.contentUtf8, 'utf8').toString('base64');
 
   let baseSha: string;
   try {
@@ -91,12 +90,10 @@ export async function submitNewFilePullRequest(
     }
     if (isHttpError(error) && (error.status === 401 || error.status === 403)) {
       throw new Error(
-        "Falha de autenticação ou permissões com o GitHub. Verifique GITHUB_TOKEN e scopes (contents, pull_requests).",
+        'Falha de autenticação ou permissões com o GitHub. Verifique GITHUB_TOKEN e scopes (contents, pull_requests).',
       );
     }
-    throw new Error(
-      "GitHub: could not read the base branch. Try again later.",
-    );
+    throw new Error('GitHub: could not read the base branch. Try again later.');
   }
 
   try {
@@ -109,17 +106,15 @@ export async function submitNewFilePullRequest(
   } catch (error: unknown) {
     if (isHttpError(error) && (error.status === 422 || error.status === 409)) {
       throw new Error(
-        "Já existe uma submissão com este identificador (branch em conflito). Tente de novo dentro de instantes ou altere o nome.",
+        'Já existe uma submissão com este identificador (branch em conflito). Tente de novo dentro de instantes ou altere o nome.',
       );
     }
     if (isHttpError(error) && (error.status === 401 || error.status === 403)) {
       throw new Error(
-        "Falha de autenticação ou permissões com o GitHub. Verifique GITHUB_TOKEN e scopes (contents, pull_requests).",
+        'Falha de autenticação ou permissões com o GitHub. Verifique GITHUB_TOKEN e scopes (contents, pull_requests).',
       );
     }
-    throw new Error(
-      "GitHub: could not create the submission branch. Check token permissions.",
-    );
+    throw new Error('GitHub: could not create the submission branch. Check token permissions.');
   }
 
   try {
@@ -134,12 +129,10 @@ export async function submitNewFilePullRequest(
   } catch (error: unknown) {
     if (isHttpError(error) && (error.status === 401 || error.status === 403)) {
       throw new Error(
-        "Falha de autenticação ou permissões com o GitHub. Verifique GITHUB_TOKEN e scopes (contents, pull_requests).",
+        'Falha de autenticação ou permissões com o GitHub. Verifique GITHUB_TOKEN e scopes (contents, pull_requests).',
       );
     }
-    throw new Error(
-      "GitHub: could not write the file to the repository.",
-    );
+    throw new Error('GitHub: could not write the file to the repository.');
   }
 
   try {
@@ -155,11 +148,11 @@ export async function submitNewFilePullRequest(
   } catch (error: unknown) {
     if (isHttpError(error) && (error.status === 401 || error.status === 403)) {
       throw new Error(
-        "Falha de autenticação ou permissões com o GitHub. Verifique GITHUB_TOKEN e scopes (contents, pull_requests).",
+        'Falha de autenticação ou permissões com o GitHub. Verifique GITHUB_TOKEN e scopes (contents, pull_requests).',
       );
     }
     throw new Error(
-      "GitHub: the file was created but opening the pull request failed. Check the repository on GitHub.",
+      'GitHub: the file was created but opening the pull request failed. Check the repository on GitHub.',
     );
   }
 }

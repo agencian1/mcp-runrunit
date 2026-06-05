@@ -1,20 +1,24 @@
-__GET
+\_\_GET
+
 #### /api/v1.0/clients/:client_id/project_groups
 
-####  List all Project Groups 
+#### List all Project Groups
 
 ## Request
 
 #### Route
+
     GET /api/v1.0/clients/1/project_groups
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
+
     curl -g "[https://runrun.it/api/v1.0/clients/1/project_groups](https://runrun.it/api/v1.0/clients/1/project_groups)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -26,13 +30,16 @@ __GET
 [Simulated Response](/api/documentation/simulate/project_groups/list_all_project_groups)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 674
 
 #### Body
+
     [
       {
         "id": 1,
@@ -72,24 +79,27 @@ __GET
       }
     ]
 
-__GET
+\_\_GET
 
 #### /api/v1.0/clients/:client_id/project_groups/:id
 
-####  Show a Project Group 
+#### Show a Project Group
 
 ## Request
 
 #### Route
+
     GET /api/v1.0/clients/1/project_groups/2
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
+
     curl -g "[https://runrun.it/api/v1.0/clients/1/project_groups/2](https://runrun.it/api/v1.0/clients/1/project_groups/2)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -101,13 +111,16 @@ __GET
 [Simulated Response](/api/documentation/simulate/project_groups/show_a_project_group)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 680
 
 #### Body
+
     {
       "id": 2,
       "name": "Project Group 1",
@@ -145,33 +158,36 @@ __GET
       ]
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/clients/:client_id/project_groups
 
-####  Create a Project Group 
+#### Create a Project Group
 
 When creating a project group the name must be unique among clients belonging to the same enterprise.
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-name  | Name of project group | string  
-is_default  | Project group is default for that client? | boolean  
-  
+| Name       | Description                               | type    |
+| ---------- | ----------------------------------------- | ------- |
+| name       | Name of project group                     | string  |
+| is_default | Project group is default for that client? | boolean |
+
 ## Request
 
 #### Route
+
     POST /api/v1.0/clients/1/project_groups
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
+
     {
       "project_group": {
         "name": "Project Group 2",
@@ -180,6 +196,7 @@ is_default  | Project group is default for that client? | boolean
     }
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/clients/1/project_groups](https://runrun.it/api/v1.0/clients/1/project_groups)" -d '{"project_group":{"name":"Project Group 2","is_default":false}}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -191,13 +208,16 @@ is_default  | Project group is default for that client? | boolean
 [Simulated Response](/api/documentation/simulate/project_groups/create_a_project_group)
 
 #### Status
+
     201
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 680
 
 #### Body
+
     {
       "id": 2,
       "name": "Project Group 2",
@@ -235,26 +255,29 @@ is_default  | Project group is default for that client? | boolean
       ]
     }
 
-__PUT
+\_\_PUT
 
 #### /api/v1.0/clients/:client_id/project_groups/:id
 
-####  Update a Project Group 
+#### Update a Project Group
 
 When updating a project group the name must be unique among clients belonging to the same enterprise.
 
 ## Request
 
 #### Route
+
     PUT /api/v1.0/clients/1/project_groups/2
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
+
     {
       "project_group": {
         "name": "New Name"
@@ -262,6 +285,7 @@ When updating a project group the name must be unique among clients belonging to
     }
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/clients/1/project_groups/2](https://runrun.it/api/v1.0/clients/1/project_groups/2)" -d '{"project_group":{"name":"New Name"}}' -X PUT \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -273,13 +297,16 @@ When updating a project group the name must be unique among clients belonging to
 [Simulated Response](/api/documentation/simulate/project_groups/update_a_project_group)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 673
 
-#### Body    
+#### Body
+
     {
       "id": 2,
       "name": "New Name",
@@ -317,24 +344,27 @@ When updating a project group the name must be unique among clients belonging to
       ]
     }
 
-__DELETE
+\_\_DELETE
 
 #### /api/v1.0/clients/:client_id/project_groups/:id
 
-####  Destroy a Project Group 
+#### Destroy a Project Group
 
 ## Request
 
-#### Route    
+#### Route
+
     DELETE /api/v1.0/clients/1/project_groups/2
 
-#### Headers    
+#### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
-#### cURL       
+#### cURL
+
     curl "[https://runrun.it/api/v1.0/clients/1/project_groups/2](https://runrun.it/api/v1.0/clients/1/project_groups/2)" -d '' -X DELETE \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -345,35 +375,39 @@ __DELETE
 
 [Simulated Response](/api/documentation/simulate/project_groups/destroy_a_project_group)
 
-#### Status  
+#### Status
+
     204
 
 #### Headers
 
-
-__POST
+\_\_POST
 
 #### /api/v1.0/project_groups/:id/move
 
-####  Move project group to another client 
+#### Move project group to another client
 
 ## Request
 
 #### Route
+
     POST /api/v1.0/project_groups/2/move
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
+
     {
       "client_id": 2
     }
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/project_groups/2/move](https://runrun.it/api/v1.0/project_groups/2/move)" -d '{"client_id":2}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -385,13 +419,16 @@ __POST
 [Simulated Response](/api/documentation/simulate/project_groups/move_project_group_to_another_client)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 673
 
 #### Body
+
     {
       "id": 2,
       "name": "Project Group 6",

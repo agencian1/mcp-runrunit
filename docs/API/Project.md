@@ -1,20 +1,24 @@
-__GET
+\_\_GET
+
 #### /api/v1.0/projects
 
-####  List all projects 
+#### List all projects
 
 ## Request
 
 #### Route
+
     GET /api/v1.0/projects
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
+
     curl -g "[https://runrun.it/api/v1.0/projects](https://runrun.it/api/v1.0/projects)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -26,13 +30,16 @@ __GET
 [Simulated Response](/api/documentation/simulate/projects/list_all_projects)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 1445
 
 #### Body
+
     [
       {
         "id": 1,
@@ -49,7 +56,7 @@ __GET
         "is_public": true,
         "is_shared": false,
         "sharing_details": [
-    
+
         ],
         "use_new_permissions": true,
         "board_stage_id": null,
@@ -101,24 +108,27 @@ __GET
       }
     ]
 
-__GET
+\_\_GET
 
 #### /api/v1.0/projects/:id
 
-####  Show a Project 
+#### Show a Project
 
 ## Request
 
 #### Route
+
     GET /api/v1.0/projects/1
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
+
     curl -g "[https://runrun.it/api/v1.0/projects/1](https://runrun.it/api/v1.0/projects/1)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -130,13 +140,16 @@ __GET
 [Simulated Response](/api/documentation/simulate/projects/show_a_project)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 1443
 
 #### Body
+
     {
       "id": 1,
       "name": "Project_A",
@@ -152,7 +165,7 @@ __GET
       "is_public": true,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "use_new_permissions": true,
       "board_stage_id": null,
@@ -203,24 +216,27 @@ __GET
       "is_active": true
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/projects/
 
-####  Create a Project 
+#### Create a Project
 
 ## Request
 
 #### Route
+
     POST /api/v1.0/projects/
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
+
     {
       "project": {
         "name": "New Project",
@@ -231,6 +247,7 @@ __POST
     }
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/projects/](https://runrun.it/api/v1.0/projects/)" -d '{"project":{"name":"New Project","client_id":1,"start_date":"2025-01-01","desired_date":"2025-01-31"}}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -242,13 +259,16 @@ __POST
 [Simulated Response](/api/documentation/simulate/projects/create_a_project)
 
 #### Status
+
     201
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 1492
 
 #### Body
+
     {
       "id": 1,
       "name": "New Project",
@@ -313,36 +333,40 @@ __POST
       "is_active": true
     }
 
-__PUT
+\_\_PUT
 
 #### /api/v1.0/projects/:id
 
-####  Deliver the project 
+#### Deliver the project
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | The unique identifier of the project to be updated. | integer  
-is_active required | Defines whether the project is active (true) or delivered (false). | boolean  
-  
+| Name               | Description                                                        | type    |
+| ------------------ | ------------------------------------------------------------------ | ------- |
+| id required        | The unique identifier of the project to be updated.                | integer |
+| is_active required | Defines whether the project is active (true) or delivered (false). | boolean |
+
 ## Request
 
 #### Route
+
     PUT /api/v1.0/projects/1
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
+
     {
       "is_active": false
     }
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/projects/1](https://runrun.it/api/v1.0/projects/1)" -d '{"is_active":false}' -X PUT \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -354,13 +378,16 @@ is_active required | Defines whether the project is active (true) or delivered (
 [Simulated Response](/api/documentation/simulate/projects/deliver_the_project)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 1466
 
 #### Body
+
     {
       "id": 1,
       "name": "Project_A",
@@ -425,36 +452,40 @@ is_active required | Defines whether the project is active (true) or delivered (
       "is_active": false
     }
 
-__PUT
+\_\_PUT
 
 #### /api/v1.0/projects/:id
 
-####  Reopen the project 
+#### Reopen the project
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | The unique identifier of the project to be updated. | integer  
-is_active required | Defines whether the project is active (true) or delivered (false). | boolean  
-  
+| Name               | Description                                                        | type    |
+| ------------------ | ------------------------------------------------------------------ | ------- |
+| id required        | The unique identifier of the project to be updated.                | integer |
+| is_active required | Defines whether the project is active (true) or delivered (false). | boolean |
+
 ## Request
 
 #### Route
+
     PUT /api/v1.0/projects/1
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
+
     {
       "is_active": true
     }
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/projects/1](https://runrun.it/api/v1.0/projects/1)" -d '{"is_active":true}' -X PUT \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -466,13 +497,16 @@ is_active required | Defines whether the project is active (true) or delivered (
 [Simulated Response](/api/documentation/simulate/projects/reopen_the_project)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 1443
 
 #### Body
+
     {
       "id": 1,
       "name": "Project_A",
@@ -488,7 +522,7 @@ is_active required | Defines whether the project is active (true) or delivered (
       "is_public": true,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "use_new_permissions": true,
       "board_stage_id": null,
@@ -539,36 +573,39 @@ is_active required | Defines whether the project is active (true) or delivered (
       "is_active": true
     }
 
-__GET
+\_\_GET
 
 #### /api/v1.0/projects/:id/related_users
 
-####  List users related in a project 
+#### List users related in a project
 
-Related users: 
+Related users:
 
-  * responsible
-  * owners
-  * followers
+- responsible
+- owners
+- followers
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | ID of project | integer  
-  
+| Name        | Description   | type    |
+| ----------- | ------------- | ------- |
+| id required | ID of project | integer |
+
 ## Request
 
 #### Route
+
     GET /api/v1.0/projects/1/related_users
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
+
     curl -g "[https://runrun.it/api/v1.0/projects/1/related_users](https://runrun.it/api/v1.0/projects/1/related_users)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -580,13 +617,16 @@ id required | ID of project | integer
 [Simulated Response](/api/documentation/simulate/projects/list_users_related_in_a_project)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 2668
 
 #### Body
+
     [
       {
         "id": "coyote-257",
@@ -692,10 +732,10 @@ id required | ID of project | integer
         "password_expired_at": null,
         "shift_work_time_per_week": 144000,
         "team_ids": [
-    
+
         ],
         "led_team_ids": [
-    
+
         ],
         "is_eligible_to_access_reports": false,
         "is_eligible_to_whatsapp": false,
@@ -712,29 +752,33 @@ id required | ID of project | integer
       }
     ]
 
-__POST
+\_\_POST
 
 #### /api/v1.0/projects/:id/move
 
-####  Move project to another client 
+#### Move project to another client
 
 ## Request
 
 #### Route
+
     POST /api/v1.0/projects/1/move
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
+
     {
       "client_id": 2
     }
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/projects/1/move](https://runrun.it/api/v1.0/projects/1/move)" -d '{"client_id":2}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -746,13 +790,16 @@ __POST
 [Simulated Response](/api/documentation/simulate/projects/move_project_to_another_client)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 1436
 
 #### Body
+
     {
       "id": 1,
       "name": "Project A",
@@ -768,7 +815,7 @@ __POST
       "is_public": true,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "use_new_permissions": true,
       "board_stage_id": null,
@@ -819,29 +866,33 @@ __POST
       "is_active": true
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/projects/:id/move
 
-####  Move project to another project group 
+#### Move project to another project group
 
 ## Request
 
 #### Route
+
     POST /api/v1.0/projects/1/move
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
+
     {
       "project_group_id": 4
     }
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/projects/1/move](https://runrun.it/api/v1.0/projects/1/move)" -d '{"project_group_id":4}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -853,13 +904,16 @@ __POST
 [Simulated Response](/api/documentation/simulate/projects/move_project_to_another_project_group)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 1444
 
 #### Body
+
     {
       "id": 1,
       "name": "Project A",
@@ -924,29 +978,33 @@ __POST
       "is_active": true
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/projects/:id/move
 
-####  Move project to another project sub group 
+#### Move project to another project sub group
 
 ## Request
 
 #### Route
+
     POST /api/v1.0/projects/1/move
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
+
     {
       "project_sub_group_id": 6
     }
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/projects/1/move](https://runrun.it/api/v1.0/projects/1/move)" -d '{"project_sub_group_id":6}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -958,13 +1016,16 @@ __POST
 [Simulated Response](/api/documentation/simulate/projects/move_project_to_another_project_sub_group)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 1453
 
 #### Body
+
     {
       "id": 1,
       "name": "Project A",
@@ -980,7 +1041,7 @@ __POST
       "is_public": true,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "use_new_permissions": true,
       "board_stage_id": null,
@@ -1031,35 +1092,38 @@ __POST
       "is_active": true
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/projects/:id/share
 
-####  Share the project 
+#### Share the project
 
 Share the project with guests.
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | ID of project | integer  
-comment  | Comment | string  
-guests_params  | List of objects with guest data | array  
-sharing_details  | List of optional information to be shared. Options: "tasks", "desired_date", "board_stage", "time_progress", "tasks_count_progress" | array  
-  
+| Name            | Description                                                                                                                         | type    |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| id required     | ID of project                                                                                                                       | integer |
+| comment         | Comment                                                                                                                             | string  |
+| guests_params   | List of objects with guest data                                                                                                     | array   |
+| sharing_details | List of optional information to be shared. Options: "tasks", "desired_date", "board_stage", "time_progress", "tasks_count_progress" | array   |
+
 ## Request
 
 #### Route
+
     POST /api/v1.0/projects/1/share
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
+
     {
       "sharing_details": [
         "desired_date"
@@ -1075,6 +1139,7 @@ sharing_details  | List of optional information to be shared. Options: "tasks", 
     }
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/projects/1/share](https://runrun.it/api/v1.0/projects/1/share)" -d '{"sharing_details":["desired_date"],"guests_params":[{"email":"[guest1@email.com](mailto:guest1@email.com)"},{"email":"[guest2@email.com](mailto:guest2@email.com)"}]}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -1086,13 +1151,16 @@ sharing_details  | List of optional information to be shared. Options: "tasks", 
 [Simulated Response](/api/documentation/simulate/projects/share_the_project)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 1456
 
 #### Body
+
     {
       "id": 1,
       "name": "Project_A",
@@ -1159,30 +1227,33 @@ sharing_details  | List of optional information to be shared. Options: "tasks", 
       "is_active": true
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/projects/:id/unshare
 
-####  Unshare the project 
+#### Unshare the project
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | ID of project | integer  
-  
+| Name        | Description   | type    |
+| ----------- | ------------- | ------- |
+| id required | ID of project | integer |
+
 ## Request
 
 #### Route
+
     POST /api/v1.0/projects/1/unshare
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/projects/1/unshare](https://runrun.it/api/v1.0/projects/1/unshare)" -d '' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -1194,13 +1265,16 @@ id required | ID of project | integer
 [Simulated Response](/api/documentation/simulate/projects/unshare_the_project)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 1443
 
 #### Body
+
     {
       "id": 1,
       "name": "Project_A",
@@ -1216,7 +1290,7 @@ id required | ID of project | integer
       "is_public": true,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "use_new_permissions": true,
       "board_stage_id": null,
@@ -1267,24 +1341,27 @@ id required | ID of project | integer
       "is_active": true
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/projects/:id/clone
 
-####  Clone a Project 
+#### Clone a Project
 
 ## Request
 
 #### Route
+
     POST /api/v1.0/projects/1/clone
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
+
     {
       "new_project": {
         "name": "Cloned Project"
@@ -1292,6 +1369,7 @@ __POST
     }
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/projects/1/clone](https://runrun.it/api/v1.0/projects/1/clone)" -d '{"new_project":{"name":"Cloned Project"}}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -1303,35 +1381,41 @@ __POST
 [Simulated Response](/api/documentation/simulate/projects/clone_a_project)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json
     Content-Length: 0
 
-__POST
+\_\_POST
 
 #### /api/v1.0/projects/:id/change_board_stage
 
-####  Change a project board stage 
+#### Change a project board stage
 
 ## Request
 
 #### Route
+
     POST /api/v1.0/projects/1/change_board_stage
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
+
     {
       "board_stage_id": 1
     }
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/projects/1/change_board_stage](https://runrun.it/api/v1.0/projects/1/change_board_stage)" -d '{"board_stage_id":1}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -1343,13 +1427,16 @@ __POST
 [Simulated Response](/api/documentation/simulate/projects/change_a_project_board_stage)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 1455
 
 #### Body
+
     {
       "id": 1,
       "name": "Project_A",
@@ -1365,7 +1452,7 @@ __POST
       "is_public": true,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "use_new_permissions": true,
       "board_stage_id": 1,

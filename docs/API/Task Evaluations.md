@@ -1,20 +1,24 @@
-__POST
+\_\_POST
+
 #### /api/v1.0/tasks/:task_id/evaluations
 
-####  Updates the task evaluations 
+#### Updates the task evaluations
 
 ## Request
 
 #### Route
+
     POST /api/v1.0/tasks/1/evaluations
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
+
     {
       "evaluations": [
         {
@@ -27,6 +31,7 @@ __POST
     }
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/tasks/1/evaluations](https://runrun.it/api/v1.0/tasks/1/evaluations)" -d '{"evaluations":[{"evaluator_id":"coyote-591"},{"evaluator_id":"coyote-592"}]}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -38,13 +43,16 @@ __POST
 [Simulated Response](/api/documentation/simulate/task_evaluations/updates_the_task_evaluations)
 
 #### Status
+
     201
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3507
 
 #### Body
+
     {
       "id": 1,
       "title": "Bla 213",
@@ -79,7 +87,7 @@ __POST
       "evaluation_status": "pending",
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 387",
       "client_id": 1,
@@ -119,23 +127,23 @@ __POST
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -157,17 +165,17 @@ __POST
         "coyote-592"
       ],
       "approved_evaluator_ids": [
-    
+
       ],
       "rejected_evaluator_ids": [
-    
+
       ],
       "custom_fields": {
       },
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -209,24 +217,27 @@ __POST
       ]
     }
 
-__DELETE
+\_\_DELETE
 
 #### /api/v1.0/tasks/:task_id/evaluations
 
-####  Destroy all evaluations for this task 
+#### Destroy all evaluations for this task
 
 ## Request
 
 #### Route
+
     DELETE /api/v1.0/tasks/1/evaluations
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/tasks/1/evaluations](https://runrun.it/api/v1.0/tasks/1/evaluations)" -d '' -X DELETE \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -238,30 +249,34 @@ __DELETE
 [Simulated Response](/api/documentation/simulate/task_evaluations/destroy_all_evaluations_for_this_task)
 
 #### Status
+
     204
 
 #### Headers
 
-## __Task Evaluations - 2
+## \_\_Task Evaluations - 2
 
-__GET
+\_\_GET
 
 #### /api/v1.0/task_evaluations
 
-####  List all task evaluations when no params are passed 
+#### List all task evaluations when no params are passed
 
 ## Request
 
 #### Route
+
     GET /api/v1.0/task_evaluations
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
+
     curl -g "[https://runrun.it/api/v1.0/task_evaluations](https://runrun.it/api/v1.0/task_evaluations)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -273,13 +288,16 @@ __GET
 [Simulated Response](/api/documentation/simulate/task_evaluations/list_all_task_evaluations_when_no_params_are_passed)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 11369
 
 #### Body
+
     [
       {
         "id": 3,
@@ -323,7 +341,7 @@ __GET
           "evaluation_status": null,
           "attachments_count": 0,
           "tags_data": [
-    
+
           ],
           "client_name": "Test client 402",
           "client_id": 3,
@@ -363,23 +381,23 @@ __GET
           "points": null,
           "reestimate_count": 0,
           "parent_ids": [
-    
+
           ],
           "opened_parent_ids": [
-    
+
           ],
           "parents_max_desired_date": null,
           "child_ids": [
-    
+
           ],
           "workflow_id": null,
           "checklist_id": null,
           "is_shared": false,
           "sharing_details": [
-    
+
           ],
           "subtask_ids": [
-    
+
           ],
           "subtasks_count": 0,
           "subtasks_closed_count": 0,
@@ -401,7 +419,7 @@ __GET
           "form_id": null,
           "board_stage_data": {
             "fields_data": [
-    
+
             ],
             "use_elapsed_time": false,
             "sla_elapsed_time": null,
@@ -485,7 +503,7 @@ __GET
           "evaluation_status": null,
           "attachments_count": 0,
           "tags_data": [
-    
+
           ],
           "client_name": "Test client 401",
           "client_id": 2,
@@ -525,23 +543,23 @@ __GET
           "points": null,
           "reestimate_count": 0,
           "parent_ids": [
-    
+
           ],
           "opened_parent_ids": [
-    
+
           ],
           "parents_max_desired_date": null,
           "child_ids": [
-    
+
           ],
           "workflow_id": null,
           "checklist_id": null,
           "is_shared": false,
           "sharing_details": [
-    
+
           ],
           "subtask_ids": [
-    
+
           ],
           "subtasks_count": 0,
           "subtasks_closed_count": 0,
@@ -563,7 +581,7 @@ __GET
           "form_id": null,
           "board_stage_data": {
             "fields_data": [
-    
+
             ],
             "use_elapsed_time": false,
             "sla_elapsed_time": null,
@@ -647,7 +665,7 @@ __GET
           "evaluation_status": null,
           "attachments_count": 0,
           "tags_data": [
-    
+
           ],
           "client_name": "Test client 400",
           "client_id": 1,
@@ -687,23 +705,23 @@ __GET
           "points": null,
           "reestimate_count": 0,
           "parent_ids": [
-    
+
           ],
           "opened_parent_ids": [
-    
+
           ],
           "parents_max_desired_date": null,
           "child_ids": [
-    
+
           ],
           "workflow_id": null,
           "checklist_id": null,
           "is_shared": false,
           "sharing_details": [
-    
+
           ],
           "subtask_ids": [
-    
+
           ],
           "subtasks_count": 0,
           "subtasks_closed_count": 0,
@@ -725,7 +743,7 @@ __GET
           "form_id": null,
           "board_stage_data": {
             "fields_data": [
-    
+
             ],
             "use_elapsed_time": false,
             "sla_elapsed_time": null,
@@ -769,27 +787,31 @@ __GET
       }
     ]
 
-__GET
+\_\_GET
 
 #### /api/v1.0/task_evaluations
 
-####  List all task evaluations for a specific task 
+#### List all task evaluations for a specific task
 
 ## Request
 
 #### Route
+
     GET /api/v1.0/task_evaluations?task_id=1
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Query Parameters
+
     task_id=1
 
 #### cURL
+
     curl -g "[https://runrun.it/api/v1.0/task_evaluations?task_id=1](https://runrun.it/api/v1.0/task_evaluations?task_id=1)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -801,13 +823,16 @@ __GET
 [Simulated Response](/api/documentation/simulate/task_evaluations/list_all_task_evaluations_for_a_specific_task)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3790
 
 #### Body
+
     [
       {
         "id": 1,
@@ -851,7 +876,7 @@ __GET
           "evaluation_status": null,
           "attachments_count": 0,
           "tags_data": [
-    
+
           ],
           "client_name": "Test client 403",
           "client_id": 1,
@@ -891,23 +916,23 @@ __GET
           "points": null,
           "reestimate_count": 0,
           "parent_ids": [
-    
+
           ],
           "opened_parent_ids": [
-    
+
           ],
           "parents_max_desired_date": null,
           "child_ids": [
-    
+
           ],
           "workflow_id": null,
           "checklist_id": null,
           "is_shared": false,
           "sharing_details": [
-    
+
           ],
           "subtask_ids": [
-    
+
           ],
           "subtasks_count": 0,
           "subtasks_closed_count": 0,
@@ -929,7 +954,7 @@ __GET
           "form_id": null,
           "board_stage_data": {
             "fields_data": [
-    
+
             ],
             "use_elapsed_time": false,
             "sla_elapsed_time": null,
@@ -972,27 +997,32 @@ __GET
         }
       }
     ]
-__GET
+
+\_\_GET
 
 #### /api/v1.0/task_evaluations
 
-####  List all task evaluations for a specific evaluator 
+#### List all task evaluations for a specific evaluator
 
 ## Request
 
 #### Route
+
     GET /api/v1.0/task_evaluations?evaluator_id=coyote-589
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Query Parameters
+
     evaluator_id=coyote-589
 
 #### cURL
+
     curl -g "[https://runrun.it/api/v1.0/task_evaluations?evaluator_id=coyote-589](https://runrun.it/api/v1.0/task_evaluations?evaluator_id=coyote-589)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -1004,13 +1034,16 @@ __GET
 [Simulated Response](/api/documentation/simulate/task_evaluations/list_all_task_evaluations_for_a_specific_evaluator)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 7580
 
 #### Body
+
     [
       {
         "id": 2,
@@ -1054,7 +1087,7 @@ __GET
           "evaluation_status": null,
           "attachments_count": 0,
           "tags_data": [
-    
+
           ],
           "client_name": "Test client 407",
           "client_id": 2,
@@ -1094,23 +1127,23 @@ __GET
           "points": null,
           "reestimate_count": 0,
           "parent_ids": [
-    
+
           ],
           "opened_parent_ids": [
-    
+
           ],
           "parents_max_desired_date": null,
           "child_ids": [
-    
+
           ],
           "workflow_id": null,
           "checklist_id": null,
           "is_shared": false,
           "sharing_details": [
-    
+
           ],
           "subtask_ids": [
-    
+
           ],
           "subtasks_count": 0,
           "subtasks_closed_count": 0,
@@ -1132,7 +1165,7 @@ __GET
           "form_id": null,
           "board_stage_data": {
             "fields_data": [
-    
+
             ],
             "use_elapsed_time": false,
             "sla_elapsed_time": null,
@@ -1216,7 +1249,7 @@ __GET
           "evaluation_status": null,
           "attachments_count": 0,
           "tags_data": [
-    
+
           ],
           "client_name": "Test client 406",
           "client_id": 1,
@@ -1256,23 +1289,23 @@ __GET
           "points": null,
           "reestimate_count": 0,
           "parent_ids": [
-    
+
           ],
           "opened_parent_ids": [
-    
+
           ],
           "parents_max_desired_date": null,
           "child_ids": [
-    
+
           ],
           "workflow_id": null,
           "checklist_id": null,
           "is_shared": false,
           "sharing_details": [
-    
+
           ],
           "subtask_ids": [
-    
+
           ],
           "subtasks_count": 0,
           "subtasks_closed_count": 0,
@@ -1294,7 +1327,7 @@ __GET
           "form_id": null,
           "board_stage_data": {
             "fields_data": [
-    
+
             ],
             "use_elapsed_time": false,
             "sla_elapsed_time": null,
@@ -1338,24 +1371,27 @@ __GET
       }
     ]
 
-__POST
+\_\_POST
 
 #### /api/v1.0/task_evaluations/:id/reset
 
-####  Reset a task evaluation 
+#### Reset a task evaluation
 
 ## Request
 
 #### Route
+
     POST /api/v1.0/task_evaluations/1/reset
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/task_evaluations/1/reset](https://runrun.it/api/v1.0/task_evaluations/1/reset)" -d '' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -1367,13 +1403,16 @@ __POST
 [Simulated Response](/api/documentation/simulate/task_evaluations/reset_a_task_evaluation)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3809
 
 #### Body
+
     {
       "id": 1,
       "state": "pending",
@@ -1416,7 +1455,7 @@ __POST
         "evaluation_status": "pending",
         "attachments_count": 0,
         "tags_data": [
-    
+
         ],
         "client_name": "Test client 409",
         "client_id": 1,
@@ -1456,23 +1495,23 @@ __POST
         "points": null,
         "reestimate_count": 0,
         "parent_ids": [
-    
+
         ],
         "opened_parent_ids": [
-    
+
         ],
         "parents_max_desired_date": null,
         "child_ids": [
-    
+
         ],
         "workflow_id": null,
         "checklist_id": null,
         "is_shared": false,
         "sharing_details": [
-    
+
         ],
         "subtask_ids": [
-    
+
         ],
         "subtasks_count": 0,
         "subtasks_closed_count": 0,
@@ -1492,17 +1531,17 @@ __POST
           "coyote-595"
         ],
         "approved_evaluator_ids": [
-    
+
         ],
         "rejected_evaluator_ids": [
-    
+
         ],
         "custom_fields": {
         },
         "form_id": null,
         "board_stage_data": {
           "fields_data": [
-    
+
           ],
           "use_elapsed_time": false,
           "sla_elapsed_time": null,
@@ -1545,24 +1584,27 @@ __POST
       }
     }
 
-__DELETE
+\_\_DELETE
 
 #### /api/v1.0/task_evaluations/:id
 
-####  Destroy a task evaluation 
+#### Destroy a task evaluation
 
 ## Request
 
 #### Route
+
     DELETE /api/v1.0/task_evaluations/1
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/task_evaluations/1](https://runrun.it/api/v1.0/task_evaluations/1)" -d '' -X DELETE \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -1574,6 +1616,7 @@ __DELETE
 [Simulated Response](/api/documentation/simulate/task_evaluations/destroy_a_task_evaluation)
 
 #### Status
+
     204
 
 #### Headers
