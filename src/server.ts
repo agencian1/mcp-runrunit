@@ -1,45 +1,55 @@
-import path from "node:path";
-import fs from "node:fs";
-import { fileURLToPath } from "node:url";
-import { createRequire } from "node:module";
-import express from "express";
-import type { NextFunction, Request, Response } from "express";
-import * as Sentry from "@sentry/node";
-import { createMcpServer } from "./adapters/driving/app.js";
-import type { Server } from "@modelcontextprotocol/sdk/server";
-import {
-  captureExceptionWithContext,
-  flushAndClose,
-} from "./observability/sentry.js";
+import path from 'node:path';
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
+import express from 'express';
+import type { NextFunction, Request, Response } from 'express';
+import * as Sentry from '@sentry/node';
+import { createMcpServer } from './adapters/driving/app.js';
+import type { Server } from '@modelcontextprotocol/sdk/server';
+import { captureExceptionWithContext, flushAndClose } from './observability/sentry.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
-const streamableHttpPath = path.join(__dirname, "..", "node_modules", "@modelcontextprotocol", "sdk", "dist", "esm", "server", "streamableHttp.js");
+const streamableHttpPath = path.join(
+  __dirname,
+  '..',
+  'node_modules',
+  '@modelcontextprotocol',
+  'sdk',
+  'dist',
+  'esm',
+  'server',
+  'streamableHttp.js',
+);
 const { StreamableHTTPServerTransport } = require(streamableHttpPath);
 
 const PORT = Number(process.env.MCP_HTTP_PORT) || 3000;
-const MCP_PATH = process.env.MCP_HTTP_PATH || "/mcp";
+const MCP_PATH = process.env.MCP_HTTP_PATH || '/mcp';
 
-type SessionEntry = { server: Server; transport: InstanceType<typeof StreamableHTTPServerTransport> };
+type SessionEntry = {
+  server: Server;
+  transport: InstanceType<typeof StreamableHTTPServerTransport>;
+};
 const sessions = new Map<string, SessionEntry>();
 
-const DEBUG_LOG_PATH = path.join(__dirname, "..", "mcp-debug.log");
+const DEBUG_LOG_PATH = path.join(__dirname, '..', 'mcp-debug.log');
 function debugLog(msg: string): void {
   const line = `[${new Date().toISOString()}] ${msg}\n`;
   console.error(msg);
   try {
     fs.appendFileSync(DEBUG_LOG_PATH, line);
   } catch (e) {
-    console.error("debugLog err", e);
+    console.error('debugLog err', e);
   }
 }
 
 function isInitializeRequest(body: unknown): boolean {
   return (
-    typeof body === "object" &&
+    typeof body === 'object' &&
     body !== null &&
-    "method" in body &&
-    (body as { method?: string }).method === "initialize"
+    'method' in body &&
+    (body as { method?: string }).method === 'initialize'
   );
 }
 
@@ -48,10 +58,15 @@ async function main() {
   app.use(express.json());
 
   app.post(MCP_PATH, async (req: Request, res: Response) => {
-    const sessionId = req.headers["mcp-session-id"] as string | undefined;
-    const bodyMethod = typeof req.body === "object" && req.body !== null && "method" in req.body ? (req.body as { method?: string }).method : undefined;
+    const sessionId = req.headers['mcp-session-id'] as string | undefined;
+    const bodyMethod =
+      typeof req.body === 'object' && req.body !== null && 'method' in req.body
+        ? (req.body as { method?: string }).method
+        : undefined;
     const isInit = isInitializeRequest(req.body);
-    debugLog(`POST /mcp sessionId=${sessionId ?? "(nenhum)"} body.method=${bodyMethod ?? "(vazio)"} isInit=${isInit}`);
+    debugLog(
+      `POST /mcp sessionId=${sessionId ?? '(nenhum)'} body.method=${bodyMethod ?? '(vazio)'} isInit=${isInit}`,
+    );
 
     try {
       // Sempre que vier initialize, criar nova sessão (evita "Server already initialized" em reconexões)
@@ -66,8 +81,8 @@ async function main() {
           sessions.delete(sessionId);
         }
         // Remove session id do request para o SDK tratar como conexão nova (evita reuso interno)
-        const prevSessionId = req.headers["mcp-session-id"];
-        delete req.headers["mcp-session-id"];
+        const prevSessionId = req.headers['mcp-session-id'];
+        delete req.headers['mcp-session-id'];
         const transport = new StreamableHTTPServerTransport({
           sessionIdGenerator: () => newSessionId,
         });
@@ -83,7 +98,7 @@ async function main() {
         try {
           await transport.handleRequest(req, res, req.body);
         } finally {
-          if (prevSessionId !== undefined) req.headers["mcp-session-id"] = prevSessionId;
+          if (prevSessionId !== undefined) req.headers['mcp-session-id'] = prevSessionId;
         }
         return;
       }
@@ -111,8 +126,8 @@ async function main() {
           }
           sessions.delete(sessionId);
         }
-        const prevSessionId = req.headers["mcp-session-id"];
-        delete req.headers["mcp-session-id"];
+        const prevSessionId = req.headers['mcp-session-id'];
+        delete req.headers['mcp-session-id'];
         const transport = new StreamableHTTPServerTransport({
           sessionIdGenerator: () => newSessionId,
         });
@@ -124,22 +139,22 @@ async function main() {
         try {
           await transport.handleRequest(req, res, req.body);
         } finally {
-          if (prevSessionId !== undefined) req.headers["mcp-session-id"] = prevSessionId;
+          if (prevSessionId !== undefined) req.headers['mcp-session-id'] = prevSessionId;
         }
         return;
       }
 
       res.status(400).json({
-        jsonrpc: "2.0",
-        error: { code: -32600, message: "Invalid Request: No valid session ID provided" },
+        jsonrpc: '2.0',
+        error: { code: -32600, message: 'Invalid Request: No valid session ID provided' },
         id: null,
       });
     } catch (err) {
-      console.error("mcp-runrunit: request error", err);
+      console.error('mcp-runrunit: request error', err);
       if (!res.headersSent) {
         res.status(500).json({
-          jsonrpc: "2.0",
-          error: { code: -32603, message: "Internal server error" },
+          jsonrpc: '2.0',
+          error: { code: -32603, message: 'Internal server error' },
           id: null,
         });
       }
@@ -147,17 +162,17 @@ async function main() {
   });
 
   app.get(MCP_PATH, async (req: Request, res: Response) => {
-    const sessionId = req.headers["mcp-session-id"] as string | undefined;
+    const sessionId = req.headers['mcp-session-id'] as string | undefined;
     if (!sessionId || !sessions.has(sessionId)) {
-      res.status(400).send("Invalid or missing session ID");
+      res.status(400).send('Invalid or missing session ID');
       return;
     }
     const { transport } = sessions.get(sessionId)!;
     await transport.handleRequest(req, res);
   });
 
-  app.get("/health", (_req: Request, res: Response) => {
-    res.json({ status: "ok", mcp: "runrunit" });
+  app.get('/health', (_req: Request, res: Response) => {
+    res.json({ status: 'ok', mcp: 'runrunit' });
   });
 
   // Must be after routes so framework errors are captured by Sentry.
@@ -165,21 +180,21 @@ async function main() {
 
   app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
     captureExceptionWithContext(err, {
-      tags: { error_kind: "express_unhandled" },
+      tags: { error_kind: 'express_unhandled' },
     });
     if (!res.headersSent) {
       res.status(500).json({
-        jsonrpc: "2.0",
-        error: { code: -32603, message: "Internal server error" },
+        jsonrpc: '2.0',
+        error: { code: -32603, message: 'Internal server error' },
         id: null,
       });
     }
   });
 
   app.listen(PORT, () => {
-    Sentry.captureMessage("mcp-runrunit: HTTP server started", {
-      level: "info",
-      tags: { server: "http" },
+    Sentry.captureMessage('mcp-runrunit: HTTP server started', {
+      level: 'info',
+      tags: { server: 'http' },
     });
     console.error(`mcp-runrunit: HTTP server at http://127.0.0.1:${PORT}${MCP_PATH}`);
     console.error(`  Health: http://127.0.0.1:${PORT}/health`);
@@ -188,9 +203,9 @@ async function main() {
 
 main().catch((error) => {
   captureExceptionWithContext(error, {
-    tags: { error_kind: "bootstrap_fatal" },
+    tags: { error_kind: 'bootstrap_fatal' },
   });
-  console.error("mcp-runrunit HTTP server fatal error:", error);
+  console.error('mcp-runrunit HTTP server fatal error:', error);
   void flushAndClose().finally(() => {
     process.exit(1);
   });

@@ -1,4 +1,4 @@
-import { runrunitFetch } from "../adapters/driven/api.js";
+import { runrunitFetch } from '../adapters/driven/api.js';
 
 export type ListProjectsParams = {
   /** Filter by client ID */
@@ -15,7 +15,7 @@ export type ListProjectsParams = {
 
 export async function listProjects(params: ListProjectsParams = {}) {
   const query = params as Record<string, string | number | boolean | undefined>;
-  return runrunitFetch<unknown[]>("projects", {
+  return runrunitFetch<unknown[]>('projects', {
     query,
   });
 }

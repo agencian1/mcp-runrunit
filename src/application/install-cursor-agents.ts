@@ -1,9 +1,9 @@
-import fs from "node:fs";
-import path from "node:path";
-import os from "node:os";
-import { fileURLToPath } from "node:url";
+import fs from 'node:fs';
+import path from 'node:path';
+import os from 'node:os';
+import { fileURLToPath } from 'node:url';
 
-export type InstallTarget = "global" | "project";
+export type InstallTarget = 'global' | 'project';
 
 export type InstallCursorAgentsParams = {
   dry_run?: boolean;
@@ -36,7 +36,7 @@ type CopyPlanItem = {
 function findPackageRootWithCursorAgents(startDir: string): string | null {
   let dir = path.resolve(startDir);
   for (let i = 0; i < 10; i++) {
-    const ca = path.join(dir, "cursor-agents");
+    const ca = path.join(dir, 'cursor-agents');
     try {
       if (fs.existsSync(ca) && fs.statSync(ca).isDirectory()) {
         return dir;
@@ -63,28 +63,28 @@ export function resolveBundledCursorAgentsDir(explicitSource?: string): string {
   const root = findPackageRootWithCursorAgents(here);
   if (!root) {
     throw new Error(
-      "Could not find cursor-agents folder near mcp-runrunit package. Pass source_dir with absolute path to cursor-agents.",
+      'Could not find cursor-agents folder near mcp-runrunit package. Pass source_dir with absolute path to cursor-agents.',
     );
   }
-  return path.join(root, "cursor-agents");
+  return path.join(root, 'cursor-agents');
 }
 
 function assertSafeDestination(dest: string): void {
   const norm = path.normalize(path.resolve(dest));
   const parts = norm.split(path.sep).filter(Boolean);
-  const dotCursorIdx = parts.findIndex((p) => p.toLowerCase() === ".cursor");
+  const dotCursorIdx = parts.findIndex((p) => p.toLowerCase() === '.cursor');
   if (dotCursorIdx === -1) {
     throw new Error(`Destination must be under .cursor/agents: ${dest}`);
   }
   const next = parts[dotCursorIdx + 1];
-  if (!next || next.toLowerCase() !== "agents") {
+  if (!next || next.toLowerCase() !== 'agents') {
     throw new Error(`Destination must be under .cursor/agents: ${dest}`);
   }
 }
 
 function isMarkdownFileName(name: string): boolean {
   const lower = name.toLowerCase();
-  return lower.endsWith(".md");
+  return lower.endsWith('.md');
 }
 
 /** Expand filter tokens to possible destination basenames for matching. */
@@ -96,7 +96,7 @@ function buildWantDestSet(agent_names: string[] | undefined): Set<string> | null
     if (!t) continue;
     const base = path.basename(t);
     want.add(base);
-    if (!base.toLowerCase().endsWith(".md")) {
+    if (!base.toLowerCase().endsWith('.md')) {
       want.add(`${base}.md`);
     }
   }
@@ -109,10 +109,10 @@ function destMatchesWant(destBasename: string, want: Set<string>): boolean {
   for (const w of want) {
     if (w.toLowerCase() === lower) return true;
   }
-  const stem = lower.endsWith(".md") ? lower.slice(0, -3) : lower;
+  const stem = lower.endsWith('.md') ? lower.slice(0, -3) : lower;
   for (const w of want) {
     const wl = w.toLowerCase();
-    const wstem = wl.endsWith(".md") ? wl.slice(0, -3) : wl;
+    const wstem = wl.endsWith('.md') ? wl.slice(0, -3) : wl;
     if (stem === wstem) return true;
   }
   return false;
@@ -131,7 +131,7 @@ function collectCopyPlans(source: string): {
   const entries = fs.readdirSync(source, { withFileTypes: true });
 
   for (const ent of entries) {
-    if (ent.name.startsWith(".")) continue;
+    if (ent.name.startsWith('.')) continue;
 
     const full = path.join(source, ent.name);
 
@@ -140,9 +140,7 @@ function collectCopyPlans(source: string): {
       const destBasename = ent.name;
       const prev = destSeen.get(destBasename);
       if (prev) {
-        errors.push(
-          `duplicate destination ${destBasename}: ${prev} and ${full}`,
-        );
+        errors.push(`duplicate destination ${destBasename}: ${prev} and ${full}`);
         continue;
       }
       destSeen.set(destBasename, full);
@@ -157,27 +155,25 @@ function collectCopyPlans(source: string): {
     try {
       inner = fs.readdirSync(dirPath, { withFileTypes: true });
     } catch (e) {
-      errors.push(
-        `${ent.name}: ${e instanceof Error ? e.message : String(e)}`,
-      );
+      errors.push(`${ent.name}: ${e instanceof Error ? e.message : String(e)}`);
       continue;
     }
 
     const mdFiles = inner.filter(
-      (e) => e.isFile() && !e.name.startsWith(".") && isMarkdownFileName(e.name),
+      (e) => e.isFile() && !e.name.startsWith('.') && isMarkdownFileName(e.name),
     );
 
     if (mdFiles.length === 0) {
       skipped.push({
         name: ent.name,
-        reason: "subfolder has no .md / .agent.md file",
+        reason: 'subfolder has no .md / .agent.md file',
       });
       continue;
     }
     if (mdFiles.length > 1) {
       skipped.push({
         name: ent.name,
-        reason: "subfolder has more than one markdown file",
+        reason: 'subfolder has more than one markdown file',
       });
       continue;
     }
@@ -187,9 +183,7 @@ function collectCopyPlans(source: string): {
     const destBasename = mdName;
     const prev = destSeen.get(destBasename);
     if (prev) {
-      errors.push(
-        `duplicate destination ${destBasename}: ${prev} and ${sourcePath}`,
-      );
+      errors.push(`duplicate destination ${destBasename}: ${prev} and ${sourcePath}`);
       continue;
     }
     destSeen.set(destBasename, sourcePath);
@@ -200,9 +194,7 @@ function collectCopyPlans(source: string): {
   return { plans, skipped, errors };
 }
 
-export function installCursorAgents(
-  params: InstallCursorAgentsParams,
-): InstallCursorAgentsResult {
+export function installCursorAgents(params: InstallCursorAgentsParams): InstallCursorAgentsResult {
   const dry_run = params.dry_run === true;
   const errors: string[] = [];
   const skipped: { name: string; reason: string }[] = [];
@@ -213,8 +205,8 @@ export function installCursorAgents(
     source = resolveBundledCursorAgentsDir(params.source_dir);
   } catch (e) {
     return {
-      source: "",
-      destination: "",
+      source: '',
+      destination: '',
       dry_run,
       copied: [],
       skipped: [],
@@ -222,16 +214,16 @@ export function installCursorAgents(
     };
   }
 
-  const targetMode = params.target ?? "global";
+  const targetMode = params.target ?? 'global';
   let destination: string;
-  if (targetMode === "global") {
-    destination = path.join(os.homedir(), ".cursor", "agents");
+  if (targetMode === 'global') {
+    destination = path.join(os.homedir(), '.cursor', 'agents');
   } else {
     const pr = params.project_root?.trim();
     if (!pr) {
       return {
         source,
-        destination: "",
+        destination: '',
         dry_run,
         copied: [],
         skipped: [],
@@ -240,7 +232,7 @@ export function installCursorAgents(
         ],
       };
     }
-    destination = path.resolve(pr, ".cursor", "agents");
+    destination = path.resolve(pr, '.cursor', 'agents');
   }
 
   try {
@@ -257,8 +249,7 @@ export function installCursorAgents(
   }
 
   const want = buildWantDestSet(params.agent_names);
-  const { plans, skipped: collectSkipped, errors: collectErrors } =
-    collectCopyPlans(source);
+  const { plans, skipped: collectSkipped, errors: collectErrors } = collectCopyPlans(source);
   skipped.push(...collectSkipped);
   errors.push(...collectErrors);
 
@@ -266,7 +257,7 @@ export function installCursorAgents(
     if (want && !destMatchesWant(item.destBasename, want)) {
       skipped.push({
         name: item.destBasename,
-        reason: "not in agent_names filter",
+        reason: 'not in agent_names filter',
       });
       continue;
     }
@@ -286,9 +277,7 @@ export function installCursorAgents(
       fs.copyFileSync(item.sourcePath, destFile);
       copied.push({ name: item.destBasename, file_count: 1 });
     } catch (e) {
-      errors.push(
-        `${item.destBasename}: ${e instanceof Error ? e.message : String(e)}`,
-      );
+      errors.push(`${item.destBasename}: ${e instanceof Error ? e.message : String(e)}`);
     }
   }
 
@@ -303,7 +292,7 @@ export function installCursorAgents(
       if (!oneWant) continue;
       const hitPlan = plans.some((p) => destMatchesWant(p.destBasename, oneWant));
       if (!hitPlan) {
-        skipped.push({ name: t, reason: "not found in source" });
+        skipped.push({ name: t, reason: 'not found in source' });
       }
     }
   }

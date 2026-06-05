@@ -1,22 +1,26 @@
-__GET
+\_\_GET
+
 #### /api/v1.0/tasks/:task_id/followers
 
-####  List all followers 
+#### List all followers
 
 Responds with an array of users following the task. The format of each user is the same as the User endpoint.
 
 ## Request
 
 #### Route
+
     GET /api/v1.0/tasks/1/followers
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
+
     curl -g "[https://runrun.it/api/v1.0/tasks/1/followers](https://runrun.it/api/v1.0/tasks/1/followers)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -28,13 +32,16 @@ Responds with an array of users following the task. The format of each user is t
 [Simulated Response](/api/documentation/simulate/task_followers/list_all_followers)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 2665
 
 #### Body
+
     [
       {
         "id": "coyote-917",
@@ -140,10 +147,10 @@ Responds with an array of users following the task. The format of each user is t
         "password_expired_at": null,
         "shift_work_time_per_week": 144000,
         "team_ids": [
-    
+
         ],
         "led_team_ids": [
-    
+
         ],
         "is_eligible_to_access_reports": false,
         "is_eligible_to_whatsapp": false,
@@ -160,35 +167,39 @@ Responds with an array of users following the task. The format of each user is t
       }
     ]
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:task_id/followers
 
-####  Create a Task Follower 
+#### Create a Task Follower
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id  | ID of user to add as follower | string  
-  
+| Name | Description                   | type   |
+| ---- | ----------------------------- | ------ |
+| id   | ID of user to add as follower | string |
+
 ## Request
 
 #### Route
+
     POST /api/v1.0/tasks/1/followers
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
+
     {
       "id": "coyote-919"
     }
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/tasks/1/followers](https://runrun.it/api/v1.0/tasks/1/followers)" -d '{"id":"coyote-919"}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -200,13 +211,16 @@ id  | ID of user to add as follower | string
 [Simulated Response](/api/documentation/simulate/task_followers/create_a_task_follower)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3946
 
 #### Body
+
     {
       "id": 1,
       "title": "Bla 488",
@@ -241,7 +255,7 @@ id  | ID of user to add as follower | string
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 506",
       "client_id": 1,
@@ -281,23 +295,23 @@ id  | ID of user to add as follower | string
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -319,7 +333,7 @@ id  | ID of user to add as follower | string
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -344,14 +358,14 @@ id  | ID of user to add as follower | string
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 1539",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -387,24 +401,27 @@ id  | ID of user to add as follower | string
       ]
     }
 
-__DELETE
+\_\_DELETE
 
 #### /api/v1.0/tasks/:task_id/followers/:id
 
-####  Remove a Task Follower 
+#### Remove a Task Follower
 
 ## Request
 
 #### Route
+
     DELETE /api/v1.0/tasks/1/followers/coyote-921
 
 #### Headers
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
+
     curl "[https://runrun.it/api/v1.0/tasks/1/followers/coyote-921](https://runrun.it/api/v1.0/tasks/1/followers/coyote-921)" -d '' -X DELETE \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -416,13 +433,16 @@ __DELETE
 [Simulated Response](/api/documentation/simulate/task_followers/remove_a_task_follower)
 
 #### Status
+
     200
 
 #### Headers
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3934
 
 #### Body
+
     {
       "id": 1,
       "title": "Bla 489",
@@ -457,7 +477,7 @@ __DELETE
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 507",
       "client_id": 1,
@@ -497,23 +517,23 @@ __DELETE
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -535,7 +555,7 @@ __DELETE
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -560,14 +580,14 @@ __DELETE
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 1542",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,

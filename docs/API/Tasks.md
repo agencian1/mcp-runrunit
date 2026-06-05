@@ -1,44 +1,42 @@
-__GET
+\_\_GET
+
 #### /api/v1.0/tasks
 
-####  Query tasks 
+#### Query tasks
 
 Returns a paginated list of tasks that the user has permission to see. The number of tasks returned are limited by `limit` per `page` and are sorted based on `sort` and `sort_dir`. Use the following _Parameters_ to narrow and customize your query.
 
 ## Parameters
 
-Name | Description | type | default  
----|---|---|---  
-ids  | IDs of tasks, separated by comma | string |   
-user_id  | ID of user who created the task | string |   
-follower_id  | ID of user following the task | string |   
-project_id  | ID of the project the task belongs to | integer |   
-is_closed  | True if the task is delivered | boolean | _false_  
-is_working_on  | True if any assignee is working on task | boolean |   
-sort  | Sort strategy. | string | _closed_date_ if `ìs_closed=true`; otherwise _queue_position_  
-sort_dir  | Sort direction. Must be _asc_ or _desc_ | string | _desc_ if `ìs_closed=true`; otherwise _asc_  
-page  | The page that will be displayed. Must be equal or greater than _1_ | integer | _1_  
-limit  | The number of objects to return per page. The value must be between _1_ and _100_ | integer | _1000_  
-bypass_status_default  | Set as _true_ to bypass the default value of `is_closed` param | boolean | _false_  
-  
+| Name                  | Description                                                                       | type    | default                                                       |
+| --------------------- | --------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------- |
+| ids                   | IDs of tasks, separated by comma                                                  | string  |
+| user_id               | ID of user who created the task                                                   | string  |
+| follower_id           | ID of user following the task                                                     | string  |
+| project_id            | ID of the project the task belongs to                                             | integer |
+| is_closed             | True if the task is delivered                                                     | boolean | _false_                                                       |
+| is_working_on         | True if any assignee is working on task                                           | boolean |
+| sort                  | Sort strategy.                                                                    | string  | _closed_date_ if `ìs_closed=true`; otherwise _queue_position_ |
+| sort_dir              | Sort direction. Must be _asc_ or _desc_                                           | string  | _desc_ if `ìs_closed=true`; otherwise _asc_                   |
+| page                  | The page that will be displayed. Must be equal or greater than _1_                | integer | _1_                                                           |
+| limit                 | The number of objects to return per page. The value must be between _1_ and _100_ | integer | _1000_                                                        |
+| bypass_status_default | Set as _true_ to bypass the default value of `is_closed` param                    | boolean | _false_                                                       |
+
 ## Request
 
 #### Route
-    
-    
+
     GET /api/v1.0/tasks?responsible_id=coyote-2&sort=close_date&sort_dir=desc&is_closed=true&project_id=1
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Query Parameters
-    
-    
+
     responsible_id=coyote-2
     sort=close_date
     sort_dir=desc
@@ -46,8 +44,7 @@ bypass_status_default  | Set as _true_ to bypass the default value of `is_closed
     project_id=1
 
 #### cURL
-    
-    
+
     curl -g "[https://runrun.it/api/v1.0/tasks?responsible_id=coyote-2&sort=close_date&sort_dir=desc&is_closed=true&project_id=1](https://runrun.it/api/v1.0/tasks?responsible_id=coyote-2&sort=close_date&sort_dir=desc&is_closed=true&project_id=1)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -59,19 +56,16 @@ bypass_status_default  | Set as _true_ to bypass the default value of `is_closed
 [Simulated Response](/api/documentation/simulate/tasks/query_tasks)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 7842
 
 #### Body
-    
-    
+
     [
       {
         "id": 2,
@@ -107,7 +101,7 @@ bypass_status_default  | Set as _true_ to bypass the default value of `is_closed
         "evaluation_status": null,
         "attachments_count": 0,
         "tags_data": [
-    
+
         ],
         "client_name": "Test client 1",
         "client_id": 1,
@@ -147,23 +141,23 @@ bypass_status_default  | Set as _true_ to bypass the default value of `is_closed
         "points": null,
         "reestimate_count": 0,
         "parent_ids": [
-    
+
         ],
         "opened_parent_ids": [
-    
+
         ],
         "parents_max_desired_date": null,
         "child_ids": [
-    
+
         ],
         "workflow_id": null,
         "checklist_id": null,
         "is_shared": false,
         "sharing_details": [
-    
+
         ],
         "subtask_ids": [
-    
+
         ],
         "subtasks_count": 0,
         "subtasks_closed_count": 0,
@@ -185,7 +179,7 @@ bypass_status_default  | Set as _true_ to bypass the default value of `is_closed
         "form_id": null,
         "board_stage_data": {
           "fields_data": [
-    
+
           ],
           "use_elapsed_time": false,
           "sla_elapsed_time": null,
@@ -210,14 +204,14 @@ bypass_status_default  | Set as _true_ to bypass the default value of `is_closed
         "estimated_delivery_date_updated": true,
         "last_estimated_at": null,
         "task_tags": [
-    
+
         ],
         "approved": null,
         "task_status_id": 4,
         "task_status_name": "Board Stage 4",
         "tag_list": "",
         "tags": [
-    
+
         ],
         "scheduled_start_time": null,
         "is_scheduled": false,
@@ -249,7 +243,7 @@ bypass_status_default  | Set as _true_ to bypass the default value of `is_closed
           }
         ],
         "follower_ids": [
-    
+
         ]
       },
       {
@@ -286,7 +280,7 @@ bypass_status_default  | Set as _true_ to bypass the default value of `is_closed
         "evaluation_status": null,
         "attachments_count": 0,
         "tags_data": [
-    
+
         ],
         "client_name": "Test client 1",
         "client_id": 1,
@@ -326,23 +320,23 @@ bypass_status_default  | Set as _true_ to bypass the default value of `is_closed
         "points": null,
         "reestimate_count": 0,
         "parent_ids": [
-    
+
         ],
         "opened_parent_ids": [
-    
+
         ],
         "parents_max_desired_date": null,
         "child_ids": [
-    
+
         ],
         "workflow_id": null,
         "checklist_id": null,
         "is_shared": false,
         "sharing_details": [
-    
+
         ],
         "subtask_ids": [
-    
+
         ],
         "subtasks_count": 0,
         "subtasks_closed_count": 0,
@@ -364,7 +358,7 @@ bypass_status_default  | Set as _true_ to bypass the default value of `is_closed
         "form_id": null,
         "board_stage_data": {
           "fields_data": [
-    
+
           ],
           "use_elapsed_time": false,
           "sla_elapsed_time": null,
@@ -389,14 +383,14 @@ bypass_status_default  | Set as _true_ to bypass the default value of `is_closed
         "estimated_delivery_date_updated": true,
         "last_estimated_at": null,
         "task_tags": [
-    
+
         ],
         "approved": null,
         "task_status_id": 1,
         "task_status_name": "Board Stage 1",
         "tag_list": "",
         "tags": [
-    
+
         ],
         "scheduled_start_time": null,
         "is_scheduled": false,
@@ -428,35 +422,32 @@ bypass_status_default  | Set as _true_ to bypass the default value of `is_closed
           }
         ],
         "follower_ids": [
-    
+
         ]
       }
     ]
 
-__GET
+\_\_GET
 
 #### /api/v1.0/tasks/:id
 
-####  Show a Task 
+#### Show a Task
 
 ## Request
 
 #### Route
-    
-    
+
     GET /api/v1.0/tasks/1
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
-    
-    
+
     curl -g "[https://runrun.it/api/v1.0/tasks/1](https://runrun.it/api/v1.0/tasks/1)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -469,139 +460,136 @@ __GET
 
 #### Response Fields
 
-Name | Description | type  
----|---|---  
-id  | Task ID | integer  
-title  | Task title | string  
-is_working_on  | True if any assignee is working on task | boolean  
-user_id  | ID of user who created the task | string  
-guest_id  | ID of guest user who created the task | string  
-type_id  | ID of the task type | integer  
-project_id  | ID of the project the task belongs to | integer  
-team_id  | ID of the team the task belongs to (if not assigned) | integer  
-board_id  | ID of the board the task belongs to | integer  
-board_stage_id  | ID of the board stage the task belongs to | integer  
-board_stage_position  | Position of the task on stage | integer  
-subtask_parent_position  | Position of the task on parent task | integer  
-desired_date  | Desired delivery date | date  
-desired_date_with_time  | Desired delivery date and time | date_time  
-estimated_start_date  | Date when the system estimates the task will be started | date_time  
-estimated_delivery_date  | Date when the system estimates the task will be delivered | date_time  
-gantt_bar_start_date  | Start date for Gantt chart | date_time  
-gantt_bar_end_date  | End date for Gantt chart | date_time  
-close_date  | Date when the task was delivered | datetime  
-was_reopened  | True if the task has been reopened after being delivered | boolean  
-is_closed  | True if the task is delivered | boolean  
-is_assigned  | True if the task has anyone assigned | boolean  
-on_going  | True if the task is an ongoing task | boolean  
-estimate_updated  | True if estimate dates have been updated after potential change | boolean  
-estimated_at  | Last time when task was estimated | boolean  
-queue_position  | 1-based index of position on assignee user's task list | integer  
-created_at  | Date when task was created | datetime  
-start_date  | First time when task was worked on | datetime  
-desired_start_date  | Desired start date | date_time  
-current_estimate_seconds  | Current estimated effort (in seconds) | integer  
-evaluation_status  | Evaluation status ('approved' / 'rejected' / 'pending' / null) | string  
-attachments_count  | Number of attachment that belongs to task | integer  
-tags_data  | Tags for task | array  
-client_name  | Name of client | string  
-client_id  | ID of the client the task belongs to | integer  
-project_name  | Name of project | string  
-project_group_name  | Name of project group | string  
-project_group_id  | ID of the group the task belongs to | integer  
-project_group_is_default  | True if the project group is default | boolean  
-project_sub_group_name  | Name of project subgroup | string  
-project_sub_group_id  | ID of the sub group the task belongs to | integer  
-project_sub_group_is_default  | True if the project subgroup is default | boolean  
-type_name  | Name of task type | string  
-user_name  | Name of user who created the task | string  
-guest_name  | Name of guest user who created the task | string  
-board_name  | Name of board | string  
-board_stage_name  | Name of board stage | string  
-board_stage_description  | Description of board stage | string  
-team_name  | Name of team (if not assigned) | string  
-type_color  | Task type color in hexadecimal format | string  
-state  | Task state ('not_assigned', 'working_on', 'queued', 'closed') | string  
-overdue  | Overdue status of the task ('on_schedule', 'soft_overdue', 'hard_overdue') | string  
-time_worked  | Time (in seconds) worked in the task | integer  
-time_pending  | Time (in seconds) pending in the task | integer  
-time_total  | Total time (in seconds) spent in the task | integer  
-time_progress  | Progress of time worked on the task | float  
-activities_6_days_ago  | Time (in seconds) worked in the task 6 days ago | integer  
-activities_5_days_ago  | Time (in seconds) worked in the task 5 days ago | integer  
-activities_4_days_ago  | Time (in seconds) worked in the task 4 days ago | integer  
-activities_3_days_ago  | Time (in seconds) worked in the task 3 days ago | integer  
-activities_2_days_ago  | Time (in seconds) worked in the task 2 days ago | integer  
-activities_1_days_ago  | Time (in seconds) worked in the task 1 days ago | integer  
-activities_0_days_ago  | Time (in seconds) worked in the task today | integer  
-activities  | Total time (in seconds) worked today and in the last 6 days | integer  
-repetition_rule  | Repetition rule | integer  
-board_remaining_time  | Time (in seconds) remaining estimated to deliver the task on board | integer  
-stage_depart_estimated_at  | Estimated date of departure from stage on board | date_time  
-search_row_rank  | Search relevance | integer  
-is_urgent  | True if the task is urgent | boolean  
-points  |  | integer  
-reestimate_count  | Reestimate counter | integer  
-parent_ids  | IDs from direct prerequisite tasks | array  
-opened_parent_ids  | IDs from direct open prerequisite tasks | array  
-parents_max_desired_date  | Maximum desired date of direct prerequisites. | date_time  
-child_ids  | IDs from direct descendant tasks | array  
-workflow_id  | Workflow id | integer  
-checklist_id  | Checklist id | integer  
-is_shared  | True if the task is shared | boolean  
-sharing_details  | Sharing details | array  
-subtask_ids  | Subtasks ids | array  
-subtasks_count  | Subtasks count | integer  
-subtasks_closed_count  | Subtasks closed count | integer  
-subtasks_count_progress  | Subtasks count progress | float  
-is_subtask  | True if the task is a subtask | boolean  
-parent_task_id  | Parent task id | integer  
-parent_task_title  | Parent task title | string  
-description  | Task description | string  
-all_subtasks_time_worked  | Sum of time (in seconds) worked in all the subtasks from this task | integer  
-all_subtasks_times_updating  | True if is updating subtasks times summations | boolean  
-all_subtasks_time_total  | Sum of total time (in seconds) spent in all the subtasks from this task | integer  
-all_subtasks_time_progress  | Progress of time worked on all the subtasks from this task | float  
-current_level  | Depth level of this task on your tree | integer  
-evaluator_ids  | IDs from evaluators | array  
-pending_evaluator_ids  | IDs from pending evaluators | array  
-approved_evaluator_ids  | IDs from approved evaluators | array  
-rejected_evaluator_ids  | IDs from rejected evaluators | array  
-custom_fields  | Task custom fields | object  
-form_id  | ID of the form whom task was created from | integer  
-board_stage_data  | Data about the task board stage | object  
-board_stage_elapsed_time  | Time spent in seconds in the board stage | integer  
-board_stage_elapsed_time_updated_at  | Datetime of the last update of the attribute board_stage_elapsed_time | datetime  
-is_board_stage_sla_elapsed_time_overdue  | True if board stage SLA elapsed time is overdue | boolean  
-is_board_stage_sla_last_activity_time_overdue  | True if board stage SLA activity time is overdue | boolean  
-last_activity_at  | Datetime of last activity on the task | date_time  
-automation_id  | ID of the automation that created the task | integer  
-automation_name  | Name of the automation that created the task | string  
-email_address  | Unique email address of the task | string  
-has_emails  | True if task has any associated email | boolean  
-prerequisites_data  | Prerequisite tasks data | object  
-subsequents_data  | Subsequent tasks data | object  
-is_editable  | True if user is a task editor | boolean  
-description_preview  | Description preview | string  
-followers_data  | Followers data | array  
-priority  | [Deprecated] Use queue_position | integer  
-follower_ids  | IDs of users following this task | array  
-workflow_id  | ID of associated workflow (if any) | integer  
-  
+| Name                                          | Description                                                                | type      |
+| --------------------------------------------- | -------------------------------------------------------------------------- | --------- |
+| id                                            | Task ID                                                                    | integer   |
+| title                                         | Task title                                                                 | string    |
+| is_working_on                                 | True if any assignee is working on task                                    | boolean   |
+| user_id                                       | ID of user who created the task                                            | string    |
+| guest_id                                      | ID of guest user who created the task                                      | string    |
+| type_id                                       | ID of the task type                                                        | integer   |
+| project_id                                    | ID of the project the task belongs to                                      | integer   |
+| team_id                                       | ID of the team the task belongs to (if not assigned)                       | integer   |
+| board_id                                      | ID of the board the task belongs to                                        | integer   |
+| board_stage_id                                | ID of the board stage the task belongs to                                  | integer   |
+| board_stage_position                          | Position of the task on stage                                              | integer   |
+| subtask_parent_position                       | Position of the task on parent task                                        | integer   |
+| desired_date                                  | Desired delivery date                                                      | date      |
+| desired_date_with_time                        | Desired delivery date and time                                             | date_time |
+| estimated_start_date                          | Date when the system estimates the task will be started                    | date_time |
+| estimated_delivery_date                       | Date when the system estimates the task will be delivered                  | date_time |
+| gantt_bar_start_date                          | Start date for Gantt chart                                                 | date_time |
+| gantt_bar_end_date                            | End date for Gantt chart                                                   | date_time |
+| close_date                                    | Date when the task was delivered                                           | datetime  |
+| was_reopened                                  | True if the task has been reopened after being delivered                   | boolean   |
+| is_closed                                     | True if the task is delivered                                              | boolean   |
+| is_assigned                                   | True if the task has anyone assigned                                       | boolean   |
+| on_going                                      | True if the task is an ongoing task                                        | boolean   |
+| estimate_updated                              | True if estimate dates have been updated after potential change            | boolean   |
+| estimated_at                                  | Last time when task was estimated                                          | boolean   |
+| queue_position                                | 1-based index of position on assignee user's task list                     | integer   |
+| created_at                                    | Date when task was created                                                 | datetime  |
+| start_date                                    | First time when task was worked on                                         | datetime  |
+| desired_start_date                            | Desired start date                                                         | date_time |
+| current_estimate_seconds                      | Current estimated effort (in seconds)                                      | integer   |
+| evaluation_status                             | Evaluation status ('approved' / 'rejected' / 'pending' / null)             | string    |
+| attachments_count                             | Number of attachment that belongs to task                                  | integer   |
+| tags_data                                     | Tags for task                                                              | array     |
+| client_name                                   | Name of client                                                             | string    |
+| client_id                                     | ID of the client the task belongs to                                       | integer   |
+| project_name                                  | Name of project                                                            | string    |
+| project_group_name                            | Name of project group                                                      | string    |
+| project_group_id                              | ID of the group the task belongs to                                        | integer   |
+| project_group_is_default                      | True if the project group is default                                       | boolean   |
+| project_sub_group_name                        | Name of project subgroup                                                   | string    |
+| project_sub_group_id                          | ID of the sub group the task belongs to                                    | integer   |
+| project_sub_group_is_default                  | True if the project subgroup is default                                    | boolean   |
+| type_name                                     | Name of task type                                                          | string    |
+| user_name                                     | Name of user who created the task                                          | string    |
+| guest_name                                    | Name of guest user who created the task                                    | string    |
+| board_name                                    | Name of board                                                              | string    |
+| board_stage_name                              | Name of board stage                                                        | string    |
+| board_stage_description                       | Description of board stage                                                 | string    |
+| team_name                                     | Name of team (if not assigned)                                             | string    |
+| type_color                                    | Task type color in hexadecimal format                                      | string    |
+| state                                         | Task state ('not_assigned', 'working_on', 'queued', 'closed')              | string    |
+| overdue                                       | Overdue status of the task ('on_schedule', 'soft_overdue', 'hard_overdue') | string    |
+| time_worked                                   | Time (in seconds) worked in the task                                       | integer   |
+| time_pending                                  | Time (in seconds) pending in the task                                      | integer   |
+| time_total                                    | Total time (in seconds) spent in the task                                  | integer   |
+| time_progress                                 | Progress of time worked on the task                                        | float     |
+| activities_6_days_ago                         | Time (in seconds) worked in the task 6 days ago                            | integer   |
+| activities_5_days_ago                         | Time (in seconds) worked in the task 5 days ago                            | integer   |
+| activities_4_days_ago                         | Time (in seconds) worked in the task 4 days ago                            | integer   |
+| activities_3_days_ago                         | Time (in seconds) worked in the task 3 days ago                            | integer   |
+| activities_2_days_ago                         | Time (in seconds) worked in the task 2 days ago                            | integer   |
+| activities_1_days_ago                         | Time (in seconds) worked in the task 1 days ago                            | integer   |
+| activities_0_days_ago                         | Time (in seconds) worked in the task today                                 | integer   |
+| activities                                    | Total time (in seconds) worked today and in the last 6 days                | integer   |
+| repetition_rule                               | Repetition rule                                                            | integer   |
+| board_remaining_time                          | Time (in seconds) remaining estimated to deliver the task on board         | integer   |
+| stage_depart_estimated_at                     | Estimated date of departure from stage on board                            | date_time |
+| search_row_rank                               | Search relevance                                                           | integer   |
+| is_urgent                                     | True if the task is urgent                                                 | boolean   |
+| points                                        |                                                                            | integer   |
+| reestimate_count                              | Reestimate counter                                                         | integer   |
+| parent_ids                                    | IDs from direct prerequisite tasks                                         | array     |
+| opened_parent_ids                             | IDs from direct open prerequisite tasks                                    | array     |
+| parents_max_desired_date                      | Maximum desired date of direct prerequisites.                              | date_time |
+| child_ids                                     | IDs from direct descendant tasks                                           | array     |
+| workflow_id                                   | Workflow id                                                                | integer   |
+| checklist_id                                  | Checklist id                                                               | integer   |
+| is_shared                                     | True if the task is shared                                                 | boolean   |
+| sharing_details                               | Sharing details                                                            | array     |
+| subtask_ids                                   | Subtasks ids                                                               | array     |
+| subtasks_count                                | Subtasks count                                                             | integer   |
+| subtasks_closed_count                         | Subtasks closed count                                                      | integer   |
+| subtasks_count_progress                       | Subtasks count progress                                                    | float     |
+| is_subtask                                    | True if the task is a subtask                                              | boolean   |
+| parent_task_id                                | Parent task id                                                             | integer   |
+| parent_task_title                             | Parent task title                                                          | string    |
+| description                                   | Task description                                                           | string    |
+| all_subtasks_time_worked                      | Sum of time (in seconds) worked in all the subtasks from this task         | integer   |
+| all_subtasks_times_updating                   | True if is updating subtasks times summations                              | boolean   |
+| all_subtasks_time_total                       | Sum of total time (in seconds) spent in all the subtasks from this task    | integer   |
+| all_subtasks_time_progress                    | Progress of time worked on all the subtasks from this task                 | float     |
+| current_level                                 | Depth level of this task on your tree                                      | integer   |
+| evaluator_ids                                 | IDs from evaluators                                                        | array     |
+| pending_evaluator_ids                         | IDs from pending evaluators                                                | array     |
+| approved_evaluator_ids                        | IDs from approved evaluators                                               | array     |
+| rejected_evaluator_ids                        | IDs from rejected evaluators                                               | array     |
+| custom_fields                                 | Task custom fields                                                         | object    |
+| form_id                                       | ID of the form whom task was created from                                  | integer   |
+| board_stage_data                              | Data about the task board stage                                            | object    |
+| board_stage_elapsed_time                      | Time spent in seconds in the board stage                                   | integer   |
+| board_stage_elapsed_time_updated_at           | Datetime of the last update of the attribute board_stage_elapsed_time      | datetime  |
+| is_board_stage_sla_elapsed_time_overdue       | True if board stage SLA elapsed time is overdue                            | boolean   |
+| is_board_stage_sla_last_activity_time_overdue | True if board stage SLA activity time is overdue                           | boolean   |
+| last_activity_at                              | Datetime of last activity on the task                                      | date_time |
+| automation_id                                 | ID of the automation that created the task                                 | integer   |
+| automation_name                               | Name of the automation that created the task                               | string    |
+| email_address                                 | Unique email address of the task                                           | string    |
+| has_emails                                    | True if task has any associated email                                      | boolean   |
+| prerequisites_data                            | Prerequisite tasks data                                                    | object    |
+| subsequents_data                              | Subsequent tasks data                                                      | object    |
+| is_editable                                   | True if user is a task editor                                              | boolean   |
+| description_preview                           | Description preview                                                        | string    |
+| followers_data                                | Followers data                                                             | array     |
+| priority                                      | [Deprecated] Use queue_position                                            | integer   |
+| follower_ids                                  | IDs of users following this task                                           | array     |
+| workflow_id                                   | ID of associated workflow (if any)                                         | integer   |
+
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3912
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 1",
@@ -636,7 +624,7 @@ workflow_id  | ID of associated workflow (if any) | integer
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 14",
       "client_id": 1,
@@ -676,23 +664,23 @@ workflow_id  | ID of associated workflow (if any) | integer
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -714,7 +702,7 @@ workflow_id  | ID of associated workflow (if any) | integer
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -739,14 +727,14 @@ workflow_id  | ID of associated workflow (if any) | integer
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 58",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -778,34 +766,31 @@ workflow_id  | ID of associated workflow (if any) | integer
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__GET
+\_\_GET
 
 #### /api/v1.0/tasks/:id/subtasks
 
-####  Show task subtasks 
+#### Show task subtasks
 
 ## Request
 
 #### Route
-    
-    
+
     GET /api/v1.0/tasks/1/subtasks
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
-    
-    
+
     curl -g "[https://runrun.it/api/v1.0/tasks/1/subtasks](https://runrun.it/api/v1.0/tasks/1/subtasks)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -818,139 +803,136 @@ __GET
 
 #### Response Fields
 
-Name | Description | type  
----|---|---  
-id  | Task ID | integer  
-title  | Task title | string  
-is_working_on  | True if any assignee is working on task | boolean  
-user_id  | ID of user who created the task | string  
-guest_id  | ID of guest user who created the task | string  
-type_id  | ID of the task type | integer  
-project_id  | ID of the project the task belongs to | integer  
-team_id  | ID of the team the task belongs to (if not assigned) | integer  
-board_id  | ID of the board the task belongs to | integer  
-board_stage_id  | ID of the board stage the task belongs to | integer  
-board_stage_position  | Position of the task on stage | integer  
-subtask_parent_position  | Position of the task on parent task | integer  
-desired_date  | Desired delivery date | date  
-desired_date_with_time  | Desired delivery date and time | date_time  
-estimated_start_date  | Date when the system estimates the task will be started | date_time  
-estimated_delivery_date  | Date when the system estimates the task will be delivered | date_time  
-gantt_bar_start_date  | Start date for Gantt chart | date_time  
-gantt_bar_end_date  | End date for Gantt chart | date_time  
-close_date  | Date when the task was delivered | datetime  
-was_reopened  | True if the task has been reopened after being delivered | boolean  
-is_closed  | True if the task is delivered | boolean  
-is_assigned  | True if the task has anyone assigned | boolean  
-on_going  | True if the task is an ongoing task | boolean  
-estimate_updated  | True if estimate dates have been updated after potential change | boolean  
-estimated_at  | Last time when task was estimated | boolean  
-queue_position  | 1-based index of position on assignee user's task list | integer  
-created_at  | Date when task was created | datetime  
-start_date  | First time when task was worked on | datetime  
-desired_start_date  | Desired start date | date_time  
-current_estimate_seconds  | Current estimated effort (in seconds) | integer  
-evaluation_status  | Evaluation status ('approved' / 'rejected' / 'pending' / null) | string  
-attachments_count  | Number of attachment that belongs to task | integer  
-tags_data  | Tags for task | array  
-client_name  | Name of client | string  
-client_id  | ID of the client the task belongs to | integer  
-project_name  | Name of project | string  
-project_group_name  | Name of project group | string  
-project_group_id  | ID of the group the task belongs to | integer  
-project_group_is_default  | True if the project group is default | boolean  
-project_sub_group_name  | Name of project subgroup | string  
-project_sub_group_id  | ID of the sub group the task belongs to | integer  
-project_sub_group_is_default  | True if the project subgroup is default | boolean  
-type_name  | Name of task type | string  
-user_name  | Name of user who created the task | string  
-guest_name  | Name of guest user who created the task | string  
-board_name  | Name of board | string  
-board_stage_name  | Name of board stage | string  
-board_stage_description  | Description of board stage | string  
-team_name  | Name of team (if not assigned) | string  
-type_color  | Task type color in hexadecimal format | string  
-state  | Task state ('not_assigned', 'working_on', 'queued', 'closed') | string  
-overdue  | Overdue status of the task ('on_schedule', 'soft_overdue', 'hard_overdue') | string  
-time_worked  | Time (in seconds) worked in the task | integer  
-time_pending  | Time (in seconds) pending in the task | integer  
-time_total  | Total time (in seconds) spent in the task | integer  
-time_progress  | Progress of time worked on the task | float  
-activities_6_days_ago  | Time (in seconds) worked in the task 6 days ago | integer  
-activities_5_days_ago  | Time (in seconds) worked in the task 5 days ago | integer  
-activities_4_days_ago  | Time (in seconds) worked in the task 4 days ago | integer  
-activities_3_days_ago  | Time (in seconds) worked in the task 3 days ago | integer  
-activities_2_days_ago  | Time (in seconds) worked in the task 2 days ago | integer  
-activities_1_days_ago  | Time (in seconds) worked in the task 1 days ago | integer  
-activities_0_days_ago  | Time (in seconds) worked in the task today | integer  
-activities  | Total time (in seconds) worked today and in the last 6 days | integer  
-repetition_rule  | Repetition rule | integer  
-board_remaining_time  | Time (in seconds) remaining estimated to deliver the task on board | integer  
-stage_depart_estimated_at  | Estimated date of departure from stage on board | date_time  
-search_row_rank  | Search relevance | integer  
-is_urgent  | True if the task is urgent | boolean  
-points  |  | integer  
-reestimate_count  | Reestimate counter | integer  
-parent_ids  | IDs from direct prerequisite tasks | array  
-opened_parent_ids  | IDs from direct open prerequisite tasks | array  
-parents_max_desired_date  | Maximum desired date of direct prerequisites. | date_time  
-child_ids  | IDs from direct descendant tasks | array  
-workflow_id  | Workflow id | integer  
-checklist_id  | Checklist id | integer  
-is_shared  | True if the task is shared | boolean  
-sharing_details  | Sharing details | array  
-subtask_ids  | Subtasks ids | array  
-subtasks_count  | Subtasks count | integer  
-subtasks_closed_count  | Subtasks closed count | integer  
-subtasks_count_progress  | Subtasks count progress | float  
-is_subtask  | True if the task is a subtask | boolean  
-parent_task_id  | Parent task id | integer  
-parent_task_title  | Parent task title | string  
-description  | Task description | string  
-all_subtasks_time_worked  | Sum of time (in seconds) worked in all the subtasks from this task | integer  
-all_subtasks_times_updating  | True if is updating subtasks times summations | boolean  
-all_subtasks_time_total  | Sum of total time (in seconds) spent in all the subtasks from this task | integer  
-all_subtasks_time_progress  | Progress of time worked on all the subtasks from this task | float  
-current_level  | Depth level of this task on your tree | integer  
-evaluator_ids  | IDs from evaluators | array  
-pending_evaluator_ids  | IDs from pending evaluators | array  
-approved_evaluator_ids  | IDs from approved evaluators | array  
-rejected_evaluator_ids  | IDs from rejected evaluators | array  
-custom_fields  | Task custom fields | object  
-form_id  | ID of the form whom task was created from | integer  
-board_stage_data  | Data about the task board stage | object  
-board_stage_elapsed_time  | Time spent in seconds in the board stage | integer  
-board_stage_elapsed_time_updated_at  | Datetime of the last update of the attribute board_stage_elapsed_time | datetime  
-is_board_stage_sla_elapsed_time_overdue  | True if board stage SLA elapsed time is overdue | boolean  
-is_board_stage_sla_last_activity_time_overdue  | True if board stage SLA activity time is overdue | boolean  
-last_activity_at  | Datetime of last activity on the task | date_time  
-automation_id  | ID of the automation that created the task | integer  
-automation_name  | Name of the automation that created the task | string  
-email_address  | Unique email address of the task | string  
-has_emails  | True if task has any associated email | boolean  
-prerequisites_data  | Prerequisite tasks data | object  
-subsequents_data  | Subsequent tasks data | object  
-is_editable  | True if user is a task editor | boolean  
-description_preview  | Description preview | string  
-followers_data  | Followers data | array  
-priority  | [Deprecated] Use queue_position | integer  
-follower_ids  | IDs of users following this task | array  
-workflow_id  | ID of associated workflow (if any) | integer  
-  
+| Name                                          | Description                                                                | type      |
+| --------------------------------------------- | -------------------------------------------------------------------------- | --------- |
+| id                                            | Task ID                                                                    | integer   |
+| title                                         | Task title                                                                 | string    |
+| is_working_on                                 | True if any assignee is working on task                                    | boolean   |
+| user_id                                       | ID of user who created the task                                            | string    |
+| guest_id                                      | ID of guest user who created the task                                      | string    |
+| type_id                                       | ID of the task type                                                        | integer   |
+| project_id                                    | ID of the project the task belongs to                                      | integer   |
+| team_id                                       | ID of the team the task belongs to (if not assigned)                       | integer   |
+| board_id                                      | ID of the board the task belongs to                                        | integer   |
+| board_stage_id                                | ID of the board stage the task belongs to                                  | integer   |
+| board_stage_position                          | Position of the task on stage                                              | integer   |
+| subtask_parent_position                       | Position of the task on parent task                                        | integer   |
+| desired_date                                  | Desired delivery date                                                      | date      |
+| desired_date_with_time                        | Desired delivery date and time                                             | date_time |
+| estimated_start_date                          | Date when the system estimates the task will be started                    | date_time |
+| estimated_delivery_date                       | Date when the system estimates the task will be delivered                  | date_time |
+| gantt_bar_start_date                          | Start date for Gantt chart                                                 | date_time |
+| gantt_bar_end_date                            | End date for Gantt chart                                                   | date_time |
+| close_date                                    | Date when the task was delivered                                           | datetime  |
+| was_reopened                                  | True if the task has been reopened after being delivered                   | boolean   |
+| is_closed                                     | True if the task is delivered                                              | boolean   |
+| is_assigned                                   | True if the task has anyone assigned                                       | boolean   |
+| on_going                                      | True if the task is an ongoing task                                        | boolean   |
+| estimate_updated                              | True if estimate dates have been updated after potential change            | boolean   |
+| estimated_at                                  | Last time when task was estimated                                          | boolean   |
+| queue_position                                | 1-based index of position on assignee user's task list                     | integer   |
+| created_at                                    | Date when task was created                                                 | datetime  |
+| start_date                                    | First time when task was worked on                                         | datetime  |
+| desired_start_date                            | Desired start date                                                         | date_time |
+| current_estimate_seconds                      | Current estimated effort (in seconds)                                      | integer   |
+| evaluation_status                             | Evaluation status ('approved' / 'rejected' / 'pending' / null)             | string    |
+| attachments_count                             | Number of attachment that belongs to task                                  | integer   |
+| tags_data                                     | Tags for task                                                              | array     |
+| client_name                                   | Name of client                                                             | string    |
+| client_id                                     | ID of the client the task belongs to                                       | integer   |
+| project_name                                  | Name of project                                                            | string    |
+| project_group_name                            | Name of project group                                                      | string    |
+| project_group_id                              | ID of the group the task belongs to                                        | integer   |
+| project_group_is_default                      | True if the project group is default                                       | boolean   |
+| project_sub_group_name                        | Name of project subgroup                                                   | string    |
+| project_sub_group_id                          | ID of the sub group the task belongs to                                    | integer   |
+| project_sub_group_is_default                  | True if the project subgroup is default                                    | boolean   |
+| type_name                                     | Name of task type                                                          | string    |
+| user_name                                     | Name of user who created the task                                          | string    |
+| guest_name                                    | Name of guest user who created the task                                    | string    |
+| board_name                                    | Name of board                                                              | string    |
+| board_stage_name                              | Name of board stage                                                        | string    |
+| board_stage_description                       | Description of board stage                                                 | string    |
+| team_name                                     | Name of team (if not assigned)                                             | string    |
+| type_color                                    | Task type color in hexadecimal format                                      | string    |
+| state                                         | Task state ('not_assigned', 'working_on', 'queued', 'closed')              | string    |
+| overdue                                       | Overdue status of the task ('on_schedule', 'soft_overdue', 'hard_overdue') | string    |
+| time_worked                                   | Time (in seconds) worked in the task                                       | integer   |
+| time_pending                                  | Time (in seconds) pending in the task                                      | integer   |
+| time_total                                    | Total time (in seconds) spent in the task                                  | integer   |
+| time_progress                                 | Progress of time worked on the task                                        | float     |
+| activities_6_days_ago                         | Time (in seconds) worked in the task 6 days ago                            | integer   |
+| activities_5_days_ago                         | Time (in seconds) worked in the task 5 days ago                            | integer   |
+| activities_4_days_ago                         | Time (in seconds) worked in the task 4 days ago                            | integer   |
+| activities_3_days_ago                         | Time (in seconds) worked in the task 3 days ago                            | integer   |
+| activities_2_days_ago                         | Time (in seconds) worked in the task 2 days ago                            | integer   |
+| activities_1_days_ago                         | Time (in seconds) worked in the task 1 days ago                            | integer   |
+| activities_0_days_ago                         | Time (in seconds) worked in the task today                                 | integer   |
+| activities                                    | Total time (in seconds) worked today and in the last 6 days                | integer   |
+| repetition_rule                               | Repetition rule                                                            | integer   |
+| board_remaining_time                          | Time (in seconds) remaining estimated to deliver the task on board         | integer   |
+| stage_depart_estimated_at                     | Estimated date of departure from stage on board                            | date_time |
+| search_row_rank                               | Search relevance                                                           | integer   |
+| is_urgent                                     | True if the task is urgent                                                 | boolean   |
+| points                                        |                                                                            | integer   |
+| reestimate_count                              | Reestimate counter                                                         | integer   |
+| parent_ids                                    | IDs from direct prerequisite tasks                                         | array     |
+| opened_parent_ids                             | IDs from direct open prerequisite tasks                                    | array     |
+| parents_max_desired_date                      | Maximum desired date of direct prerequisites.                              | date_time |
+| child_ids                                     | IDs from direct descendant tasks                                           | array     |
+| workflow_id                                   | Workflow id                                                                | integer   |
+| checklist_id                                  | Checklist id                                                               | integer   |
+| is_shared                                     | True if the task is shared                                                 | boolean   |
+| sharing_details                               | Sharing details                                                            | array     |
+| subtask_ids                                   | Subtasks ids                                                               | array     |
+| subtasks_count                                | Subtasks count                                                             | integer   |
+| subtasks_closed_count                         | Subtasks closed count                                                      | integer   |
+| subtasks_count_progress                       | Subtasks count progress                                                    | float     |
+| is_subtask                                    | True if the task is a subtask                                              | boolean   |
+| parent_task_id                                | Parent task id                                                             | integer   |
+| parent_task_title                             | Parent task title                                                          | string    |
+| description                                   | Task description                                                           | string    |
+| all_subtasks_time_worked                      | Sum of time (in seconds) worked in all the subtasks from this task         | integer   |
+| all_subtasks_times_updating                   | True if is updating subtasks times summations                              | boolean   |
+| all_subtasks_time_total                       | Sum of total time (in seconds) spent in all the subtasks from this task    | integer   |
+| all_subtasks_time_progress                    | Progress of time worked on all the subtasks from this task                 | float     |
+| current_level                                 | Depth level of this task on your tree                                      | integer   |
+| evaluator_ids                                 | IDs from evaluators                                                        | array     |
+| pending_evaluator_ids                         | IDs from pending evaluators                                                | array     |
+| approved_evaluator_ids                        | IDs from approved evaluators                                               | array     |
+| rejected_evaluator_ids                        | IDs from rejected evaluators                                               | array     |
+| custom_fields                                 | Task custom fields                                                         | object    |
+| form_id                                       | ID of the form whom task was created from                                  | integer   |
+| board_stage_data                              | Data about the task board stage                                            | object    |
+| board_stage_elapsed_time                      | Time spent in seconds in the board stage                                   | integer   |
+| board_stage_elapsed_time_updated_at           | Datetime of the last update of the attribute board_stage_elapsed_time      | datetime  |
+| is_board_stage_sla_elapsed_time_overdue       | True if board stage SLA elapsed time is overdue                            | boolean   |
+| is_board_stage_sla_last_activity_time_overdue | True if board stage SLA activity time is overdue                           | boolean   |
+| last_activity_at                              | Datetime of last activity on the task                                      | date_time |
+| automation_id                                 | ID of the automation that created the task                                 | integer   |
+| automation_name                               | Name of the automation that created the task                               | string    |
+| email_address                                 | Unique email address of the task                                           | string    |
+| has_emails                                    | True if task has any associated email                                      | boolean   |
+| prerequisites_data                            | Prerequisite tasks data                                                    | object    |
+| subsequents_data                              | Subsequent tasks data                                                      | object    |
+| is_editable                                   | True if user is a task editor                                              | boolean   |
+| description_preview                           | Description preview                                                        | string    |
+| followers_data                                | Followers data                                                             | array     |
+| priority                                      | [Deprecated] Use queue_position                                            | integer   |
+| follower_ids                                  | IDs of users following this task                                           | array     |
+| workflow_id                                   | ID of associated workflow (if any)                                         | integer   |
+
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3915
 
 #### Body
-    
-    
+
     [
       {
         "id": 2,
@@ -986,7 +968,7 @@ workflow_id  | ID of associated workflow (if any) | integer
         "evaluation_status": null,
         "attachments_count": 0,
         "tags_data": [
-    
+
         ],
         "client_name": "Test client 16",
         "client_id": 2,
@@ -1026,23 +1008,23 @@ workflow_id  | ID of associated workflow (if any) | integer
         "points": null,
         "reestimate_count": 0,
         "parent_ids": [
-    
+
         ],
         "opened_parent_ids": [
-    
+
         ],
         "parents_max_desired_date": null,
         "child_ids": [
-    
+
         ],
         "workflow_id": null,
         "checklist_id": null,
         "is_shared": false,
         "sharing_details": [
-    
+
         ],
         "subtask_ids": [
-    
+
         ],
         "subtasks_count": 0,
         "subtasks_closed_count": 0,
@@ -1064,7 +1046,7 @@ workflow_id  | ID of associated workflow (if any) | integer
         "form_id": null,
         "board_stage_data": {
           "fields_data": [
-    
+
           ],
           "use_elapsed_time": false,
           "sla_elapsed_time": null,
@@ -1089,14 +1071,14 @@ workflow_id  | ID of associated workflow (if any) | integer
         "estimated_delivery_date_updated": false,
         "last_estimated_at": null,
         "task_tags": [
-    
+
         ],
         "approved": null,
         "task_status_id": 4,
         "task_status_name": "Board Stage 64",
         "tag_list": "",
         "tags": [
-    
+
         ],
         "scheduled_start_time": null,
         "is_scheduled": false,
@@ -1128,54 +1110,51 @@ workflow_id  | ID of associated workflow (if any) | integer
           }
         ],
         "follower_ids": [
-    
+
         ]
       }
     ]
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks
 
-####  Create a Task 
+#### Create a Task
 
 Create a task. The `user` field will be set to the user on whose behalf the API request is issued.
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-task[title] required | Task title | string  
-task[on_going]  | True if the task is an ongoing task | boolean  
-task[type_id] required | ID of the task type | integer  
-task[project_id]  | ID of the project the task belongs to | integer  
-task[desired_start_date]  | Desired start date | date_time  
-task[desired_date]  | Desired delivery date | date_time  
-task[tag_list]  | Task tag list |   
-task[assignments]  | Objects of task assignments | array  
-task[task_prerequisite_ids]  | IDs of pre-requisite tasks | array  
-task[task_descendant_ids]  | IDs of descendant tasks | array  
-task[follower_ids]  | IDs of users to follow this task | array  
-task[document_ids]  | IDs of Document records to attach | array  
-  
+| Name                        | Description                           | type      |
+| --------------------------- | ------------------------------------- | --------- |
+| task[title] required        | Task title                            | string    |
+| task[on_going]              | True if the task is an ongoing task   | boolean   |
+| task[type_id] required      | ID of the task type                   | integer   |
+| task[project_id]            | ID of the project the task belongs to | integer   |
+| task[desired_start_date]    | Desired start date                    | date_time |
+| task[desired_date]          | Desired delivery date                 | date_time |
+| task[tag_list]              | Task tag list                         |
+| task[assignments]           | Objects of task assignments           | array     |
+| task[task_prerequisite_ids] | IDs of pre-requisite tasks            | array     |
+| task[task_descendant_ids]   | IDs of descendant tasks               | array     |
+| task[follower_ids]          | IDs of users to follow this task      | array     |
+| task[document_ids]          | IDs of Document records to attach     | array     |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "task": {
         "type_id": 1,
@@ -1194,8 +1173,7 @@ task[document_ids]  | IDs of Document records to attach | array
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks](https://runrun.it/api/v1.0/tasks)" -d '{"task":{"type_id":1,"project_id":1,"title":"Bla 8","desired_date":null,"on_going":false,"assignments":[{"assignee_id":"coyote-57","team_id":1}],"source":"my_source_value"}}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -1207,19 +1185,16 @@ task[document_ids]  | IDs of Document records to attach | array
 [Simulated Response](/api/documentation/simulate/tasks/create_a_task)
 
 #### Status
-    
-    
+
     201
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3977
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 8",
@@ -1254,7 +1229,7 @@ task[document_ids]  | IDs of Document records to attach | array
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 22",
       "client_id": 1,
@@ -1294,23 +1269,23 @@ task[document_ids]  | IDs of Document records to attach | array
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -1332,7 +1307,7 @@ task[document_ids]  | IDs of Document records to attach | array
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -1357,14 +1332,14 @@ task[document_ids]  | IDs of Document records to attach | array
       "estimated_delivery_date_updated": true,
       "last_estimated_at": "2026-03-04T16:52:53-03:00",
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 82",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -1396,40 +1371,37 @@ task[document_ids]  | IDs of Document records to attach | array
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__PUT
+\_\_PUT
 
 #### /api/v1.0/tasks/:id
 
-####  Update task title 
+#### Update task title
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-task[title] required | Task title | string  
-  
+| Name                 | Description | type   |
+| -------------------- | ----------- | ------ |
+| task[title] required | Task title  | string |
+
 ## Request
 
 #### Route
-    
-    
+
     PUT /api/v1.0/tasks/1
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "task": {
         "title": "New title"
@@ -1437,8 +1409,7 @@ task[title] required | Task title | string
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1](https://runrun.it/api/v1.0/tasks/1)" -d '{"task":{"title":"New title"}}' -X PUT \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -1450,19 +1421,16 @@ task[title] required | Task title | string
 [Simulated Response](/api/documentation/simulate/tasks/update_task_title)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3928
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "New title",
@@ -1497,7 +1465,7 @@ task[title] required | Task title | string
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 34",
       "client_id": 1,
@@ -1537,23 +1505,23 @@ task[title] required | Task title | string
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -1575,7 +1543,7 @@ task[title] required | Task title | string
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -1600,14 +1568,14 @@ task[title] required | Task title | string
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 163",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -1639,40 +1607,37 @@ task[title] required | Task title | string
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__PUT
+\_\_PUT
 
 #### /api/v1.0/tasks/:id
 
-####  Update task desired start date 
+#### Update task desired start date
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-task[desired_start_date]  | Desired start date | date_time  
-  
+| Name                     | Description        | type      |
+| ------------------------ | ------------------ | --------- |
+| task[desired_start_date] | Desired start date | date_time |
+
 ## Request
 
 #### Route
-    
-    
+
     PUT /api/v1.0/tasks/1
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "task": {
         "desired_start_date": "2024-04-17T14:50:30-03:00"
@@ -1680,8 +1645,7 @@ task[desired_start_date]  | Desired start date | date_time
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1](https://runrun.it/api/v1.0/tasks/1)" -d '{"task":{"desired_start_date":"2024-04-17T14:50:30-03:00"}}' -X PUT \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -1693,19 +1657,16 @@ task[desired_start_date]  | Desired start date | date_time
 [Simulated Response](/api/documentation/simulate/tasks/update_task_desired_start_date)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 4016
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 19",
@@ -1740,7 +1701,7 @@ task[desired_start_date]  | Desired start date | date_time
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 35",
       "client_id": 1,
@@ -1780,23 +1741,23 @@ task[desired_start_date]  | Desired start date | date_time
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -1818,7 +1779,7 @@ task[desired_start_date]  | Desired start date | date_time
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -1843,14 +1804,14 @@ task[desired_start_date]  | Desired start date | date_time
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 166",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": "2024-04-17T14:50:30-03:00",
       "is_scheduled": true,
@@ -1882,40 +1843,37 @@ task[desired_start_date]  | Desired start date | date_time
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__PUT
+\_\_PUT
 
 #### /api/v1.0/tasks/:id
 
-####  Update task desired date 
+#### Update task desired date
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-task[desired_date]  | Desired delivery date | date  
-  
+| Name               | Description           | type |
+| ------------------ | --------------------- | ---- |
+| task[desired_date] | Desired delivery date | date |
+
 ## Request
 
 #### Route
-    
-    
+
     PUT /api/v1.0/tasks/1
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "task": {
         "desired_date": "2024-04-20T20:23:40-03:00"
@@ -1923,8 +1881,7 @@ task[desired_date]  | Desired delivery date | date
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1](https://runrun.it/api/v1.0/tasks/1)" -d '{"task":{"desired_date":"2024-04-20T20:23:40-03:00"}}' -X PUT \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -1936,19 +1893,16 @@ task[desired_date]  | Desired delivery date | date
 [Simulated Response](/api/documentation/simulate/tasks/update_task_desired_date)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 4003
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 21",
@@ -1983,7 +1937,7 @@ task[desired_date]  | Desired delivery date | date
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 37",
       "client_id": 1,
@@ -2023,23 +1977,23 @@ task[desired_date]  | Desired delivery date | date
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -2061,7 +2015,7 @@ task[desired_date]  | Desired delivery date | date
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -2086,14 +2040,14 @@ task[desired_date]  | Desired delivery date | date
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 172",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -2125,40 +2079,37 @@ task[desired_date]  | Desired delivery date | date
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__PUT
+\_\_PUT
 
 #### /api/v1.0/tasks/:id
 
-####  Add task tags, without setting the color 
+#### Add task tags, without setting the color
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-task[tags_data]  | Tags for task | array  
-  
+| Name            | Description   | type  |
+| --------------- | ------------- | ----- |
+| task[tags_data] | Tags for task | array |
+
 ## Request
 
 #### Route
-    
-    
+
     PUT /api/v1.0/tasks/1
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "task": {
         "tags_data": [
@@ -2175,8 +2126,7 @@ task[tags_data]  | Tags for task | array
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1](https://runrun.it/api/v1.0/tasks/1)" -d '{"task":{"tags_data":[{"name":"tag a","color":"#FFFFFF"},{"name":"tag b","color":"#000000"}]}}' -X PUT \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -2188,19 +2138,16 @@ task[tags_data]  | Tags for task | array
 [Simulated Response](/api/documentation/simulate/tasks/add_task_tags,_without_setting_the_color)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 4034
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 23",
@@ -2282,23 +2229,23 @@ task[tags_data]  | Tags for task | array
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -2320,7 +2267,7 @@ task[tags_data]  | Tags for task | array
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -2386,40 +2333,37 @@ task[tags_data]  | Tags for task | array
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__PUT
+\_\_PUT
 
 #### /api/v1.0/tasks/:id
 
-####  Update task points 
+#### Update task points
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-task[points]  |  | integer  
-  
+| Name         | Description | type    |
+| ------------ | ----------- | ------- |
+| task[points] |             | integer |
+
 ## Request
 
 #### Route
-    
-    
+
     PUT /api/v1.0/tasks/1
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "task": {
         "points": 8
@@ -2427,8 +2371,7 @@ task[points]  |  | integer
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1](https://runrun.it/api/v1.0/tasks/1)" -d '{"task":{"points":8}}' -X PUT \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -2440,19 +2383,16 @@ task[points]  |  | integer
 [Simulated Response](/api/documentation/simulate/tasks/update_task_points)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3930
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 28",
@@ -2487,7 +2427,7 @@ task[points]  |  | integer
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 44",
       "client_id": 1,
@@ -2527,23 +2467,23 @@ task[points]  |  | integer
       "points": 8,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -2565,7 +2505,7 @@ task[points]  |  | integer
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -2590,14 +2530,14 @@ task[points]  |  | integer
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 193",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -2629,17 +2569,17 @@ task[points]  |  | integer
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__PUT
+\_\_PUT
 
 #### /api/v1.0/tasks/:id
 
-####  Update task custom fields 
+#### Update task custom fields
 
-Custom fields are identified by a "custom_" prefix followed by a number
+Custom fields are identified by a "custom\_" prefix followed by a number
 
 To determine which custom fields can be filled in a task, you need to access the endpoint GET api/v1.0/tasks/:task_id/fields
 
@@ -2647,28 +2587,25 @@ The options of the fields of type 'single_option' and 'multiple_options' can be 
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-task[custom_fields]  | Task custom fields | object  
-  
+| Name                | Description        | type   |
+| ------------------- | ------------------ | ------ |
+| task[custom_fields] | Task custom fields | object |
+
 ## Request
 
 #### Route
-    
-    
+
     PUT /api/v1.0/tasks/1
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "task": {
         "custom_fields": {
@@ -2702,8 +2639,7 @@ task[custom_fields]  | Task custom fields | object
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1](https://runrun.it/api/v1.0/tasks/1)" -d '{"task":{"custom_fields":{"custom_3":"Short text","custom_4":"Long text","custom_5":45,"custom_6":30.23,"custom_7":8,"custom_8":"2024-11-15","custom_9":"2024-11-15T21:12:43-03:00","custom_1":{"id":"2","label":"Option 2","color":null},"custom_2":[{"id":"3","label":"Option A","color":null},{"id":"4","label":"Option B","color":null}],"custom_10":"[email@example.com](mailto:email@example.com)"}}}' -X PUT \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -2715,19 +2651,16 @@ task[custom_fields]  | Task custom fields | object
 [Simulated Response](/api/documentation/simulate/tasks/update_task_custom_fields)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 4271
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 31",
@@ -2762,7 +2695,7 @@ task[custom_fields]  | Task custom fields | object
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 47",
       "client_id": 1,
@@ -2802,23 +2735,23 @@ task[custom_fields]  | Task custom fields | object
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -2865,7 +2798,7 @@ task[custom_fields]  | Task custom fields | object
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -2890,14 +2823,14 @@ task[custom_fields]  | Task custom fields | object
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 202",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -2929,34 +2862,31 @@ task[custom_fields]  | Task custom fields | object
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__DELETE
+\_\_DELETE
 
 #### /api/v1.0/tasks/:id
 
-####  Destroy a Task 
+#### Destroy a Task
 
 ## Request
 
 #### Route
-    
-    
+
     DELETE /api/v1.0/tasks/1
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1](https://runrun.it/api/v1.0/tasks/1)" -d '' -X DELETE \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -2968,53 +2898,46 @@ __DELETE
 [Simulated Response](/api/documentation/simulate/tasks/destroy_a_task)
 
 #### Status
-    
-    
+
     204
 
 #### Headers
 
-
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:id/play
 
-####  Play a Task 
+#### Play a Task
 
 Indicate that a task is being worked on, if the responsible is currently working on a task it will be paused.
 
-The task is eligible to be started if: 
+The task is eligible to be started if:
 
-  * it's not already being working on
-  * it's not closed
-  * it does not have any open prerequisite tasks
-
-
+- it's not already being working on
+- it's not closed
+- it does not have any open prerequisite tasks
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | Task ID | integer  
-  
+| Name        | Description | type    |
+| ----------- | ----------- | ------- |
+| id required | Task ID     | integer |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/1/play
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1/play](https://runrun.it/api/v1.0/tasks/1/play)" -d '' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -3026,19 +2949,16 @@ id required | Task ID | integer
 [Simulated Response](/api/documentation/simulate/tasks/play_a_task)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3972
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 41",
@@ -3073,7 +2993,7 @@ id required | Task ID | integer
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 57",
       "client_id": 1,
@@ -3113,23 +3033,23 @@ id required | Task ID | integer
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -3151,7 +3071,7 @@ id required | Task ID | integer
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -3176,14 +3096,14 @@ id required | Task ID | integer
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 232",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -3215,40 +3135,37 @@ id required | Task ID | integer
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:id/play
 
-####  Create assignment and play Task 
+#### Create assignment and play Task
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | Task ID | integer  
-  
+| Name        | Description | type    |
+| ----------- | ----------- | ------- |
+| id required | Task ID     | integer |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/1/play
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1/play](https://runrun.it/api/v1.0/tasks/1/play)" -d '' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -3260,19 +3177,16 @@ id required | Task ID | integer
 [Simulated Response](/api/documentation/simulate/tasks/create_assignment_and_play_task)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3972
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 42",
@@ -3307,7 +3221,7 @@ id required | Task ID | integer
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 58",
       "client_id": 1,
@@ -3347,23 +3261,23 @@ id required | Task ID | integer
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -3385,7 +3299,7 @@ id required | Task ID | integer
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -3410,14 +3324,14 @@ id required | Task ID | integer
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 235",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -3449,48 +3363,43 @@ id required | Task ID | integer
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:id/pause
 
-####  Pause a Task 
+#### Pause a Task
 
 Pause the work on a task.
 
-The task is eligible to be paused if: 
+The task is eligible to be paused if:
 
-  * it's currently being working on
-
-
+- it's currently being working on
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | Task ID | integer  
-  
+| Name        | Description | type    |
+| ----------- | ----------- | ------- |
+| id required | Task ID     | integer |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/1/pause
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1/pause](https://runrun.it/api/v1.0/tasks/1/pause)" -d '' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -3502,19 +3411,16 @@ id required | Task ID | integer
 [Simulated Response](/api/documentation/simulate/tasks/pause_a_task)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3993
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 43",
@@ -3549,7 +3455,7 @@ id required | Task ID | integer
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 59",
       "client_id": 1,
@@ -3589,23 +3495,23 @@ id required | Task ID | integer
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -3627,7 +3533,7 @@ id required | Task ID | integer
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -3652,14 +3558,14 @@ id required | Task ID | integer
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 238",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -3691,48 +3597,44 @@ id required | Task ID | integer
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:id/change_board
 
-####  Change a Task board to another 
+#### Change a Task board to another
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | Task ID | integer  
-board_id required | ID of the board the task belongs to | integer  
-  
+| Name              | Description                         | type    |
+| ----------------- | ----------------------------------- | ------- |
+| id required       | Task ID                             | integer |
+| board_id required | ID of the board the task belongs to | integer |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/1/change_board
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "board_id": 2
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1/change_board](https://runrun.it/api/v1.0/tasks/1/change_board)" -d '{"board_id":2}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -3744,19 +3646,16 @@ board_id required | ID of the board the task belongs to | integer
 [Simulated Response](/api/documentation/simulate/tasks/change_a_task_board_to_another)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3977
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 46",
@@ -3791,7 +3690,7 @@ board_id required | ID of the board the task belongs to | integer
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 62",
       "client_id": 1,
@@ -3831,23 +3730,23 @@ board_id required | ID of the board the task belongs to | integer
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -3869,7 +3768,7 @@ board_id required | ID of the board the task belongs to | integer
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -3894,14 +3793,14 @@ board_id required | ID of the board the task belongs to | integer
       "estimated_delivery_date_updated": true,
       "last_estimated_at": "2026-03-04T16:53:36-03:00",
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 3,
       "task_status_name": "Board Stage 249",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -3933,48 +3832,44 @@ board_id required | ID of the board the task belongs to | integer
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:id/change_project
 
-####  Change the project from task to another 
+#### Change the project from task to another
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | Task ID | integer  
-project_id  | ID of the project the task belongs to | integer  
-  
+| Name        | Description                           | type    |
+| ----------- | ------------------------------------- | ------- |
+| id required | Task ID                               | integer |
+| project_id  | ID of the project the task belongs to | integer |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/1/change_project
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "project_id": 1
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1/change_project](https://runrun.it/api/v1.0/tasks/1/change_project)" -d '{"project_id":1}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -3986,19 +3881,16 @@ project_id  | ID of the project the task belongs to | integer
 [Simulated Response](/api/documentation/simulate/tasks/change_the_project_from_task_to_another)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3924
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 47",
@@ -4033,7 +3925,7 @@ project_id  | ID of the project the task belongs to | integer
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 63",
       "client_id": 1,
@@ -4073,23 +3965,23 @@ project_id  | ID of the project the task belongs to | integer
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -4111,7 +4003,7 @@ project_id  | ID of the project the task belongs to | integer
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -4136,14 +4028,14 @@ project_id  | ID of the project the task belongs to | integer
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 251",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -4175,48 +4067,44 @@ project_id  | ID of the project the task belongs to | integer
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:id/change_type
 
-####  Change the type from task to another 
+#### Change the type from task to another
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | Task ID | integer  
-type_id required | ID of the task type | integer  
-  
+| Name             | Description         | type    |
+| ---------------- | ------------------- | ------- |
+| id required      | Task ID             | integer |
+| type_id required | ID of the task type | integer |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/1/change_type
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "type_id": 1
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1/change_type](https://runrun.it/api/v1.0/tasks/1/change_type)" -d '{"type_id":1}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -4228,19 +4116,16 @@ type_id required | ID of the task type | integer
 [Simulated Response](/api/documentation/simulate/tasks/change_the_type_from_task_to_another)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3977
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 49",
@@ -4275,7 +4160,7 @@ type_id required | ID of the task type | integer
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 65",
       "client_id": 1,
@@ -4315,23 +4200,23 @@ type_id required | ID of the task type | integer
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -4353,7 +4238,7 @@ type_id required | ID of the task type | integer
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -4378,14 +4263,14 @@ type_id required | ID of the task type | integer
       "estimated_delivery_date_updated": true,
       "last_estimated_at": "2026-03-04T16:53:39-03:00",
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 257",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -4417,49 +4302,44 @@ type_id required | ID of the task type | integer
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:id/deliver
 
-####  Deliver a Task 
+#### Deliver a Task
 
 Deliver a task.
 
-The task is eligible to be delivered if: 
+The task is eligible to be delivered if:
 
-  * it's not already delivered
-  * it does not have any open prerequisite tasks
-
-
+- it's not already delivered
+- it does not have any open prerequisite tasks
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | Task ID | integer  
-  
+| Name        | Description | type    |
+| ----------- | ----------- | ------- |
+| id required | Task ID     | integer |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/1/deliver
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1/deliver](https://runrun.it/api/v1.0/tasks/1/deliver)" -d '' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -4471,19 +4351,16 @@ id required | Task ID | integer
 [Simulated Response](/api/documentation/simulate/tasks/deliver_a_task)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 4013
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 52",
@@ -4518,7 +4395,7 @@ id required | Task ID | integer
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 68",
       "client_id": 1,
@@ -4558,23 +4435,23 @@ id required | Task ID | integer
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -4596,7 +4473,7 @@ id required | Task ID | integer
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -4621,14 +4498,14 @@ id required | Task ID | integer
       "estimated_delivery_date_updated": true,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 3,
       "task_status_name": "Board Stage 268",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -4660,52 +4537,47 @@ id required | Task ID | integer
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:id/reopen
 
-####  Reopen a Task 
+#### Reopen a Task
 
 Reopen a closed task.
 
 IMPORTANT!!: If the task is prerequisite directly or indirectly in any task that has already been delivered or is under development, it is necessary to pause or reopen these tasks. You can set the parameter "reopen_or_pause_descendant_tasks" to automatically pause or reopen the necessary tasks. To complete this operation with success it's necessary that the current user is allowed to reopen and pause all these tasks.
 
-The task is eligible to be reopened if: 
+The task is eligible to be reopened if:
 
-  * it's closed
-  * it's not a prerequisite of working on or closed tasks
-
-
+- it's closed
+- it's not a prerequisite of working on or closed tasks
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | Task ID | integer  
-reopen_or_pause_descendant_tasks  | Force pause/reopen all descendant tasks | boolean  
-  
+| Name                             | Description                             | type    |
+| -------------------------------- | --------------------------------------- | ------- |
+| id required                      | Task ID                                 | integer |
+| reopen_or_pause_descendant_tasks | Force pause/reopen all descendant tasks | boolean |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/1/reopen
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1/reopen](https://runrun.it/api/v1.0/tasks/1/reopen)" -d '' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -4717,19 +4589,16 @@ reopen_or_pause_descendant_tasks  | Force pause/reopen all descendant tasks | bo
 [Simulated Response](/api/documentation/simulate/tasks/reopen_a_task)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 4022
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 54",
@@ -4764,7 +4633,7 @@ reopen_or_pause_descendant_tasks  | Force pause/reopen all descendant tasks | bo
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 70",
       "client_id": 1,
@@ -4804,23 +4673,23 @@ reopen_or_pause_descendant_tasks  | Force pause/reopen all descendant tasks | bo
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -4842,7 +4711,7 @@ reopen_or_pause_descendant_tasks  | Force pause/reopen all descendant tasks | bo
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -4867,14 +4736,14 @@ reopen_or_pause_descendant_tasks  | Force pause/reopen all descendant tasks | bo
       "estimated_delivery_date_updated": true,
       "last_estimated_at": "2026-03-04T16:53:45-03:00",
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 2,
       "task_status_name": "Board Stage 273",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -4906,48 +4775,44 @@ reopen_or_pause_descendant_tasks  | Force pause/reopen all descendant tasks | bo
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:id/reposition
 
-####  Reposition a Task 
+#### Reposition a Task
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | Task ID | integer  
-queue_position required | The new queue position on responsible user's task list | integer  
-  
+| Name                    | Description                                            | type    |
+| ----------------------- | ------------------------------------------------------ | ------- |
+| id required             | Task ID                                                | integer |
+| queue_position required | The new queue position on responsible user's task list | integer |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/4/reposition
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "queue_position": 2
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/4/reposition](https://runrun.it/api/v1.0/tasks/4/reposition)" -d '{"queue_position":2}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -4959,19 +4824,16 @@ queue_position required | The new queue position on responsible user's task list
 [Simulated Response](/api/documentation/simulate/tasks/reposition_a_task)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3929
 
 #### Body
-    
-    
+
     {
       "id": 4,
       "title": "Bla 63",
@@ -5006,7 +4868,7 @@ queue_position required | The new queue position on responsible user's task list
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 79",
       "client_id": 4,
@@ -5046,23 +4908,23 @@ queue_position required | The new queue position on responsible user's task list
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -5084,7 +4946,7 @@ queue_position required | The new queue position on responsible user's task list
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -5109,14 +4971,14 @@ queue_position required | The new queue position on responsible user's task list
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 10,
       "task_status_name": "Board Stage 299",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -5148,50 +5010,46 @@ queue_position required | The new queue position on responsible user's task list
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:id/reestimate
 
-####  Reestimate a Task using assingee_id param 
+#### Reestimate a Task using assingee_id param
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | Task ID | integer  
-work_seconds required | The new effort (in seconds) | integer  
-assignee_id  | If present only the informed assignee effort will be affected | string  
-  
+| Name                  | Description                                                   | type    |
+| --------------------- | ------------------------------------------------------------- | ------- |
+| id required           | Task ID                                                       | integer |
+| work_seconds required | The new effort (in seconds)                                   | integer |
+| assignee_id           | If present only the informed assignee effort will be affected | string  |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/1/reestimate
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "work_seconds": 666,
       "assignee_id": "coyote-173"
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1/reestimate](https://runrun.it/api/v1.0/tasks/1/reestimate)" -d '{"work_seconds":666,"assignee_id":"coyote-173"}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -5203,19 +5061,16 @@ assignee_id  | If present only the informed assignee effort will be affected | s
 [Simulated Response](/api/documentation/simulate/tasks/reestimate_a_task_using_assingee_id_param)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 4788
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 65",
@@ -5250,7 +5105,7 @@ assignee_id  | If present only the informed assignee effort will be affected | s
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 81",
       "client_id": 1,
@@ -5290,23 +5145,23 @@ assignee_id  | If present only the informed assignee effort will be affected | s
       "points": null,
       "reestimate_count": 1,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -5328,7 +5183,7 @@ assignee_id  | If present only the informed assignee effort will be affected | s
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -5353,14 +5208,14 @@ assignee_id  | If present only the informed assignee effort will be affected | s
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 305",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -5416,45 +5271,42 @@ assignee_id  | If present only the informed assignee effort will be affected | s
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:id/share
 
-####  Share the task 
+#### Share the task
 
 Share the task with guests.
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | Task ID | integer  
-comment  | Comment | string  
-guests_params  | List of objects with guest data | array  
-sharing_details  | List of optional information to be shared. Options: "documents", "time_progress", "board_stage" | array  
-  
+| Name            | Description                                                                                     | type    |
+| --------------- | ----------------------------------------------------------------------------------------------- | ------- |
+| id required     | Task ID                                                                                         | integer |
+| comment         | Comment                                                                                         | string  |
+| guests_params   | List of objects with guest data                                                                 | array   |
+| sharing_details | List of optional information to be shared. Options: "documents", "time_progress", "board_stage" | array   |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/1/share
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "sharing_details": [
         "documents"
@@ -5470,8 +5322,7 @@ sharing_details  | List of optional information to be shared. Options: "document
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1/share](https://runrun.it/api/v1.0/tasks/1/share)" -d '{"sharing_details":["documents"],"guests_params":[{"email":"[guest1@email.com](mailto:guest1@email.com)"},{"email":"[guest2@email.com](mailto:guest2@email.com)"}]}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -5483,19 +5334,16 @@ sharing_details  | List of optional information to be shared. Options: "document
 [Simulated Response](/api/documentation/simulate/tasks/share_the_task)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3935
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 68",
@@ -5530,7 +5378,7 @@ sharing_details  | List of optional information to be shared. Options: "document
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 84",
       "client_id": 1,
@@ -5570,14 +5418,14 @@ sharing_details  | List of optional information to be shared. Options: "document
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
@@ -5586,7 +5434,7 @@ sharing_details  | List of optional information to be shared. Options: "document
         "documents"
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -5608,7 +5456,7 @@ sharing_details  | List of optional information to be shared. Options: "document
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -5633,14 +5481,14 @@ sharing_details  | List of optional information to be shared. Options: "document
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 314",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -5672,40 +5520,37 @@ sharing_details  | List of optional information to be shared. Options: "document
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:id/unshare
 
-####  Unshare the task 
+#### Unshare the task
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | Task ID | integer  
-  
+| Name        | Description | type    |
+| ----------- | ----------- | ------- |
+| id required | Task ID     | integer |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/1/unshare
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1/unshare](https://runrun.it/api/v1.0/tasks/1/unshare)" -d '' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -5717,19 +5562,16 @@ id required | Task ID | integer
 [Simulated Response](/api/documentation/simulate/tasks/unshare_the_task)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3925
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 69",
@@ -5764,7 +5606,7 @@ id required | Task ID | integer
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 85",
       "client_id": 1,
@@ -5804,23 +5646,23 @@ id required | Task ID | integer
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -5842,7 +5684,7 @@ id required | Task ID | integer
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -5867,14 +5709,14 @@ id required | Task ID | integer
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 317",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -5906,40 +5748,37 @@ id required | Task ID | integer
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:id/complete_workflow_step
 
-####  Complete a workflow step 
+#### Complete a workflow step
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | Task ID | integer  
-  
+| Name        | Description | type    |
+| ----------- | ----------- | ------- |
+| id required | Task ID     | integer |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/1/complete_workflow_step
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1/complete_workflow_step](https://runrun.it/api/v1.0/tasks/1/complete_workflow_step)" -d '' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -5951,19 +5790,16 @@ id required | Task ID | integer
 [Simulated Response](/api/documentation/simulate/tasks/complete_a_workflow_step)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3923
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 75",
@@ -5998,7 +5834,7 @@ id required | Task ID | integer
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 91",
       "client_id": 1,
@@ -6038,23 +5874,23 @@ id required | Task ID | integer
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": 1,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -6076,7 +5912,7 @@ id required | Task ID | integer
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -6101,14 +5937,14 @@ id required | Task ID | integer
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 335",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -6140,40 +5976,37 @@ id required | Task ID | integer
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:id/undo_workflow_step
 
-####  Undo a workflow step 
+#### Undo a workflow step
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | Task ID | integer  
-  
+| Name        | Description | type    |
+| ----------- | ----------- | ------- |
+| id required | Task ID     | integer |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/1/undo_workflow_step
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1/undo_workflow_step](https://runrun.it/api/v1.0/tasks/1/undo_workflow_step)" -d '' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -6185,19 +6018,16 @@ id required | Task ID | integer
 [Simulated Response](/api/documentation/simulate/tasks/undo_a_workflow_step)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3937
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 77",
@@ -6232,7 +6062,7 @@ id required | Task ID | integer
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 93",
       "client_id": 1,
@@ -6272,23 +6102,23 @@ id required | Task ID | integer
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": 1,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -6310,7 +6140,7 @@ id required | Task ID | integer
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -6335,14 +6165,14 @@ id required | Task ID | integer
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 341",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -6374,40 +6204,37 @@ id required | Task ID | integer
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:id/mark_as_urgent
 
-####  Mark a task as urgent 
+#### Mark a task as urgent
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | Task ID | integer  
-  
+| Name        | Description | type    |
+| ----------- | ----------- | ------- |
+| id required | Task ID     | integer |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/1/mark_as_urgent
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1/mark_as_urgent](https://runrun.it/api/v1.0/tasks/1/mark_as_urgent)" -d '' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -6419,19 +6246,16 @@ id required | Task ID | integer
 [Simulated Response](/api/documentation/simulate/tasks/mark_a_task_as_urgent)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3926
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 83",
@@ -6466,7 +6290,7 @@ id required | Task ID | integer
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 99",
       "client_id": 1,
@@ -6506,23 +6330,23 @@ id required | Task ID | integer
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -6544,7 +6368,7 @@ id required | Task ID | integer
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -6569,14 +6393,14 @@ id required | Task ID | integer
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 359",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -6608,40 +6432,37 @@ id required | Task ID | integer
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:id/unmark_as_urgent
 
-####  Unmark a task as urgent 
+#### Unmark a task as urgent
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | Task ID | integer  
-  
+| Name        | Description | type    |
+| ----------- | ----------- | ------- |
+| id required | Task ID     | integer |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/1/unmark_as_urgent
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1/unmark_as_urgent](https://runrun.it/api/v1.0/tasks/1/unmark_as_urgent)" -d '' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -6653,19 +6474,16 @@ id required | Task ID | integer
 [Simulated Response](/api/documentation/simulate/tasks/unmark_a_task_as_urgent)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3928
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 84",
@@ -6700,7 +6518,7 @@ id required | Task ID | integer
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 100",
       "client_id": 1,
@@ -6740,23 +6558,23 @@ id required | Task ID | integer
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -6778,7 +6596,7 @@ id required | Task ID | integer
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -6803,14 +6621,14 @@ id required | Task ID | integer
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 362",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -6842,43 +6660,40 @@ id required | Task ID | integer
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:id/create_assignments
 
-####  Create a task assignment for another user 
+#### Create a task assignment for another user
 
 Create a task assignment based on a task.
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | Task ID | integer  
-assignments  | Assignments |   
-  
+| Name        | Description | type    |
+| ----------- | ----------- | ------- |
+| id required | Task ID     | integer |
+| assignments | Assignments |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/1/create_assignments
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "assignments": [
         {
@@ -6889,8 +6704,7 @@ assignments  | Assignments |
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1/create_assignments](https://runrun.it/api/v1.0/tasks/1/create_assignments)" -d '{"assignments":[{"assignee_id":"coyote-222","team_id":1}]}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -6902,19 +6716,16 @@ assignments  | Assignments |
 [Simulated Response](/api/documentation/simulate/tasks/create_a_task_assignment_for_another_user)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 4803
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 85",
@@ -6949,7 +6760,7 @@ assignments  | Assignments |
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 101",
       "client_id": 1,
@@ -6989,23 +6800,23 @@ assignments  | Assignments |
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -7027,7 +6838,7 @@ assignments  | Assignments |
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -7052,14 +6863,14 @@ assignments  | Assignments |
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 365",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -7115,40 +6926,37 @@ assignments  | Assignments |
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:id/move_to_top
 
-####  Move a task to top 
+#### Move a task to top
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | Task ID | integer  
-  
+| Name        | Description | type    |
+| ----------- | ----------- | ------- |
+| id required | Task ID     | integer |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/2/move_to_top
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/2/move_to_top](https://runrun.it/api/v1.0/tasks/2/move_to_top)" -d '' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -7160,19 +6968,16 @@ id required | Task ID | integer
 [Simulated Response](/api/documentation/simulate/tasks/move_a_task_to_top)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3930
 
 #### Body
-    
-    
+
     {
       "id": 2,
       "title": "Bla 89",
@@ -7207,7 +7012,7 @@ id required | Task ID | integer
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 105",
       "client_id": 2,
@@ -7247,23 +7052,23 @@ id required | Task ID | integer
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -7285,7 +7090,7 @@ id required | Task ID | integer
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -7310,14 +7115,14 @@ id required | Task ID | integer
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 4,
       "task_status_name": "Board Stage 377",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -7349,47 +7154,43 @@ id required | Task ID | integer
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/clone
 
-####  Clone a task 
+#### Clone a task
 
 ## Parameters
 
-Name | Description  
----|---  
-from_task_id  | From task  
-  
+| Name         | Description |
+| ------------ | ----------- |
+| from_task_id | From task   |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/clone
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "from_task_id": 1
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/clone](https://runrun.it/api/v1.0/tasks/clone)" -d '{"from_task_id":1}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -7401,46 +7202,41 @@ from_task_id  | From task
 [Simulated Response](/api/documentation/simulate/tasks/clone_a_task)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json
     Content-Length: 0
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:id/move_to_next_stage
 
-####  Move a task to next stage 
+#### Move a task to next stage
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | Task ID | integer  
-  
+| Name        | Description | type    |
+| ----------- | ----------- | ------- |
+| id required | Task ID     | integer |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/1/move_to_next_stage
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1/move_to_next_stage](https://runrun.it/api/v1.0/tasks/1/move_to_next_stage)" -d '' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -7452,19 +7248,16 @@ id required | Task ID | integer
 [Simulated Response](/api/documentation/simulate/tasks/move_a_task_to_next_stage)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3983
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 93",
@@ -7499,7 +7292,7 @@ id required | Task ID | integer
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 109",
       "client_id": 1,
@@ -7539,23 +7332,23 @@ id required | Task ID | integer
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -7577,7 +7370,7 @@ id required | Task ID | integer
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -7602,14 +7395,14 @@ id required | Task ID | integer
       "estimated_delivery_date_updated": true,
       "last_estimated_at": "2026-03-04T16:54:18-03:00",
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 2,
       "task_status_name": "Board Stage 400",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -7641,50 +7434,46 @@ id required | Task ID | integer
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:id/move
 
-####  Move a task to another stage 
+#### Move a task to another stage
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | Task ID | integer  
-board_stage_id required | The id of the stage to move the task to | integer  
-board_stage_position  | Optional position within the stage | integer  
-reopen_or_pause_descendant_tasks  | Set to true to force reopen/pause descendant tasks if needed |   
-  
+| Name                             | Description                                                  | type    |
+| -------------------------------- | ------------------------------------------------------------ | ------- |
+| id required                      | Task ID                                                      | integer |
+| board_stage_id required          | The id of the stage to move the task to                      | integer |
+| board_stage_position             | Optional position within the stage                           | integer |
+| reopen_or_pause_descendant_tasks | Set to true to force reopen/pause descendant tasks if needed |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/1/move
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "board_stage_id": 2
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/1/move](https://runrun.it/api/v1.0/tasks/1/move)" -d '{"board_stage_id":2}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -7696,19 +7485,16 @@ reopen_or_pause_descendant_tasks  | Set to true to force reopen/pause descendant
 [Simulated Response](/api/documentation/simulate/tasks/move_a_task_to_another_stage)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 4019
 
 #### Body
-    
-    
+
     {
       "id": 1,
       "title": "Bla 94",
@@ -7743,7 +7529,7 @@ reopen_or_pause_descendant_tasks  | Set to true to force reopen/pause descendant
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 110",
       "client_id": 1,
@@ -7783,23 +7569,23 @@ reopen_or_pause_descendant_tasks  | Set to true to force reopen/pause descendant
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -7821,7 +7607,7 @@ reopen_or_pause_descendant_tasks  | Set to true to force reopen/pause descendant
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -7846,14 +7632,14 @@ reopen_or_pause_descendant_tasks  | Set to true to force reopen/pause descendant
       "estimated_delivery_date_updated": true,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 2,
       "task_status_name": "Board Stage 403",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -7885,51 +7671,47 @@ reopen_or_pause_descendant_tasks  | Set to true to force reopen/pause descendant
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__POST
+\_\_POST
 
 #### /api/v1.0/tasks/:id/move
 
-####  Move with position 
+#### Move with position
 
 ## Parameters
 
-Name | Description | type  
----|---|---  
-id required | Task ID | integer  
-board_stage_id required | The id of the stage to move the task to | integer  
-board_stage_position  | Optional position within the stage | integer  
-reopen_or_pause_descendant_tasks  | Set to true to force reopen/pause descendant tasks if needed |   
-  
+| Name                             | Description                                                  | type    |
+| -------------------------------- | ------------------------------------------------------------ | ------- |
+| id required                      | Task ID                                                      | integer |
+| board_stage_id required          | The id of the stage to move the task to                      | integer |
+| board_stage_position             | Optional position within the stage                           | integer |
+| reopen_or_pause_descendant_tasks | Set to true to force reopen/pause descendant tasks if needed |
+
 ## Request
 
 #### Route
-    
-    
+
     POST /api/v1.0/tasks/3/move
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### Body
-    
-    
+
     {
       "board_stage_id": 1,
       "board_stage_position": 1
     }
 
 #### cURL
-    
-    
+
     curl "[https://runrun.it/api/v1.0/tasks/3/move](https://runrun.it/api/v1.0/tasks/3/move)" -d '{"board_stage_id":1,"board_stage_position":1}' -X POST \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -7941,19 +7723,16 @@ reopen_or_pause_descendant_tasks  | Set to true to force reopen/pause descendant
 [Simulated Response](/api/documentation/simulate/tasks/move_with_position)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 3917
 
 #### Body
-    
-    
+
     {
       "id": 3,
       "title": "Bla 97",
@@ -7988,7 +7767,7 @@ reopen_or_pause_descendant_tasks  | Set to true to force reopen/pause descendant
       "evaluation_status": null,
       "attachments_count": 0,
       "tags_data": [
-    
+
       ],
       "client_name": "Test client 113",
       "client_id": 3,
@@ -8028,23 +7807,23 @@ reopen_or_pause_descendant_tasks  | Set to true to force reopen/pause descendant
       "points": null,
       "reestimate_count": 0,
       "parent_ids": [
-    
+
       ],
       "opened_parent_ids": [
-    
+
       ],
       "parents_max_desired_date": null,
       "child_ids": [
-    
+
       ],
       "workflow_id": null,
       "checklist_id": null,
       "is_shared": false,
       "sharing_details": [
-    
+
       ],
       "subtask_ids": [
-    
+
       ],
       "subtasks_count": 0,
       "subtasks_closed_count": 0,
@@ -8066,7 +7845,7 @@ reopen_or_pause_descendant_tasks  | Set to true to force reopen/pause descendant
       "form_id": null,
       "board_stage_data": {
         "fields_data": [
-    
+
         ],
         "use_elapsed_time": false,
         "sla_elapsed_time": null,
@@ -8091,14 +7870,14 @@ reopen_or_pause_descendant_tasks  | Set to true to force reopen/pause descendant
       "estimated_delivery_date_updated": false,
       "last_estimated_at": null,
       "task_tags": [
-    
+
       ],
       "approved": null,
       "task_status_id": 1,
       "task_status_name": "Board Stage 404",
       "tag_list": "",
       "tags": [
-    
+
       ],
       "scheduled_start_time": null,
       "is_scheduled": false,
@@ -8130,34 +7909,31 @@ reopen_or_pause_descendant_tasks  | Set to true to force reopen/pause descendant
         }
       ],
       "follower_ids": [
-    
+
       ]
     }
 
-__GET
+\_\_GET
 
 #### /api/v1.0/tasks/:id/form_answers
 
-####  Get answers to the form which created the task 
+#### Get answers to the form which created the task
 
 ## Request
 
 #### Route
-    
-    
+
     GET /api/v1.0/tasks/1/form_answers
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
-    
-    
+
     curl -g "[https://runrun.it/api/v1.0/tasks/1/form_answers](https://runrun.it/api/v1.0/tasks/1/form_answers)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -8169,47 +7945,41 @@ __GET
 [Simulated Response](/api/documentation/simulate/tasks/get_answers_to_the_form_which_created_the_task)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 118
 
 #### Body
-    
-    
+
     {
       "form_answer": "<b>pergunta teste</b><br/>resposta teste<br/><br/>"
     }
 
-__GET
+\_\_GET
 
 #### /api/v1.0/tasks/:id/fields
 
-####  List fields from task's board 
+#### List fields from task's board
 
 ## Request
 
 #### Route
-    
-    
+
     GET /api/v1.0/tasks/1/fields
 
 #### Headers
-    
-    
+
     App-Key: 1a219437eab893dc115509bb85e06d77
     User-Token: 9flMUzLxQtxohKGZjU5
     Content-Type: application/json
     Host: example.org
 
 #### cURL
-    
-    
+
     curl -g "[https://runrun.it/api/v1.0/tasks/1/fields](https://runrun.it/api/v1.0/tasks/1/fields)" -X GET \
     	-H "Version: HTTP/1.0" \
     	-H "App-Key: 1a219437eab893dc115509bb85e06d77" \
@@ -8221,19 +7991,16 @@ __GET
 [Simulated Response](/api/documentation/simulate/tasks/list_fields_from_task's_board)
 
 #### Status
-    
-    
+
     200
 
 #### Headers
-    
-    
+
     Content-Type: application/json; charset=utf-8
     Content-Length: 376
 
 #### Body
-    
-    
+
     [
       {
         "id": "custom_1",
@@ -8254,7 +8021,7 @@ __GET
         "is_editable": false,
         "is_everyone_allowed_to_add_to_board": false,
         "integrators": [
-    
+
         ],
         "status": "active",
         "position": null,

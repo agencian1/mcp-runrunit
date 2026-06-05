@@ -1,13 +1,13 @@
-const BASE_URL = "https://runrun.it/api/v1.0";
+const BASE_URL = 'https://runrun.it/api/v1.0';
 
 export class RunrunitAPIError extends Error {
   constructor(
     message: string,
     public status?: number,
-    public body?: unknown
+    public body?: unknown,
   ) {
     super(message);
-    this.name = "RunrunitAPIError";
+    this.name = 'RunrunitAPIError';
   }
 }
 
@@ -16,17 +16,20 @@ function getAuth(): { appKey: string; userToken: string } {
   const userToken = process.env.RUNRUNIT_USER_TOKEN;
   if (!appKey || !userToken) {
     throw new RunrunitAPIError(
-      "Missing RUNRUNIT_APP_KEY or RUNRUNIT_USER_TOKEN environment variables. Set them in your MCP client config or environment."
+      'Missing RUNRUNIT_APP_KEY or RUNRUNIT_USER_TOKEN environment variables. Set them in your MCP client config or environment.',
     );
   }
   return { appKey, userToken };
 }
 
-function buildUrl(path: string, searchParams?: Record<string, string | number | boolean | undefined>): string {
+function buildUrl(
+  path: string,
+  searchParams?: Record<string, string | number | boolean | undefined>,
+): string {
   const url = new URL(path, BASE_URL);
   if (searchParams) {
     for (const [key, value] of Object.entries(searchParams)) {
-      if (value !== undefined && value !== "") {
+      if (value !== undefined && value !== '') {
         url.searchParams.set(key, String(value));
       }
     }
@@ -36,17 +39,17 @@ function buildUrl(path: string, searchParams?: Record<string, string | number | 
 
 export async function runrunitFetch<T>(
   path: string,
-  options: RequestInit & { query?: Record<string, string | number | boolean | undefined> } = {}
+  options: RequestInit & { query?: Record<string, string | number | boolean | undefined> } = {},
 ): Promise<T> {
   const { appKey, userToken } = getAuth();
   const { query, ...fetchOptions } = options;
   const url = buildUrl(path, query);
 
   const headers: Record<string, string> = {
-    "Version": "HTTP/1.0",
-    "App-Key": appKey,
-    "User-Token": userToken,
-    "Content-Type": "application/json",
+    Version: 'HTTP/1.0',
+    'App-Key': appKey,
+    'User-Token': userToken,
+    'Content-Type': 'application/json',
     ...(fetchOptions.headers as Record<string, string>),
   };
 
@@ -71,7 +74,7 @@ export async function runrunitFetch<T>(
     throw new RunrunitAPIError(
       `Runrun.it API error: ${res.status} ${res.statusText}`,
       res.status,
-      data
+      data,
     );
   }
 
