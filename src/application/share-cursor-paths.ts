@@ -1,5 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import {
+  mergeDiscoveredAgents,
+  resolveAgentEntry,
+  resolveSkillEntry,
+  tryLoadCursorCatalog,
+} from './cursor-catalog.js';
 
 /** Same limit as submit-documents MAX_MARKDOWN_BYTES default. */
 export const MAX_SHARE_FILE_BYTES = 512 * 1024;
@@ -25,107 +31,6 @@ export type AgentMarkdownPlan = {
   destBasename: string;
   sourcePath: string;
 };
-
-function isMarkdownFileName(name: string): boolean {
-  const lower = name.toLowerCase();
-  return lower.endsWith('.md');
-}
-
-function collectAgentMarkdownPlans(agentsDir: string): {
-  plans: AgentMarkdownPlan[];
-  errors: string[];
-} {
-  const plans: AgentMarkdownPlan[] = [];
-  const errors: string[] = [];
-  const destSeen = new Map<string, string>();
-
-  let entries: fs.Dirent[];
-  try {
-    entries = fs.readdirSync(agentsDir, { withFileTypes: true });
-  } catch (e) {
-    return {
-      plans: [],
-      errors: [`cursor-agents not readable: ${e instanceof Error ? e.message : String(e)}`],
-    };
-  }
-
-  for (const ent of entries) {
-    if (ent.name.startsWith('.')) continue;
-
-    const full = path.join(agentsDir, ent.name);
-
-    if (ent.isFile()) {
-      if (!isMarkdownFileName(ent.name)) continue;
-      const destBasename = ent.name;
-      const prev = destSeen.get(destBasename);
-      if (prev) {
-        errors.push(`duplicate destination ${destBasename}: ${prev} and ${full}`);
-        continue;
-      }
-      destSeen.set(destBasename, full);
-      plans.push({ destBasename, sourcePath: full });
-      continue;
-    }
-
-    if (!ent.isDirectory()) continue;
-
-    let inner: fs.Dirent[];
-    try {
-      inner = fs.readdirSync(full, { withFileTypes: true });
-    } catch (e) {
-      errors.push(`${ent.name}: ${e instanceof Error ? e.message : String(e)}`);
-      continue;
-    }
-
-    const mdFiles = inner.filter(
-      (e) => e.isFile() && !e.name.startsWith('.') && isMarkdownFileName(e.name),
-    );
-
-    if (mdFiles.length === 0) continue;
-    if (mdFiles.length > 1) continue;
-
-    const mdName = mdFiles[0].name;
-    const sourcePath = path.join(full, mdName);
-    const destBasename = mdName;
-    const prev = destSeen.get(destBasename);
-    if (prev) {
-      errors.push(`duplicate destination ${destBasename}: ${prev} and ${sourcePath}`);
-      continue;
-    }
-    destSeen.set(destBasename, sourcePath);
-    plans.push({ destBasename, sourcePath });
-  }
-
-  plans.sort((a, b) => a.destBasename.localeCompare(b.destBasename));
-  return { plans, errors };
-}
-
-function buildWantDestSet(agentName: string): Set<string> {
-  const want = new Set<string>();
-  const t = agentName.trim();
-  if (!t) return want;
-  const base = path.basename(t);
-  want.add(base);
-  if (!base.toLowerCase().endsWith('.md')) {
-    want.add(`${base}.md`);
-  }
-  return want;
-}
-
-function destMatchesWant(destBasename: string, want: Set<string>): boolean {
-  if (want.has(destBasename)) return true;
-  const lower = destBasename.toLowerCase();
-  for (const w of want) {
-    if (w.toLowerCase() === lower) return true;
-  }
-  const stem = lower.endsWith('.md') ? lower.slice(0, -3) : lower;
-  for (const w of want) {
-    const wl = w.toLowerCase();
-    const wstem = wl.endsWith('.md') ? wl.slice(0, -3) : wl;
-    if (stem === wstem) return true;
-  }
-  return false;
-}
 
 export function findProjectRootWithSubdir(startDir: string, subdirName: string): string | null {
   let dir = path.resolve(startDir);
@@ -176,34 +81,21 @@ export function assertPathInsideProjectRoot(projectRoot: string, filePath: strin
 export function resolveAgentMarkdownForShare(
   projectRoot: string,
   agentName: string,
-): { sourcePath: string; destBasename: string; availableBasenames: string[] } {
+): { sourcePath: string; destBasename: string; availableBasenames: string[]; repoPath: string } {
+  const catalog = tryLoadCursorCatalog(projectRoot);
   const agentsDir = path.join(projectRoot, 'cursor-agents');
-  const { plans, errors } = collectAgentMarkdownPlans(agentsDir);
+  const { agents, errors } = mergeDiscoveredAgents(catalog, agentsDir);
   if (errors.length > 0) {
     throw new Error(errors.join('; '));
   }
-  const want = buildWantDestSet(agentName);
-  if (want.size === 0) {
-    throw new Error('agent_name is empty.');
-  }
-  const matches = plans.filter((p) => destMatchesWant(p.destBasename, want));
-  const availableBasenames = plans.map((p) => p.destBasename);
-  if (matches.length === 0) {
-    throw new Error(
-      `No agent markdown matched "${agentName}". Available in cursor-agents: ${availableBasenames.length ? availableBasenames.join(', ') : '(none)'}`,
-    );
-  }
-  if (matches.length > 1) {
-    throw new Error(
-      `Ambiguous agent_name "${agentName}": matches ${matches.map((m) => m.destBasename).join(', ')}. Use a more specific name.`,
-    );
-  }
-  const hit = matches[0];
+
+  const hit = resolveAgentEntry(projectRoot, agentName, catalog);
   assertPathInsideProjectRoot(projectRoot, hit.sourcePath);
   return {
     sourcePath: hit.sourcePath,
     destBasename: hit.destBasename,
-    availableBasenames,
+    availableBasenames: agents.map((a) => a.destBasename),
+    repoPath: `cursor-agents/${hit.catalogPath}`,
   };
 }
 
@@ -226,21 +118,23 @@ export function assertValidSkillFolderName(skillName: string): string {
 export function resolveSkillMarkdownForShare(
   projectRoot: string,
   skillName: string,
-): { sourcePath: string; repoPath: string; folder: string } {
-  const folder = assertValidSkillFolderName(skillName);
-  const sourcePath = path.join(projectRoot, 'cursor-skills', folder, 'SKILL.md');
+): { sourcePath: string; repoPath: string; folder: string; catalogPath: string } {
+  const id = assertValidSkillFolderName(skillName);
+  const catalog = tryLoadCursorCatalog(projectRoot);
+  const hit = resolveSkillEntry(projectRoot, id, catalog);
+  const sourcePath = path.join(hit.skillDir, 'SKILL.md');
   assertPathInsideProjectRoot(projectRoot, sourcePath);
   if (!fs.existsSync(sourcePath) || !fs.statSync(sourcePath).isFile()) {
-    throw new Error(`SKILL.md not found at cursor-skills/${folder}/SKILL.md under project root.`);
+    throw new Error(`SKILL.md not found for skill ${id}.`);
   }
-  const repoPath = `cursor-skills/${folder}/SKILL.md`;
-  return { sourcePath, repoPath, folder };
+  const repoPath = `cursor-skills/${hit.catalogPath}/SKILL.md`;
+  return { sourcePath, repoPath, folder: id, catalogPath: hit.catalogPath };
 }
 
 function walkSkillFilesForShare(
   projectRoot: string,
   skillDir: string,
-  folder: string,
+  catalogPath: string,
   relPrefix: string,
   acc: SkillFileForShare[],
   totalBytes: { value: number },
@@ -278,7 +172,7 @@ function walkSkillFilesForShare(
     const relPath = relPrefix ? `${relPrefix}/${ent.name}` : ent.name;
 
     if (st.isDirectory()) {
-      walkSkillFilesForShare(projectRoot, absPath, folder, relPath, acc, totalBytes);
+      walkSkillFilesForShare(projectRoot, absPath, catalogPath, relPath, acc, totalBytes);
       continue;
     }
 
@@ -308,40 +202,42 @@ function walkSkillFilesForShare(
       );
     }
 
-    const repoPath = `cursor-skills/${folder}/${relPath.replace(/\\/g, '/')}`;
+    const repoPath = `cursor-skills/${catalogPath}/${relPath.replace(/\\/g, '/')}`;
     acc.push({ repoPath, content });
   }
 }
 
 /**
- * Collects all regular files under cursor-skills/{folder}/ for multi-file GitHub share.
+ * Collects all regular files under the catalog-resolved skill folder for multi-file GitHub share.
  */
 export function collectSkillFilesForShare(
   projectRoot: string,
   skillName: string,
 ): CollectSkillFilesResult {
-  const folder = assertValidSkillFolderName(skillName);
-  const skillDir = path.join(projectRoot, 'cursor-skills', folder);
+  const id = assertValidSkillFolderName(skillName);
+  const catalog = tryLoadCursorCatalog(projectRoot);
+  const hit = resolveSkillEntry(projectRoot, id, catalog);
+  const skillDir = hit.skillDir;
   assertPathInsideProjectRoot(projectRoot, skillDir);
 
   const skillMd = path.join(skillDir, 'SKILL.md');
   if (!fs.existsSync(skillMd) || !fs.statSync(skillMd).isFile()) {
-    throw new Error(`SKILL.md not found at cursor-skills/${folder}/SKILL.md under project root.`);
+    throw new Error(`SKILL.md not found for skill ${id}.`);
   }
 
   const files: SkillFileForShare[] = [];
   const totalBytes = { value: 0 };
-  walkSkillFilesForShare(projectRoot, skillDir, folder, '', files, totalBytes);
+  walkSkillFilesForShare(projectRoot, skillDir, hit.catalogPath, '', files, totalBytes);
 
   if (files.length === 0) {
-    throw new Error(`No files found in cursor-skills/${folder}/.`);
+    throw new Error(`No files found for skill ${id}.`);
   }
 
   files.sort((a, b) => a.repoPath.localeCompare(b.repoPath));
 
   return {
-    folder,
-    repoFolderPath: `cursor-skills/${folder}/`,
+    folder: id,
+    repoFolderPath: `cursor-skills/${hit.catalogPath}/`,
     files,
   };
 }

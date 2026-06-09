@@ -4,6 +4,20 @@ All notable changes to the mcp-runrunit package will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Added
+
+- `cursor-catalog.json` as source of truth for bundled skills and agents (ids, nested repo paths, category tags).
+- MCP tool `runrunit_list_cursor_catalog` to list and filter assets by `platform`, `technology`, and `utility`.
+- Optional `categories` filter on `runrunit_install_cursor_skills` and `runrunit_install_cursor_agents`.
+
+### Changed
+
+- Skills and agents in the repo use nested folders under `cursor-skills/` and `cursor-agents/` (catalog paths); install destination in Cursor remains flat.
+- Share tools resolve nested paths from the catalog for GitHub PRs.
+- Discovery is recursive (orphan assets without catalog entries still installable with warnings).
+
 ## [1.6.3] - 2026-06-05
 
 ### Changed

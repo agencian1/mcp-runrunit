@@ -10,6 +10,7 @@
   },
   "files": [
     "dist",
+    "cursor-catalog.json",
     "cursor-skills",
     "cursor-agents",
     ".env.example",
