@@ -2,12 +2,19 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import { fileURLToPath } from 'node:url';
+import {
+  findPackageRoot,
+  resolveSkillIdsForInstall,
+  tryLoadCursorCatalog,
+  type CategoryFilter,
+} from './cursor-catalog.js';
 
 export type InstallTarget = 'global' | 'project';
 
 export type InstallCursorSkillsParams = {
   dry_run?: boolean;
   skill_names?: string[];
+  categories?: CategoryFilter;
   target?: InstallTarget;
   project_root?: string;
   source_dir?: string;
@@ -25,25 +32,12 @@ export type InstallCursorSkillsResult = {
   dry_run: boolean;
   copied: CopiedEntry[];
   skipped: { name: string; reason: string }[];
+  warnings: string[];
   errors: string[];
 };
 
 function findPackageRootWithCursorSkills(startDir: string): string | null {
-  let dir = path.resolve(startDir);
-  for (let i = 0; i < 10; i++) {
-    const cs = path.join(dir, 'cursor-skills');
-    try {
-      if (fs.existsSync(cs) && fs.statSync(cs).isDirectory()) {
-        return dir;
-      }
-    } catch {
-      /* ignore */
-    }
-    const parent = path.dirname(dir);
-    if (parent === dir) break;
-    dir = parent;
-  }
-  return null;
+  return findPackageRoot(startDir);
 }
 
 export function resolveBundledCursorSkillsDir(explicitSource?: string): string {
@@ -104,6 +98,7 @@ export function installCursorSkills(params: InstallCursorSkillsParams): InstallC
   const dry_run = params.dry_run === true;
   const errors: string[] = [];
   const skipped: { name: string; reason: string }[] = [];
+  const warnings: string[] = [];
   const copied: CopiedEntry[] = [];
 
   let source: string;
@@ -116,9 +111,13 @@ export function installCursorSkills(params: InstallCursorSkillsParams): InstallC
       dry_run,
       copied: [],
       skipped: [],
+      warnings: [],
       errors: [e instanceof Error ? e.message : String(e)],
     };
   }
+
+  const packageRoot = path.dirname(source);
+  const catalog = tryLoadCursorCatalog(packageRoot);
 
   const targetMode = params.target ?? 'global';
   let destination: string;
@@ -133,6 +132,7 @@ export function installCursorSkills(params: InstallCursorSkillsParams): InstallC
         dry_run,
         copied: [],
         skipped: [],
+        warnings: [],
         errors: [
           "target is 'project' but project_root was not provided (absolute path to project root required).",
         ],
@@ -150,24 +150,25 @@ export function installCursorSkills(params: InstallCursorSkillsParams): InstallC
       dry_run,
       copied: [],
       skipped: [],
+      warnings: [],
       errors: [e instanceof Error ? e.message : String(e)],
     };
   }
 
-  const entries = fs.readdirSync(source, { withFileTypes: true });
-  const skillDirs = entries.filter((e) => e.isDirectory() && !e.name.startsWith('.'));
-  const want =
-    params.skill_names && params.skill_names.length > 0
-      ? new Set(params.skill_names.map((s) => s.trim()).filter(Boolean))
-      : null;
+  const { skills, warnings: resolveWarnings } = resolveSkillIdsForInstall({
+    projectRoot: packageRoot,
+    skillsDir: source,
+    catalog,
+    skill_names: params.skill_names,
+    categories: params.categories,
+  });
+  warnings.push(...resolveWarnings);
 
-  for (const dirEnt of skillDirs) {
-    const name = dirEnt.name;
-    if (want && !want.has(name)) {
-      skipped.push({ name, reason: 'not in skill_names filter' });
-      continue;
-    }
-    const skillPath = path.join(source, name);
+  const selectedIds = new Set(skills.map((s) => s.id));
+
+  for (const skill of skills) {
+    const name = skill.id;
+    const skillPath = skill.skillDir;
     const skillMd = path.join(skillPath, 'SKILL.md');
     if (!fs.existsSync(skillMd)) {
       skipped.push({ name, reason: 'missing SKILL.md' });
@@ -197,14 +198,17 @@ export function installCursorSkills(params: InstallCursorSkillsParams): InstallC
     }
   }
 
-  if (want) {
-    for (const n of want) {
-      const seen = copied.some((c) => c.name === n) || skipped.some((s) => s.name === n);
+  if (params.skill_names && params.skill_names.length > 0) {
+    for (const n of params.skill_names) {
+      const t = n.trim();
+      if (!t) continue;
+      const seen =
+        copied.some((c) => c.name === t) || skipped.some((s) => s.name === t) || selectedIds.has(t);
       if (!seen) {
-        skipped.push({ name: n, reason: 'not found in source' });
+        skipped.push({ name: t, reason: 'not found in source' });
       }
     }
   }
 
-  return { source, destination, dry_run, copied, skipped, errors };
+  return { source, destination, dry_run, copied, skipped, warnings, errors };
 }

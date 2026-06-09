@@ -8,8 +8,10 @@ import * as devSuggestions from '../../application/dev_suggestions.js';
 import * as projects from '../../application/projects.js';
 import * as tasks from '../../application/tasks.js';
 import { taskUpdateToApiPayload } from '../../infrastructure/mappers/custom_fields_mapper.js';
+import type { CategoryFilter } from '../../application/cursor-catalog.js';
 import { installCursorSkills } from '../../application/install-cursor-skills.js';
 import { installCursorAgents } from '../../application/install-cursor-agents.js';
+import { listCursorCatalog } from '../../application/list-cursor-catalog.js';
 import { shareCursorAgent, shareCursorSkill } from '../../application/share-cursor-github.js';
 import { RunrunitAPIError } from '../driven/api.js';
 import { ShareGithubConfigError } from '../driven/github.js';
@@ -458,12 +460,52 @@ export const TOOLS = [
     },
   },
   /**
+   * @namedTools runrunit_list_cursor_catalog
+   */
+  {
+    name: 'runrunit_list_cursor_catalog',
+    description:
+      'List bundled Cursor skills and agents from cursor-catalog.json with optional filters (platform, technology, utility). Use before install to discover ids and descriptions. Does not copy files.',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        kind: {
+          type: 'string',
+          enum: ['skills', 'agents', 'all'],
+          description: 'What to list (default all).',
+        },
+        platform: {
+          type: 'array',
+          items: { type: 'string' },
+          description:
+            'Filter by platform tags (e.g. runrunit, github). AND with other category filters.',
+        },
+        technology: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Filter by technology tags (e.g. react, typescript).',
+        },
+        utility: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Filter by utility tags (e.g. workflow, evidence, quality).',
+        },
+        project_root: {
+          type: 'string',
+          description:
+            'Optional absolute path to mcp-runrunit package root. If omitted, resolves near the installed package.',
+        },
+      },
+      required: [],
+    },
+  },
+  /**
    * @namedTools runrunit_install_cursor_skills
    */
   {
     name: 'runrunit_install_cursor_skills',
     description:
-      'Local install only: copies bundled Cursor skills from mcp-runrunit (cursor-skills/) into ~/.cursor/skills or project .cursor/skills (os.homedir). Use when the user wants to sync skills onto their machine (onboarding, pull package skills locally). Prefer dry_run:true first. NOT for sharing via GitHub or “compartilhar / dividir com o time” in the repo — that is runrunit_share_cursor_skill. Optional skill_names, target global|project, project_root, source_dir.',
+      'Local install only: copies bundled Cursor skills from mcp-runrunit (cursor-skills/) into ~/.cursor/skills or project .cursor/skills (os.homedir). Use when the user wants to sync skills onto their machine (onboarding, pull package skills locally). Prefer dry_run:true first. NOT for sharing via GitHub or “compartilhar / dividir com o time” in the repo — that is runrunit_share_cursor_skill. Optional skill_names, categories (platform/technology/utility), target global|project, project_root, source_dir. Use runrunit_list_cursor_catalog to discover ids.',
     inputSchema: {
       type: 'object' as const,
       properties: {
@@ -476,7 +518,17 @@ export const TOOLS = [
           type: 'array',
           items: { type: 'string' },
           description:
-            'Optional folder names under cursor-skills to copy (e.g. registrar-evidencias). If omitted, copies every subfolder that contains SKILL.md.',
+            'Optional skill ids to copy (e.g. registrar-evidencias). Intersects with categories when both are set. If omitted, copies all matching categories or everything.',
+        },
+        categories: {
+          type: 'object',
+          description:
+            'Optional category filters (AND across dimensions). Example: { "platform": ["runrunit"] }.',
+          properties: {
+            platform: { type: 'array', items: { type: 'string' } },
+            technology: { type: 'array', items: { type: 'string' } },
+            utility: { type: 'array', items: { type: 'string' } },
+          },
         },
         target: {
           type: 'string',
@@ -504,7 +556,7 @@ export const TOOLS = [
   {
     name: 'runrunit_install_cursor_agents',
     description:
-      'Local install only: copies agent markdown from mcp-runrunit (cursor-agents/) into ~/.cursor/agents (flat files, preserves basename including .agent.md). Use dry_run:true first. NOT for compartilhar/dividir com o time via GitHub — use runrunit_share_cursor_agent for a PR. Optional agent_names, target, project_root, source_dir.',
+      'Local install only: copies agent markdown from mcp-runrunit (cursor-agents/) into ~/.cursor/agents (flat files, preserves basename including .agent.md). Use dry_run:true first. NOT for compartilhar/dividir com o time via GitHub — use runrunit_share_cursor_agent for a PR. Optional agent_names, categories (platform/technology/utility), target, project_root, source_dir.',
     inputSchema: {
       type: 'object' as const,
       properties: {
@@ -517,7 +569,17 @@ export const TOOLS = [
           type: 'array',
           items: { type: 'string' },
           description:
-            'Optional destination basenames to copy (e.g. mentor.agent.md, kieran-typescript-reviewer.md). Stems without .md are accepted. If omitted, copies every root *.md and every subfolder with exactly one markdown file.',
+            'Optional agent ids or destination basenames (e.g. mentor, security-auditor.md). Intersects with categories when both are set.',
+        },
+        categories: {
+          type: 'object',
+          description:
+            'Optional category filters (AND across dimensions). Example: { "utility": ["security"] }.',
+          properties: {
+            platform: { type: 'array', items: { type: 'string' } },
+            technology: { type: 'array', items: { type: 'string' } },
+            utility: { type: 'array', items: { type: 'string' } },
+          },
         },
         target: {
           type: 'string',
@@ -738,6 +800,26 @@ function validateStageMove(
  * Cria e configura a instância do MCP Server com todas as tools Runrun.it.
  * Usado tanto pelo entry stdio (index.ts) quanto pelo servidor HTTP (server.ts).
  */
+function parseStringArrayArg(raw: unknown): string[] | undefined {
+  if (!Array.isArray(raw)) return undefined;
+  const out = raw.map((x) => String(x).trim()).filter(Boolean);
+  return out.length > 0 ? out : undefined;
+}
+
+function parseCategoryFilterArg(raw: unknown): CategoryFilter | undefined {
+  if (!raw || typeof raw !== 'object') return undefined;
+  const o = raw as Record<string, unknown>;
+  const filter: CategoryFilter = {
+    platform: parseStringArrayArg(o.platform),
+    technology: parseStringArrayArg(o.technology),
+    utility: parseStringArrayArg(o.utility),
+  };
+  if (!filter.platform?.length && !filter.technology?.length && !filter.utility?.length) {
+    return undefined;
+  }
+  return filter;
+}
+
 export function createMcpServer(): Server {
   const server = new Server(
     {
@@ -1025,6 +1107,19 @@ export function createMcpServer(): Server {
           );
           break;
         }
+        case 'runrunit_list_cursor_catalog': {
+          const kindRaw = a.kind != null ? String(a.kind).trim() : '';
+          const kind =
+            kindRaw === 'skills' || kindRaw === 'agents' || kindRaw === 'all' ? kindRaw : 'all';
+          result = listCursorCatalog({
+            project_root: a.project_root != null ? String(a.project_root) : undefined,
+            kind,
+            platform: parseStringArrayArg(a.platform),
+            technology: parseStringArrayArg(a.technology),
+            utility: parseStringArrayArg(a.utility),
+          });
+          break;
+        }
         case 'runrunit_install_cursor_skills': {
           const targetRaw = a.target != null ? String(a.target).trim() : '';
           const target = targetRaw === 'project' ? ('project' as const) : ('global' as const);
@@ -1033,6 +1128,7 @@ export function createMcpServer(): Server {
             skill_names: Array.isArray(a.skill_names)
               ? (a.skill_names as unknown[]).map((x) => String(x))
               : undefined,
+            categories: parseCategoryFilterArg(a.categories),
             target,
             project_root: a.project_root != null ? String(a.project_root) : undefined,
             source_dir: a.source_dir != null ? String(a.source_dir) : undefined,
@@ -1048,6 +1144,7 @@ export function createMcpServer(): Server {
             agent_names: Array.isArray(a.agent_names)
               ? (a.agent_names as unknown[]).map((x) => String(x))
               : undefined,
+            categories: parseCategoryFilterArg(a.categories),
             target: targetAgents,
             project_root: a.project_root != null ? String(a.project_root) : undefined,
             source_dir: a.source_dir != null ? String(a.source_dir) : undefined,

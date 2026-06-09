@@ -30,14 +30,43 @@ describe('resolveAgentMarkdownForShare', () => {
     fs.writeFileSync(path.join(agents, 'hello.md'), '# hi', 'utf8');
     const a = resolveAgentMarkdownForShare(root, 'hello');
     expect(a.destBasename).toBe('hello.md');
+    expect(a.repoPath).toBe('cursor-agents/hello.md');
     const b = resolveAgentMarkdownForShare(root, 'hello.md');
     expect(b.sourcePath).toBe(a.sourcePath);
+  });
+
+  it('resolves nested agent catalog path', () => {
+    const root = mkTmp();
+    const dir = path.join(root, 'cursor-agents', 'utilities', 'security');
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, 'guard.md'), '# guard', 'utf8');
+    fs.writeFileSync(
+      path.join(root, 'cursor-catalog.json'),
+      JSON.stringify({
+        version: 1,
+        taxonomy: { platform: [], technology: [], utility: ['security'] },
+        skills: [],
+        agents: [
+          {
+            id: 'guard',
+            path: 'utilities/security/guard.md',
+            platform: [],
+            technology: [],
+            utility: ['security'],
+          },
+        ],
+      }),
+      'utf8',
+    );
+
+    const r = resolveAgentMarkdownForShare(root, 'guard');
+    expect(r.repoPath).toBe('cursor-agents/utilities/security/guard.md');
   });
 
   it('throws when no match', () => {
     const root = mkTmp();
     fs.mkdirSync(path.join(root, 'cursor-agents'), { recursive: true });
-    expect(() => resolveAgentMarkdownForShare(root, 'missing')).toThrow(/No agent markdown/);
+    expect(() => resolveAgentMarkdownForShare(root, 'missing')).toThrow(/No agent matched/);
   });
 });
 
@@ -78,6 +107,39 @@ describe('collectSkillFilesForShare', () => {
       'cursor-skills/my-skill/SKILL.md',
       'cursor-skills/my-skill/rules/a.md',
       'cursor-skills/my-skill/templates/x.js',
+    ]);
+  });
+
+  it('uses catalog nested path in repo paths', () => {
+    const root = mkTmp();
+    const dir = path.join(root, 'cursor-skills', 'platforms', 'runrunit', 'rr-skill');
+    fs.mkdirSync(path.join(dir, 'rules'), { recursive: true });
+    fs.writeFileSync(path.join(dir, 'SKILL.md'), '# skill', 'utf8');
+    fs.writeFileSync(path.join(dir, 'rules', 'a.md'), 'rule', 'utf8');
+    fs.writeFileSync(
+      path.join(root, 'cursor-catalog.json'),
+      JSON.stringify({
+        version: 1,
+        taxonomy: { platform: ['runrunit'], technology: [], utility: [] },
+        skills: [
+          {
+            id: 'rr-skill',
+            path: 'platforms/runrunit/rr-skill',
+            platform: ['runrunit'],
+            technology: [],
+            utility: [],
+          },
+        ],
+        agents: [],
+      }),
+      'utf8',
+    );
+
+    const r = collectSkillFilesForShare(root, 'rr-skill');
+    expect(r.repoFolderPath).toBe('cursor-skills/platforms/runrunit/rr-skill/');
+    expect(r.files.map((f) => f.repoPath).sort()).toEqual([
+      'cursor-skills/platforms/runrunit/rr-skill/SKILL.md',
+      'cursor-skills/platforms/runrunit/rr-skill/rules/a.md',
     ]);
   });
 
