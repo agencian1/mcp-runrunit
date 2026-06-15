@@ -77,6 +77,13 @@ Configure as variáveis de ambiente (ou no JSON de configuração do MCP no Curs
 
 Estas variáveis existem **só no anfitrião do processo MCP** (ficheiro de config do Cursor, CI, segredos da org). **Não** passe token nem credenciais como argumento de tool nem partilhe em chat ou repositório.
 
+**Bitbucket** (opcional; tools `runrunit_share_cursor_agent_bitbucket` e `runrunit_share_cursor_skill_bitbucket`):
+
+- `BITBUCKET_USERNAME` — utilizador Bitbucket (conta Atlassian)
+- `BITBUCKET_APP_PASSWORD` — app password com permissão de escrita no repositório alvo
+- `BITBUCKET_WORKSPACE`, `BITBUCKET_REPO_SLUG` — repositório onde abrir o PR (layout `cursor-agents/` e `cursor-skills/` na raiz)
+- `BITBUCKET_BASE_BRANCH` — branch base (opcional; default `main`)
+
 **Sentry** (opcional; monitoramento de erros do MCP):
 
 - `SENTRY_DSN` — DSN do projeto Sentry
@@ -99,9 +106,11 @@ npm run build
 ## Uso no Cursor
 
 1. Abra as configurações do Cursor (MCP).
-2. Adicione o servidor no arquivo de configuração de MCP (por exemplo em `.cursor/mcp.json` ou nas configurações do Cursor).
+2. Copie o exemplo [`mcp.json.example`](mcp.json.example) para `.cursor/mcp.json` (na raiz do workspace ou em `~/.cursor/mcp.json` global).
+3. Ajuste o caminho absoluto em `args` para o seu `dist/index.js` e preencha `RUNRUNIT_APP_KEY` / `RUNRUNIT_USER_TOKEN` (obrigatórios). As demais variáveis são opcionais conforme as tools que for usar.
+4. Execute `npm run build` neste repositório antes de apontar o MCP para `dist/index.js`.
 
-Exemplo de configuração (ajuste o caminho para o seu projeto):
+Exemplo mínimo (ajuste o caminho para o seu projeto):
 
 ```json
 {
@@ -213,12 +222,14 @@ As skills que fazem upload de imagens (evidências em PRs e comentários Runrun.
 
 ### Cursor (skills e agentes do pacote)
 
-| Ferramenta                       | Descrição                                                                                                                                                                                                                                                                                                       |
-| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `runrunit_install_cursor_skills` | **Só instalação local:** copia pastas de `cursor-skills/` para `~/.cursor/skills` ou `<project_root>/.cursor/skills`. Não usar para “compartilhar no GitHub” — nesse caso use `runrunit_share_cursor_skill`.                                                                                                    |
-| `runrunit_install_cursor_agents` | **Só instalação local:** copia Markdown de `cursor-agents/` para `~/.cursor/agents` ou projeto, preservando o basename. Para propor agente ao repo via PR, use `runrunit_share_cursor_agent`.                                                                                                                   |
-| `runrunit_share_cursor_agent`    | **Partilha com o time (PR):** quando pedirem compartilhar/dividir agente com o time no GitHub. Abre PR com um ficheiro de `cursor-agents/`. Requer `GITHUB_*` no servidor MCP.                                                                                                                                  |
-| `runrunit_share_cursor_skill`    | **Partilha com o time (PR):** quando pedirem compartilhar/dividir skill com o time (ex. `react-best-practices`). Abre PR com a pasta completa `cursor-skills/{skill_name}/` (SKILL.md, `rules/`, etc.) num único commit. Resposta inclui `file_count` e `paths`. Mesmos requisitos GitHub que a tool de agente. |
+| Ferramenta                              | Descrição                                                                                                                                                                                                                                                                                                       |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `runrunit_install_cursor_skills`        | **Só instalação local:** copia pastas de `cursor-skills/` para `~/.cursor/skills` ou `<project_root>/.cursor/skills`. Não usar para “compartilhar no GitHub” — nesse caso use `runrunit_share_cursor_skill`.                                                                                                    |
+| `runrunit_install_cursor_agents`        | **Só instalação local:** copia Markdown de `cursor-agents/` para `~/.cursor/agents` ou projeto, preservando o basename. Para propor agente ao repo via PR, use `runrunit_share_cursor_agent`.                                                                                                                   |
+| `runrunit_share_cursor_agent`           | **Partilha com o time (PR):** quando pedirem compartilhar/dividir agente com o time no GitHub. Abre PR com um ficheiro de `cursor-agents/`. Requer `GITHUB_*` no servidor MCP.                                                                                                                                  |
+| `runrunit_share_cursor_skill`           | **Partilha com o time (PR):** quando pedirem compartilhar/dividir skill com o time (ex. `react-best-practices`). Abre PR com a pasta completa `cursor-skills/{skill_name}/` (SKILL.md, `rules/`, etc.) num único commit. Resposta inclui `file_count` e `paths`. Mesmos requisitos GitHub que a tool de agente. |
+| `runrunit_share_cursor_agent_bitbucket` | **Partilha com o time (PR Bitbucket):** igual a `runrunit_share_cursor_agent`, mas abre PR no Bitbucket. Requer `BITBUCKET_*` no servidor MCP.                                                                                                                                                                  |
+| `runrunit_share_cursor_skill_bitbucket` | **Partilha com o time (PR Bitbucket):** igual a `runrunit_share_cursor_skill`, mas abre PR no Bitbucket com a pasta completa da skill. Requer `BITBUCKET_*` no servidor MCP.                                                                                                                                    |
 
 ### Skills
 
