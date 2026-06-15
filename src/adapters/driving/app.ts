@@ -522,14 +522,14 @@ export const TOOLS = [
   {
     name: 'runrunit_get_pr_template',
     description:
-      'Returns the pull request title format and body from PR_template.md. Use before gh pr create or when opening PRs manually so the description follows the project standard. Optional fields fill the template (change_type, description, task_id, type, title_description, include_visual_evidence, references).',
+      'Returns the pull request title format and body from .github/PULL_REQUEST_TEMPLATE.md. Use before gh pr create or when opening PRs manually so the description follows the project standard. Optional fields fill the template (change_type, description, task_id, type, title_description, include_visual_evidence, references).',
     inputSchema: {
       type: 'object' as const,
       properties: {
         project_root: {
           type: 'string',
           description:
-            'Optional absolute path to the repo root containing PR_template.md. If omitted, resolves from cwd or the mcp-runrunit package.',
+            'Optional absolute path to the repo root containing .github/PULL_REQUEST_TEMPLATE.md. If omitted, resolves from cwd or the mcp-runrunit package.',
         },
         change_type: {
           type: 'string',

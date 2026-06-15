@@ -13,7 +13,7 @@
     "cursor-catalog.json",
     "cursor-skills",
     "cursor-agents",
-    "PR_template.md",
+    ".github/PULL_REQUEST_TEMPLATE.md",
     ".env.example",
     "mcp.json.example",
     "README.md",

@@ -10,7 +10,10 @@ function mkTmp(): string {
 }
 
 function writePrTemplate(root: string): void {
-  fs.copyFileSync(path.join(process.cwd(), 'PR_template.md'), path.join(root, 'PR_template.md'));
+  const dir = path.join(root, '.github');
+  fs.mkdirSync(dir, { recursive: true });
+  const source = path.join(process.cwd(), '.github', 'PULL_REQUEST_TEMPLATE.md');
+  fs.copyFileSync(source, path.join(dir, 'PULL_REQUEST_TEMPLATE.md'));
 }
 
 function mockOctokitSingleFile(): Octokit {

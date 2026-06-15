@@ -12,8 +12,10 @@ import {
 } from './pr-template.js';
 
 function writeTemplate(root: string): void {
+  const dir = path.join(root, '.github');
+  fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(
-    path.join(root, 'PR_template.md'),
+    path.join(dir, 'PULL_REQUEST_TEMPLATE.md'),
     `# Título do PR: (Ex: task0123: feat: Adiciona login social com Google)
 
 ## 🎯 Tipo de Mudança
@@ -64,7 +66,7 @@ function writeTemplate(root: string): void {
 }
 
 describe('pr-template', () => {
-  it('reads and extracts body from PR_template.md', () => {
+  it('reads and extracts body from .github/PULL_REQUEST_TEMPLATE.md', () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'pr-template-'));
     writeTemplate(root);
 

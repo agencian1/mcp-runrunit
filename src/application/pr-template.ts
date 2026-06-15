@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { findPackageRoot } from './cursor-catalog.js';
 
-export const PR_TEMPLATE_FILENAME = 'PR_template.md';
+export const PR_TEMPLATE_RELATIVE_PATH = path.join('.github', 'PULL_REQUEST_TEMPLATE.md');
 
 export type PrChangeType = 'bug' | 'feature' | 'refactor' | 'docs' | 'layout';
 
@@ -51,7 +51,7 @@ const CHANGE_TYPE_MARKERS: Record<PrChangeType, string> = {
 export function findPrTemplateRoot(startDir: string): string | null {
   let dir = path.resolve(startDir);
   for (let i = 0; i < 14; i++) {
-    const template = path.join(dir, PR_TEMPLATE_FILENAME);
+    const template = path.join(dir, PR_TEMPLATE_RELATIVE_PATH);
     try {
       if (fs.existsSync(template) && fs.statSync(template).isFile()) {
         return dir;
@@ -68,29 +68,29 @@ export function findPrTemplateRoot(startDir: string): string | null {
 
 export function resolvePrTemplatePath(projectRoot?: string): string {
   if (projectRoot?.trim()) {
-    const templatePath = path.join(path.resolve(projectRoot.trim()), PR_TEMPLATE_FILENAME);
+    const templatePath = path.join(path.resolve(projectRoot.trim()), PR_TEMPLATE_RELATIVE_PATH);
     if (!fs.existsSync(templatePath)) {
-      throw new Error(`PR_template.md not found at ${templatePath}`);
+      throw new Error(`${PR_TEMPLATE_RELATIVE_PATH} not found at ${templatePath}`);
     }
     return templatePath;
   }
 
   const fromCwd = findPrTemplateRoot(process.cwd());
   if (fromCwd) {
-    return path.join(fromCwd, PR_TEMPLATE_FILENAME);
+    return path.join(fromCwd, PR_TEMPLATE_RELATIVE_PATH);
   }
 
   const here = path.dirname(fileURLToPath(import.meta.url));
   const fromPkg = findPrTemplateRoot(here) ?? findPackageRoot(here);
   if (fromPkg) {
-    const templatePath = path.join(fromPkg, PR_TEMPLATE_FILENAME);
+    const templatePath = path.join(fromPkg, PR_TEMPLATE_RELATIVE_PATH);
     if (fs.existsSync(templatePath)) {
       return templatePath;
     }
   }
 
   throw new Error(
-    'PR_template.md not found. Pass project_root or run from a repo that contains it.',
+    `${PR_TEMPLATE_RELATIVE_PATH} not found. Pass project_root or run from a repo that contains it.`,
   );
 }
 
@@ -102,7 +102,7 @@ export function extractPrBodyTemplate(raw: string): string {
   const marker = '## 🎯 Tipo de Mudança';
   const idx = raw.indexOf(marker);
   if (idx === -1) {
-    throw new Error(`PR_template.md: missing "${marker}" section`);
+    throw new Error(`${PR_TEMPLATE_RELATIVE_PATH}: missing "${marker}" section`);
   }
   return raw.slice(idx).trimEnd();
 }
@@ -141,13 +141,13 @@ function replaceDescriptionSection(body: string, description: string): string {
   const header = '## 📝 Descrição';
   const start = body.indexOf(header);
   if (start === -1) {
-    throw new Error('PR_template.md: missing "## 📝 Descrição" section');
+    throw new Error(`${PR_TEMPLATE_RELATIVE_PATH}: missing "## 📝 Descrição" section`);
   }
 
   const afterHeader = body.slice(start + header.length);
   const divider = afterHeader.indexOf('\n---');
   if (divider === -1) {
-    throw new Error('PR_template.md: missing divider after description section');
+    throw new Error(`${PR_TEMPLATE_RELATIVE_PATH}: missing divider after description section`);
   }
 
   const before = body.slice(0, start + header.length);
