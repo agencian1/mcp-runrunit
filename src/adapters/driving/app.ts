@@ -11,7 +11,12 @@ import { taskUpdateToApiPayload } from '../../infrastructure/mappers/custom_fiel
 import { installCursorSkills } from '../../application/install-cursor-skills.js';
 import { installCursorAgents } from '../../application/install-cursor-agents.js';
 import { shareCursorAgent, shareCursorSkill } from '../../application/share-cursor-github.js';
+import {
+  shareCursorAgentBitbucket,
+  shareCursorSkillBitbucket,
+} from '../../application/share-cursor-bitbucket.js';
 import { RunrunitAPIError } from '../driven/api.js';
+import { ShareBitbucketConfigError } from '../driven/bitbucket.js';
 import { ShareGithubConfigError } from '../driven/github.js';
 import { captureExceptionWithContext } from '../../observability/sentry.js';
 
@@ -118,11 +123,22 @@ export const TOOLS = [
   },
   {
     name: 'runrunit_get_task',
-    description: 'Get a single task by ID from Runrun.it.',
+    description:
+      'Get a single task by ID from Runrun.it. Note: the rich description is on a separate endpoint — use runrunit_get_task_description to fetch it.',
     inputSchema: {
       type: 'object' as const,
       properties: { id: { type: 'number', description: 'Task ID' } },
       required: ['id'],
+    },
+  },
+  {
+    name: 'runrunit_get_task_description',
+    description:
+      'Get the rich-text description of a task. Use this after runrunit_get_task to load the full task context (requirements, acceptance criteria, links, etc.) before starting work.',
+    inputSchema: {
+      type: 'object' as const,
+      properties: { task_id: { type: 'number', description: 'Task ID' } },
+      required: ['task_id'],
     },
   },
   /**
@@ -689,6 +705,54 @@ export const TOOLS = [
       required: ['skill_name'],
     },
   },
+  /**
+   * @namedTools runrunit_share_cursor_agent_bitbucket
+   */
+  {
+    name: 'runrunit_share_cursor_agent_bitbucket',
+    description:
+      'Use when the user wants to share a Cursor agent with the team through Bitbucket (e.g. compartilhar agente com o time, dividir com o time, propor ao repositório, share agent with the team via PR). Opens a pull request with one markdown file from cursor-agents/. For copying agents into ~/.cursor/agents locally, use runrunit_install_cursor_agents instead. Requires BITBUCKET_USERNAME, BITBUCKET_APP_PASSWORD, BITBUCKET_WORKSPACE, BITBUCKET_REPO_SLUG on the MCP server host only; never pass credentials via this tool.',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        agent_name: {
+          type: 'string',
+          description:
+            'Agent file name or stem (e.g. security-auditor or security-auditor.md) matching a file under cursor-agents/.',
+        },
+        project_root: {
+          type: 'string',
+          description:
+            'Optional absolute path to project root containing cursor-agents/. If omitted, walks up from cwd.',
+        },
+      },
+      required: ['agent_name'],
+    },
+  },
+  /**
+   * @namedTools runrunit_share_cursor_skill_bitbucket
+   */
+  {
+    name: 'runrunit_share_cursor_skill_bitbucket',
+    description:
+      'Primary tool when the user wants to share a Cursor skill with the team via Bitbucket: compartilhar skill, dividir com o time, propor ao repo, publicar skill para a equipe, share skill with the team, open a PR for teammates. Opens a pull request that adds or updates the full cursor-skills/{skill_name}/ folder (SKILL.md, rules/, templates/, scripts/, etc.) in one atomic commit. Do not use runrunit_install_cursor_skills for this — that only copies folders to local ~/.cursor/skills. Same Bitbucket env as runrunit_share_cursor_agent_bitbucket (credentials on MCP host only).',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        skill_name: {
+          type: 'string',
+          description:
+            'Folder name under cursor-skills/ (e.g. react-best-practices, upload-image-cloudinary). Matches the directory that contains SKILL.md.',
+        },
+        project_root: {
+          type: 'string',
+          description:
+            'Optional absolute path to project root containing cursor-skills/. If omitted, walks up from cwd.',
+        },
+      },
+      required: ['skill_name'],
+    },
+  },
 ];
 
 function textContent(text: string): { type: 'text'; text: string }[] {
@@ -891,6 +955,9 @@ export function createMcpServer(): Server {
         }
         case 'runrunit_get_task':
           result = await tasks.getTask(Number(a.id));
+          break;
+        case 'runrunit_get_task_description':
+          result = await tasks.getTaskDescription(Number(a.task_id));
           break;
         case 'runrunit_list_subtasks':
           result = await tasks.listSubtasks(Number(a.task_id));
@@ -1100,6 +1167,20 @@ export function createMcpServer(): Server {
           });
           break;
         }
+        case 'runrunit_share_cursor_agent_bitbucket': {
+          result = await shareCursorAgentBitbucket({
+            agent_name: String(a.agent_name ?? ''),
+            project_root: a.project_root != null ? String(a.project_root) : undefined,
+          });
+          break;
+        }
+        case 'runrunit_share_cursor_skill_bitbucket': {
+          result = await shareCursorSkillBitbucket({
+            skill_name: String(a.skill_name ?? ''),
+            project_root: a.project_root != null ? String(a.project_root) : undefined,
+          });
+          break;
+        }
         default:
           return {
             content: textContent(`Unknown tool: ${name}`),
@@ -1123,7 +1204,7 @@ export function createMcpServer(): Server {
       });
 
       const message =
-        err instanceof ShareGithubConfigError
+        err instanceof ShareGithubConfigError || err instanceof ShareBitbucketConfigError
           ? err.message
           : err instanceof RunrunitAPIError
             ? `${err.message}${err.body ? ` ${JSON.stringify(err.body)}` : ''}`

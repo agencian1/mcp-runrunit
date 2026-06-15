@@ -13,6 +13,7 @@
     "cursor-skills",
     "cursor-agents",
     ".env.example",
+    "mcp.json.example",
     "README.md",
     "LICENSE"
   ],
