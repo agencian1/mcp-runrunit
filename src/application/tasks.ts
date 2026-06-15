@@ -33,6 +33,19 @@ export async function getTask(id: number) {
   return runrunitFetch<unknown>(`tasks/${id}`);
 }
 
+export type TaskDescriptionResource = {
+  id: number;
+  description: string | null;
+  current_editor_id: string | null;
+  current_editor_name: string | null;
+  edited_at: string | null;
+  locked_at: string | null;
+};
+
+export async function getTaskDescription(taskId: number): Promise<TaskDescriptionResource> {
+  return runrunitFetch<TaskDescriptionResource>(`tasks/${taskId}/description`);
+}
+
 export async function listSubtasks(taskId: number) {
   return runrunitFetch<unknown[]>(`tasks/${taskId}/subtasks`);
 }
@@ -66,14 +79,6 @@ async function getAssigneeId(_body: CreateTaskBody) {
   }
   return user.id;
 }
-
-/**
- * Runrun.it keeps the rich-text task body on a separate resource:
- * `GET/PUT /api/v1.0/tasks/:task_id/description` (see Task Description API).
- */
-type TaskDescriptionResource = {
-  description?: string | null;
-};
 
 /**
  * Parses the task id from `POST /tasks` (response is the task object with top-level `id`).
