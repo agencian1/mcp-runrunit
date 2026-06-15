@@ -122,10 +122,12 @@ export async function shareCursorAgent(
     throw new Error('agent_name is required.');
   }
   const projectRoot = resolveShareProjectRoot(params.project_root, 'cursor-agents');
-  const { sourcePath, destBasename } = resolveAgentMarkdownForShare(projectRoot, agentName);
+  const { sourcePath, destBasename, repoPath } = resolveAgentMarkdownForShare(
+    projectRoot,
+    agentName,
+  );
   const content = readUtf8FileLimited(sourcePath, projectRoot);
   const bytes = Buffer.byteLength(content, 'utf8');
-  const repoPath = `cursor-agents/${destBasename}`;
   const slug = branchSlugFromBasename(destBasename);
   const suffix = uniqueSuffix();
   const branch = `feat/share-agent-${slug}-${suffix}`;

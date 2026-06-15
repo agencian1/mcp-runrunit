@@ -77,13 +77,6 @@ Configure as variáveis de ambiente (ou no JSON de configuração do MCP no Curs
 
 Estas variáveis existem **só no anfitrião do processo MCP** (ficheiro de config do Cursor, CI, segredos da org). **Não** passe token nem credenciais como argumento de tool nem partilhe em chat ou repositório.
 
-**Bitbucket** (opcional; tools `runrunit_share_cursor_agent_bitbucket` e `runrunit_share_cursor_skill_bitbucket`):
-
-- `BITBUCKET_USERNAME` — utilizador Bitbucket (conta Atlassian)
-- `BITBUCKET_APP_PASSWORD` — app password com permissão de escrita no repositório alvo
-- `BITBUCKET_WORKSPACE`, `BITBUCKET_REPO_SLUG` — repositório onde abrir o PR (layout `cursor-agents/` e `cursor-skills/` na raiz)
-- `BITBUCKET_BASE_BRANCH` — branch base (opcional; default `main`)
-
 **Sentry** (opcional; monitoramento de erros do MCP):
 
 - `SENTRY_DSN` — DSN do projeto Sentry
@@ -106,11 +99,9 @@ npm run build
 ## Uso no Cursor
 
 1. Abra as configurações do Cursor (MCP).
-2. Copie o exemplo [`mcp.json.example`](mcp.json.example) para `.cursor/mcp.json` (na raiz do workspace ou em `~/.cursor/mcp.json` global).
-3. Ajuste o caminho absoluto em `args` para o seu `dist/index.js` e preencha `RUNRUNIT_APP_KEY` / `RUNRUNIT_USER_TOKEN` (obrigatórios). As demais variáveis são opcionais conforme as tools que for usar.
-4. Execute `npm run build` neste repositório antes de apontar o MCP para `dist/index.js`.
+2. Adicione o servidor no arquivo de configuração de MCP (por exemplo em `.cursor/mcp.json` ou nas configurações do Cursor).
 
-Exemplo mínimo (ajuste o caminho para o seu projeto):
+Exemplo de configuração (ajuste o caminho para o seu projeto):
 
 ```json
 {
@@ -168,9 +159,11 @@ Depois de publicado no npm, qualquer pessoa pode usar com `npx` sem clonar o rep
 
 ## Cursor Skills e agentes (evidências, PR, comentários na task, agents)
 
-O pacote inclui a pasta `cursor-skills/` com skills para uso no Cursor: **registrar-evidencias**, **upload-image-cloudinary**, **create-pr-github**, **comentar-task-runrunit**, **code-reviewer**, **react-best-practices** (guia Vercel para React/Next.js, com `rules/` e `AGENTS.md`), **install-cursor-team-skills** (atalho que orienta usar a tool abaixo). Para instalar ou sincronizar tudo no PC de um colega, use a tool MCP **`runrunit_install_cursor_skills`** (recomendado: `dry_run: true` primeiro; usa `os.homedir()` e funciona em Windows, macOS e Linux). Parâmetros opcionais: `skill_names`, `target` (`global` ou `project` + `project_root`), `source_dir` se a pasta não for encontrada ao lado do pacote.
+O pacote inclui skills (`cursor-skills/`) e agentes (`cursor-agents/`) organizados em subpastas por plataforma, tecnologia ou utilidade. O índice machine-readable está em **`cursor-catalog.json`** (ids estáveis, paths no repo, tags `platform` / `technology` / `utility`).
 
-A pasta **`cursor-agents/`** guarda ficheiros Markdown de agentes (na raiz, ex. `nome.md` ou `nome.agent.md`, ou subpastas com **um único** ficheiro `.md`). Para copiar para o Cursor no utilizador que corre o MCP, use **`runrunit_install_cursor_agents`**: destino global `~/.cursor/agents/` (lista plana de ficheiros; o nome do ficheiro no destino é o mesmo basename de origem). Parâmetros opcionais: `agent_names`, `target`, `project_root`, `source_dir`, `dry_run`.
+Para descobrir o que instalar, use **`runrunit_list_cursor_catalog`** (filtros opcionais, ex. `platform: ["runrunit"]`). Para copiar para o Cursor local, use **`runrunit_install_cursor_skills`** ou **`runrunit_install_cursor_agents`** com `dry_run: true` primeiro. Parâmetros opcionais: `skill_names` / `agent_names`, **`categories`** (intersecta com nomes quando ambos existem), `target` (`global` ou `project` + `project_root`), `source_dir`.
+
+O destino no Cursor permanece **plano**: `~/.cursor/skills/{id}/` e `~/.cursor/agents/{basename}.md` — os ids públicos (ex. `comentar-task-runrunit`) não mudam.
 
 Alternativa manual — skills: copie (ou crie link) das pastas em `node_modules/mcp-runrunit/cursor-skills/` para um destes diretórios:
 
@@ -222,14 +215,13 @@ As skills que fazem upload de imagens (evidências em PRs e comentários Runrun.
 
 ### Cursor (skills e agentes do pacote)
 
-| Ferramenta                              | Descrição                                                                                                                                                                                                                                                                                                       |
-| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `runrunit_install_cursor_skills`        | **Só instalação local:** copia pastas de `cursor-skills/` para `~/.cursor/skills` ou `<project_root>/.cursor/skills`. Não usar para “compartilhar no GitHub” — nesse caso use `runrunit_share_cursor_skill`.                                                                                                    |
-| `runrunit_install_cursor_agents`        | **Só instalação local:** copia Markdown de `cursor-agents/` para `~/.cursor/agents` ou projeto, preservando o basename. Para propor agente ao repo via PR, use `runrunit_share_cursor_agent`.                                                                                                                   |
-| `runrunit_share_cursor_agent`           | **Partilha com o time (PR):** quando pedirem compartilhar/dividir agente com o time no GitHub. Abre PR com um ficheiro de `cursor-agents/`. Requer `GITHUB_*` no servidor MCP.                                                                                                                                  |
-| `runrunit_share_cursor_skill`           | **Partilha com o time (PR):** quando pedirem compartilhar/dividir skill com o time (ex. `react-best-practices`). Abre PR com a pasta completa `cursor-skills/{skill_name}/` (SKILL.md, `rules/`, etc.) num único commit. Resposta inclui `file_count` e `paths`. Mesmos requisitos GitHub que a tool de agente. |
-| `runrunit_share_cursor_agent_bitbucket` | **Partilha com o time (PR Bitbucket):** igual a `runrunit_share_cursor_agent`, mas abre PR no Bitbucket. Requer `BITBUCKET_*` no servidor MCP.                                                                                                                                                                  |
-| `runrunit_share_cursor_skill_bitbucket` | **Partilha com o time (PR Bitbucket):** igual a `runrunit_share_cursor_skill`, mas abre PR no Bitbucket com a pasta completa da skill. Requer `BITBUCKET_*` no servidor MCP.                                                                                                                                    |
+| Ferramenta                       | Descrição                                                                                                                                                                              |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `runrunit_list_cursor_catalog`   | Lista skills e agentes de `cursor-catalog.json` com categorias e descrição. Filtros: `kind`, `platform`, `technology`, `utility`.                                                      |
+| `runrunit_install_cursor_skills` | **Só instalação local:** copia skills para `~/.cursor/skills` ou projeto. Filtros: `skill_names`, `categories`. Não usar para partilhar no GitHub — use `runrunit_share_cursor_skill`. |
+| `runrunit_install_cursor_agents` | **Só instalação local:** copia agentes para `~/.cursor/agents` (basename preservado). Filtros: `agent_names`, `categories`. PR no repo: `runrunit_share_cursor_agent`.                 |
+| `runrunit_share_cursor_agent`    | **Partilha com o time (PR):** abre PR com o ficheiro no path do catálogo (`cursor-agents/{path}`). Requer `GITHUB_*` no servidor MCP.                                                  |
+| `runrunit_share_cursor_skill`    | **Partilha com o time (PR):** abre PR com a pasta completa no path do catálogo (`cursor-skills/{path}/`). Resposta inclui `file_count` e `paths`.                                      |
 
 ### Skills
 
@@ -247,15 +239,15 @@ Skills em `cursor-skills/`:
 
 ### Agents
 
-| Agente                         | Nome exibido                     | Descrição                                                                                                                                                              | Quando usar                                                                                                                                             |
-| ------------------------------ | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **context-bridge**             | Doc-Brief (Implementation Brief) | Filtro de documentação técnica: extrai lógica de implementação, assinaturas e dependências em Implementation Briefs de alta densidade; remove marketing e redundância. | Quando precisar transformar documentação longa em um resumo técnico pronto para implementação (Quick Start, Core Logic, API Reference, Gotchas).        |
-| **kieran-typescript-reviewer** | kieran-typescript-reviewer       | Revisa código TypeScript com barra de qualidade alta em type safety, padrões modernos e manutenibilidade.                                                              | Após implementar features, modificar código ou criar novos componentes TypeScript; para garantir convenções e boas práticas.                            |
-| **mentor**                     | Mentor mode                      | Ajuda a mentorar o engenheiro com orientação e suporte, sem editar código.                                                                                             | Quando quiser desafiar premissas, fazer perguntas socráticas e guiar a solução sem dar a resposta pronta.                                               |
-| **performance-optimizer**      | performance-optimizer            | Especialista em otimização de performance, profiling, Core Web Vitals e otimização de bundle.                                                                          | Para melhorar velocidade, reduzir tamanho de bundle e otimizar runtime; termos: performance, optimize, speed, slow, memory, cpu, benchmark, lighthouse. |
-| **prd**                        | Create PRD Chat Mode             | Gera um PRD (Product Requirements Document) em Markdown com user stories, critérios de aceite, considerações técnicas e métricas; opcionalmente cria issues no GitHub. | Para documentar requisitos de produto de forma estruturada e, se desejado, gerar issues a partir das user stories.                                      |
-| **toph**                       | Toph                             | Especialista em acessibilidade web (WCAG 2.1/2.2), UX inclusiva e testes de a11y.                                                                                      | Para revisar acessibilidade, teclado, foco, ARIA, formulários, mídia, testes com leitores de tela e ferramentas (axe, pa11y, Lighthouse).               |
-| **security-reviewer**          | security-reviewer                | Revisor focado em segurança: vulnerabilidades e boas práticas.                                                                                                         | Para checar injeção (SQL, XSS, comandos), autenticação/autorização, dados sensíveis, criptografia, dependências e validação de entrada.                 |
+| Agente                         | Nome exibido                     | Descrição                                                                                                                                                              | Quando usar                                                                                                                                      |
+| ------------------------------ | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **context-bridge**             | Doc-Brief (Implementation Brief) | Filtro de documentação técnica: extrai lógica de implementação, assinaturas e dependências em Implementation Briefs de alta densidade; remove marketing e redundância. | Quando precisar transformar documentação longa em um resumo técnico pronto para implementação (Quick Start, Core Logic, API Reference, Gotchas). |
+| **kieran-typescript-reviewer** | kieran-typescript-reviewer       | Revisa código TypeScript com barra de qualidade alta em type safety, padrões modernos e manutenibilidade.                                                              | Após implementar features, modificar código ou criar novos componentes TypeScript; para garantir convenções e boas práticas.                     |
+| **mentor**                     | Mentor mode                      | Ajuda a mentorar o engenheiro com orientação e suporte, sem editar código.                                                                                             | Quando quiser desafiar premissas, fazer perguntas socráticas e guiar a solução sem dar a resposta pronta.                                        |
+| **prd**                        | Create PRD Chat Mode             | Gera um PRD (Product Requirements Document) em Markdown com user stories, critérios de aceite, considerações técnicas e métricas; opcionalmente cria issues no GitHub. | Para documentar requisitos de produto de forma estruturada e, se desejado, gerar issues a partir das user stories.                               |
+| **toph**                       | Toph                             | Especialista em acessibilidade web (WCAG 2.1/2.2), UX inclusiva e testes de a11y.                                                                                      | Para revisar acessibilidade, teclado, foco, ARIA, formulários, mídia, testes com leitores de tela e ferramentas (axe, pa11y, Lighthouse).        |
+| **security-auditor**           | security-auditor                 | Revisor focado em segurança: vulnerabilidades e boas práticas (OWASP, supply chain).                                                                                   | Para checar injeção (SQL, XSS, comandos), autenticação/autorização, dados sensíveis, criptografia, dependências e validação de entrada.          |
+| **shopify-expert**             | Shopify Expert                   | Desenvolvimento Shopify: temas Liquid, apps e APIs.                                                                                                                    | Tarefas de tema, app ou integração Shopify.                                                                                                      |
 
 ## Contexto para o agente (uso assertivo das tools)
 

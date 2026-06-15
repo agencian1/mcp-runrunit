@@ -1,0 +1,127 @@
+{
+  "version": 1,
+  "taxonomy": {
+    "platform": ["runrunit", "github", "cloudinary", "shopify", "cursor"],
+    "technology": ["react", "nextjs", "typescript"],
+    "utility": [
+      "workflow",
+      "evidence",
+      "quality",
+      "security",
+      "accessibility",
+      "product",
+      "meta",
+      "mentoring",
+      "documentation"
+    ]
+  },
+  "skills": [
+    {
+      "id": "comentar-task-runrunit",
+      "path": "platforms/runrunit/comentar-task-runrunit",
+      "platform": ["runrunit"],
+      "technology": [],
+      "utility": ["workflow"]
+    },
+    {
+      "id": "create-pr-github",
+      "path": "platforms/github/create-pr-github",
+      "platform": ["github"],
+      "technology": [],
+      "utility": ["workflow"]
+    },
+    {
+      "id": "upload-image-cloudinary",
+      "path": "platforms/cloudinary/upload-image-cloudinary",
+      "platform": ["cloudinary"],
+      "technology": [],
+      "utility": ["evidence"]
+    },
+    {
+      "id": "react-best-practices",
+      "path": "technologies/react/react-best-practices",
+      "platform": [],
+      "technology": ["react", "nextjs"],
+      "utility": ["quality"]
+    },
+    {
+      "id": "registrar-evidencias",
+      "path": "utilities/evidence/registrar-evidencias",
+      "platform": [],
+      "technology": [],
+      "utility": ["evidence"]
+    },
+    {
+      "id": "code-reviewer",
+      "path": "utilities/quality/code-reviewer",
+      "platform": [],
+      "technology": [],
+      "utility": ["quality"]
+    },
+    {
+      "id": "setup-code-quality",
+      "path": "utilities/quality/setup-code-quality",
+      "platform": [],
+      "technology": ["typescript"],
+      "utility": ["quality"]
+    },
+    {
+      "id": "install-cursor-team-skills",
+      "path": "utilities/meta/install-cursor-team-skills",
+      "platform": ["cursor"],
+      "technology": [],
+      "utility": ["meta"]
+    }
+  ],
+  "agents": [
+    {
+      "id": "shopify-expert",
+      "path": "platforms/shopify/shopify-expert.agent.md",
+      "platform": ["shopify"],
+      "technology": [],
+      "utility": []
+    },
+    {
+      "id": "kieran-typescript-reviewer",
+      "path": "technologies/typescript/kieran-typescript-reviewer.md",
+      "platform": [],
+      "technology": ["typescript"],
+      "utility": ["quality"]
+    },
+    {
+      "id": "security-auditor",
+      "path": "utilities/security/security-auditor.md",
+      "platform": [],
+      "technology": [],
+      "utility": ["security"]
+    },
+    {
+      "id": "toph",
+      "path": "utilities/accessibility/toph.agent.md",
+      "platform": [],
+      "technology": [],
+      "utility": ["accessibility"]
+    },
+    {
+      "id": "prd",
+      "path": "utilities/product/prd.agent.md",
+      "platform": [],
+      "technology": [],
+      "utility": ["product"]
+    },
+    {
+      "id": "mentor",
+      "path": "utilities/mentoring/mentor.agent.md",
+      "platform": [],
+      "technology": [],
+      "utility": ["mentoring"]
+    },
+    {
+      "id": "context-bridge",
+      "path": "utilities/documentation/context-bridge.agent.md",
+      "platform": [],
+      "technology": [],
+      "utility": ["documentation"]
+    }
+  ]
+}
