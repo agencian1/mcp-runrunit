@@ -13,6 +13,7 @@
     "cursor-catalog.json",
     "cursor-skills",
     "cursor-agents",
+    "PR_template.md",
     ".env.example",
     "mcp.json.example",
     "README.md",

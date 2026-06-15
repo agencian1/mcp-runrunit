@@ -6,6 +6,7 @@ import {
   readBitbucketShareConfigFromEnv,
   submitFilesPullRequest,
 } from '../adapters/driven/bitbucket.js';
+import { buildShareAgentPr, buildShareSkillPr } from './pr-template.js';
 import {
   assertPathInsideProjectRoot,
   collectSkillFilesForShare,
@@ -61,44 +62,6 @@ function uniqueSuffix(): string {
   return randomBytes(3).toString('hex');
 }
 
-function prBodyAgent(params: { repoPath: string; correlationId: string }): string {
-  return [
-    '## Partilha via MCP (cursor-agent)',
-    '',
-    'Commits aparecem como a identidade configurada no token Bitbucket do servidor MCP (não o utilizador do chat).',
-    '',
-    '### Metadados',
-    '',
-    `- **Correlation ID:** ${params.correlationId}`,
-    '',
-    '### Ficheiro remoto',
-    '',
-    `- \`${params.repoPath}\``,
-    '',
-  ].join('\n');
-}
-
-function prBodySkill(params: {
-  repoFolderPath: string;
-  fileCount: number;
-  correlationId: string;
-}): string {
-  return [
-    '## Partilha via MCP (cursor-skill)',
-    '',
-    'Commits aparecem como a identidade configurada no token Bitbucket do servidor MCP (não o utilizador do chat).',
-    '',
-    '### Metadados',
-    '',
-    `- **Correlation ID:** ${params.correlationId}`,
-    '',
-    '### Pasta remota',
-    '',
-    `- \`${params.repoFolderPath}\` (${params.fileCount} ficheiro${params.fileCount === 1 ? '' : 's'})`,
-    '',
-  ].join('\n');
-}
-
 function resolveDeps(deps?: ShareCursorBitbucketDeps): {
   client: BitbucketClient;
   config: BitbucketShareConfig;
@@ -130,6 +93,13 @@ export async function shareCursorAgentBitbucket(
   const correlationId = randomUUID();
   const { client, config } = resolveDeps(deps);
 
+  const pr = buildShareAgentPr({
+    repoPath,
+    correlationId,
+    destBasename,
+    projectRoot,
+  });
+
   const { prUrl, branch: createdBranch } = await submitFilesPullRequest(client, {
     workspace: config.workspace,
     repoSlug: config.repoSlug,
@@ -137,8 +107,8 @@ export async function shareCursorAgentBitbucket(
     branch,
     files: [{ path: repoPath, content }],
     commitMessage: `feat(agents): share ${destBasename}`,
-    prTitle: `feat(agents): share ${destBasename}`,
-    prBody: prBodyAgent({ repoPath, correlationId }),
+    prTitle: pr.title,
+    prBody: pr.body,
   });
 
   return {
@@ -167,6 +137,14 @@ export async function shareCursorSkillBitbucket(
   const correlationId = randomUUID();
   const { client, config } = resolveDeps(deps);
 
+  const pr = buildShareSkillPr({
+    repoFolderPath,
+    fileCount: files.length,
+    correlationId,
+    folder,
+    projectRoot,
+  });
+
   const { prUrl, branch: createdBranch } = await submitFilesPullRequest(client, {
     workspace: config.workspace,
     repoSlug: config.repoSlug,
@@ -174,8 +152,8 @@ export async function shareCursorSkillBitbucket(
     branch,
     files: files.map((f) => ({ path: f.repoPath, content: f.content })),
     commitMessage: `feat(skills): share ${folder}`,
-    prTitle: `feat(skills): share ${folder}`,
-    prBody: prBodySkill({ repoFolderPath, fileCount: files.length, correlationId }),
+    prTitle: pr.title,
+    prBody: pr.body,
   });
 
   return {

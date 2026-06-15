@@ -8,6 +8,7 @@ import {
   submitMultiFilePullRequest,
   submitNewFilePullRequest,
 } from '../adapters/driven/github.js';
+import { buildShareAgentPr, buildShareSkillPr } from './pr-template.js';
 import {
   assertPathInsideProjectRoot,
   collectSkillFilesForShare,
@@ -63,44 +64,6 @@ function uniqueSuffix(): string {
   return randomBytes(3).toString('hex');
 }
 
-function prBodyAgent(params: { repoPath: string; correlationId: string }): string {
-  return [
-    '## Partilha via MCP (cursor-agent)',
-    '',
-    'Commits aparecem como a identidade configurada no token GitHub do servidor MCP (não o utilizador do chat).',
-    '',
-    '### Metadados',
-    '',
-    `- **Correlation ID:** ${params.correlationId}`,
-    '',
-    '### Ficheiro remoto',
-    '',
-    `- \`${params.repoPath}\``,
-    '',
-  ].join('\n');
-}
-
-function prBodySkill(params: {
-  repoFolderPath: string;
-  fileCount: number;
-  correlationId: string;
-}): string {
-  return [
-    '## Partilha via MCP (cursor-skill)',
-    '',
-    'Commits aparecem como a identidade configurada no token GitHub do servidor MCP (não o utilizador do chat).',
-    '',
-    '### Metadados',
-    '',
-    `- **Correlation ID:** ${params.correlationId}`,
-    '',
-    '### Pasta remota',
-    '',
-    `- \`${params.repoFolderPath}\` (${params.fileCount} ficheiro${params.fileCount === 1 ? '' : 's'})`,
-    '',
-  ].join('\n');
-}
-
 function resolveDeps(deps?: ShareCursorGithubDeps): {
   octokit: Octokit;
   config: GithubShareConfig;
@@ -134,6 +97,13 @@ export async function shareCursorAgent(
   const correlationId = randomUUID();
   const { octokit, config } = resolveDeps(deps);
 
+  const pr = buildShareAgentPr({
+    repoPath,
+    correlationId,
+    destBasename,
+    projectRoot,
+  });
+
   const { prUrl, branch: createdBranch } = await submitNewFilePullRequest(octokit, {
     owner: config.owner,
     repo: config.repo,
@@ -142,8 +112,8 @@ export async function shareCursorAgent(
     path: repoPath,
     contentUtf8: content,
     commitMessage: `feat(agents): share ${destBasename}`,
-    prTitle: `feat(agents): share ${destBasename}`,
-    prBody: prBodyAgent({ repoPath, correlationId }),
+    prTitle: pr.title,
+    prBody: pr.body,
   });
 
   return {
@@ -172,6 +142,14 @@ export async function shareCursorSkill(
   const correlationId = randomUUID();
   const { octokit, config } = resolveDeps(deps);
 
+  const pr = buildShareSkillPr({
+    repoFolderPath,
+    fileCount: files.length,
+    correlationId,
+    folder,
+    projectRoot,
+  });
+
   const { prUrl, branch: createdBranch } = await submitMultiFilePullRequest(octokit, {
     owner: config.owner,
     repo: config.repo,
@@ -179,8 +157,8 @@ export async function shareCursorSkill(
     branch,
     files: files.map((f) => ({ path: f.repoPath, content: f.content })),
     commitMessage: `feat(skills): share ${folder}`,
-    prTitle: `feat(skills): share ${folder}`,
-    prBody: prBodySkill({ repoFolderPath, fileCount: files.length, correlationId }),
+    prTitle: pr.title,
+    prBody: pr.body,
   });
 
   return {

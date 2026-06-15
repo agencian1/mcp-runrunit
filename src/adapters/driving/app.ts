@@ -12,6 +12,7 @@ import type { CategoryFilter } from '../../application/cursor-catalog.js';
 import { installCursorSkills } from '../../application/install-cursor-skills.js';
 import { installCursorAgents } from '../../application/install-cursor-agents.js';
 import { listCursorCatalog } from '../../application/list-cursor-catalog.js';
+import { getPrTemplate } from '../../application/pr-template.js';
 import { shareCursorAgent, shareCursorSkill } from '../../application/share-cursor-github.js';
 import {
   shareCursorAgentBitbucket,
@@ -510,6 +511,60 @@ export const TOOLS = [
           type: 'string',
           description:
             'Optional absolute path to mcp-runrunit package root. If omitted, resolves near the installed package.',
+        },
+      },
+      required: [],
+    },
+  },
+  /**
+   * @namedTools runrunit_get_pr_template
+   */
+  {
+    name: 'runrunit_get_pr_template',
+    description:
+      'Returns the pull request title format and body from PR_template.md. Use before gh pr create or when opening PRs manually so the description follows the project standard. Optional fields fill the template (change_type, description, task_id, type, title_description, include_visual_evidence, references).',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        project_root: {
+          type: 'string',
+          description:
+            'Optional absolute path to the repo root containing PR_template.md. If omitted, resolves from cwd or the mcp-runrunit package.',
+        },
+        change_type: {
+          type: 'string',
+          enum: ['bug', 'feature', 'refactor', 'docs', 'layout'],
+          description: 'Marks the corresponding checkbox in the template body.',
+        },
+        description: {
+          type: 'string',
+          description: 'Fills the Descrição section.',
+        },
+        task_id: {
+          type: 'string',
+          description: 'Task id for the PR title (e.g. task0123).',
+        },
+        type: {
+          type: 'string',
+          description: 'Conventional type for the PR title (e.g. feat, fix, docs).',
+        },
+        title_description: {
+          type: 'string',
+          description: 'Short description for the PR title.',
+        },
+        include_visual_evidence: {
+          type: 'boolean',
+          description:
+            'When false, omits the Evidências Visuais section. Default true when omitted.',
+        },
+        references: {
+          type: 'object',
+          description: 'Optional links for the Referências section.',
+          properties: {
+            task: { type: 'string' },
+            figma: { type: 'string' },
+            document: { type: 'string' },
+          },
         },
       },
       required: [],
@@ -1184,6 +1239,45 @@ export function createMcpServer(): Server {
             platform: parseStringArrayArg(a.platform),
             technology: parseStringArrayArg(a.technology),
             utility: parseStringArrayArg(a.utility),
+          });
+          break;
+        }
+        case 'runrunit_get_pr_template': {
+          const changeTypeRaw = a.change_type != null ? String(a.change_type).trim() : '';
+          const changeType =
+            changeTypeRaw === 'bug' ||
+            changeTypeRaw === 'feature' ||
+            changeTypeRaw === 'refactor' ||
+            changeTypeRaw === 'docs' ||
+            changeTypeRaw === 'layout'
+              ? changeTypeRaw
+              : undefined;
+          const refsRaw = a.references;
+          const references =
+            refsRaw && typeof refsRaw === 'object' && !Array.isArray(refsRaw)
+              ? {
+                  task:
+                    'task' in refsRaw && refsRaw.task != null ? String(refsRaw.task) : undefined,
+                  figma:
+                    'figma' in refsRaw && refsRaw.figma != null ? String(refsRaw.figma) : undefined,
+                  document:
+                    'document' in refsRaw && refsRaw.document != null
+                      ? String(refsRaw.document)
+                      : undefined,
+                }
+              : undefined;
+          result = getPrTemplate({
+            projectRoot: a.project_root != null ? String(a.project_root) : undefined,
+            changeType,
+            description: a.description != null ? String(a.description) : undefined,
+            taskId: a.task_id != null ? String(a.task_id) : undefined,
+            type: a.type != null ? String(a.type) : undefined,
+            titleDescription: a.title_description != null ? String(a.title_description) : undefined,
+            includeVisualEvidence:
+              a.include_visual_evidence === undefined
+                ? undefined
+                : a.include_visual_evidence === true,
+            references,
           });
           break;
         }
