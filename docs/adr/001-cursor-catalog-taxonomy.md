@@ -15,7 +15,7 @@ The `mcp-runrunit` npm package ships bundled Cursor skills (`cursor-skills/`) an
 - **Shallow discovery.** `install-cursor-skills.ts` lists only the first level of `cursor-skills/`. Share paths assume `cursor-skills/{skill_name}/` and `cursor-agents/{basename}` at the repo root of each tree.
 - **No category filters.** MCP install tools accept `skill_names` / `agent_names` by id only. Teams cannot express “install everything for Runrun.it” or “only security utilities” without naming each asset.
 
-The package is growing by platform (Runrun.it, GitHub, Cloudinary, Shopify) and by concern (evidence, quality, security). Maintainers and consumers need a stable public id, organized repo paths, and filterable discovery—without changing how Cursor stores assets locally (flat `~/.cursor/skills/{id}/` and `~/.cursor/agents/{basename}.md`).
+The package is growing by platform (Runrun.it, GitHub, Shopify) and by concern (evidence, quality, security). Maintainers and consumers need a stable public id, organized repo paths, and filterable discovery—without changing how Cursor stores assets locally (flat `~/.cursor/skills/{id}/` and `~/.cursor/agents/{basename}.md`).
 
 ## Decision
 

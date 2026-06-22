@@ -8,6 +8,7 @@
 /** Semantic key → API custom field key (e.g. custom_32) */
 export const CUSTOM_FIELD_API_KEYS: Record<string, string> = {
   link_da_branch: 'custom_32',
+  link_da_branch_relatorio: 'custom_12',
 };
 
 /** API custom field key → semantic key (for reading task responses) */

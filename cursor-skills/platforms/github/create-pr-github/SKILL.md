@@ -54,10 +54,7 @@ Cria um **pull request bem estruturado**, com descrição adequada, rótulos, re
 ### 4. **Evidências**
 - Escolha sempre que possível o MCP do **Playwright**, depois o MCP do Chrome DevTools.
 - Tirar prints da tela toda simulando `mobile`, `tablet` e `desktop` (e **antes/depois** quando aplicável).
-- **O GitHub CLI (`gh`) não anexa arquivos ao body da PR.** Para as evidências aparecerem:
-  1. **Usar a skill [upload-image-cloudinary](skills/upload-image-cloudinary/SKILL.md)** para fazer upload de cada screenshot e obter a URL pública (`secure_url`).
-  2. Inserir essas URLs na seção **Evidências Visuais** do body da PR em Markdown: `![Antes](<secure_url>)` e `![Depois](<secure_url>)`.
-- **Configuração obrigatória** para evidências visuais: a skill de upload exige `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY` e `CLOUDINARY_API_SECRET` (nunca expor o API Secret no client-side).
+- Inserir referências às evidências na seção **Evidências Visuais** do body da PR em Markdown: `![Antes](<url_ou_caminho>)` e `![Depois](<url_ou_caminho>)`.
 - Seguir **`.github/PULL_REQUEST_TEMPLATE.md`** (via `runrunit_get_pr_template` ou leitura direta do arquivo), marcando o tipo de alteração e preenchendo todas as seções obrigatórias.
 
 ### 5. **Comentar na tarefa (Runrun.it) com evidências e link da PR**
@@ -66,18 +63,18 @@ Ordem obrigatória do fluxo:
 1. **Registrar evidências**  
    Chamar a skill [registrar-evidencias](skills/registrar-evidencias/SKILL.md) com as URLs **antes** e **depois** para capturar os screenshots.
 
-2. **Upload das imagens**  
-   Chamar a skill [upload-image-cloudinary](skills/upload-image-cloudinary/SKILL.md) com as URLs/arquivos das evidências e obter as `secure_url` (uma por evidência: antes/depois).
+2. **Abrir a PR e obter a URL** (obrigatório)  
+   Chamar esta skill (create-pr-github) para abrir a PR no repositório. **Sempre obter a URL da PR** — sem ela os passos 3 e 4 não podem ser concluídos corretamente. Nunca pule este passo.
 
-3. **Abrir a PR e obter a URL** (obrigatório)  
-   Chamar esta skill (create-pr-github) para abrir a PR no repositório. **Sempre obter a URL da PR** — sem ela os passos 4 e 5 não podem ser concluídos corretamente. Nunca pule este passo.
+3. **Montar resumo e comentar**  
+   Com as referências das evidências (antes e depois) **e a URL da PR**, criar um **resumo do que foi feito** (ex.: histórico alinhado aos comentários no GitHub).  
+   Usar **runrunit_create_comment** com: texto do resumo + **link da PR** + evidências em **texto simples** (Runrun.it não aceita Markdown), ex.: `Link da PR: <url_da_pr>`, `Antes: <url>` e `Depois: <url>`.
 
-4. **Montar resumo e comentar**  
-   Com as URLs das evidências (antes e depois) **e a URL da PR**, criar um **resumo do que foi feito** (ex.: histórico alinhado aos comentários no GitHub).  
-   Usar **runrunit_create_comment** com: texto do resumo + **link da PR** + evidências em **texto simples** (Runrun.it não aceita Markdown), ex.: `Link da PR: <url_da_pr>`, `Antes: <secure_url>` e `Depois: <secure_url>`.
-
-5. **Gravar o link da PR na task** (obrigatório)  
-   Usar **runrunit_update_task** com `task: { link_da_branch: "<url_da_pr>" }`. O campo `link_da_branch` é mapeado para o custom field "Link da branch" na task (ex.: `custom_32`). **Sempre** preencher com a URL obtida no passo 3.
+4. **Gravar o link da branch na task** (obrigatório)  
+   Usar **runrunit_update_task** com:
+   - `task: { link_da_branch: "<url_da_pr>" }` — mapeado para o custom field "Link da branch" (`custom_32`)
+   - `task: { link_da_branch_relatorio: "<url_da_branch>" }` — mapeado para `custom_12`; usar ao publicar o relatório do que foi feito na tarefa  
+   **Sempre** preencher com a URL obtida no passo 2.
 
 - **Runrun.it não aceita Markdown** nos comentários: use **links como texto simples** (URLs puras), não sintaxe `![desc](url)`.
 

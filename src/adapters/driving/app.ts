@@ -1,6 +1,5 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
-import { uploadImage as uploadImageCloudinary } from '../../application/cloudinary.js';
 import * as comments from '../../application/comments.js';
 import * as discord from '../../application/discord.js';
 import { detectPlatformFromTask } from '../../application/detect_platform.js';
@@ -203,7 +202,7 @@ export const TOOLS = [
   {
     name: 'runrunit_update_task',
     description:
-      "Update a task on Runrun.it. Pass task ID and an object with fields to update (e.g. title, desired_date). For the PR/branch link use link_da_branch (URL); it is stored in the custom field 'Link da branch' (custom_32). To move a task between columns (Task, Ongoing, Manager Validation), use runrunit_move_task_stage.",
+      "Update a task on Runrun.it. Pass task ID and an object with fields to update (e.g. title, desired_date). For the PR/branch link use link_da_branch (URL); it is stored in the custom field 'Link da branch' (custom_32). When posting a task report, use link_da_branch_relatorio (URL) to store the branch link in custom_12. To move a task between columns (Task, Ongoing, Manager Validation), use runrunit_move_task_stage.",
     inputSchema: {
       type: 'object' as const,
       properties: {
@@ -211,14 +210,19 @@ export const TOOLS = [
         task: {
           type: 'object',
           description:
-            "Fields to update (e.g. { title: 'New title' }, { link_da_branch: 'https://github.com/.../pull/21' }). link_da_branch maps to custom field Link da branch.",
+            "Fields to update (e.g. { title: 'New title' }, { link_da_branch: 'https://github.com/.../pull/21' }, { link_da_branch_relatorio: 'https://github.com/.../tree/feature-branch' }). link_da_branch maps to custom_32; link_da_branch_relatorio maps to custom_12 for task reports.",
           properties: {
             title: { type: 'string', description: 'Task title' },
             desired_date: { type: 'string', description: 'Desired date (ISO)' },
             link_da_branch: {
               type: 'string',
               description:
-                "URL of the PR or branch (stored in custom field 'Link da branch', e.g. https://github.com/org/repo/pull/21)",
+                "URL of the PR or branch (stored in custom field 'Link da branch', custom_32, e.g. https://github.com/org/repo/pull/21)",
+            },
+            link_da_branch_relatorio: {
+              type: 'string',
+              description:
+                'Branch link for task reports (stored in custom_12; use when posting a report about what was done on the task)',
             },
           },
           additionalProperties: true,
@@ -298,7 +302,7 @@ export const TOOLS = [
   {
     name: 'runrunit_create_comment',
     description:
-      "Create a comment on a task in Runrun.it. Format: plain text and raw URLs only (no Markdown). Optional url_antes + url_depois: when both are provided, (1) capture visual evidence (skill registrar-evidencias), (2) upload images (e.g. Cloudinary), (3) append to text plain labels and image URLs (e.g. 'Antes: <url>' and 'Depois: <url>'), (4) call this tool with the enriched text.",
+      "Create a comment on a task in Runrun.it. Format: plain text and raw URLs only (no Markdown). Optional url_antes + url_depois: when both are provided, (1) capture visual evidence (skill registrar-evidencias), (2) append to text plain labels and image URLs (e.g. 'Antes: <url>' and 'Depois: <url>'), (3) call this tool with the enriched text.",
     inputSchema: {
       type: 'object' as const,
       properties: {
@@ -673,30 +677,6 @@ export const TOOLS = [
     },
   },
   /**
-   * @namedTools runrunit_upload_image_cloudinary
-   */
-  {
-    name: 'runrunit_upload_image_cloudinary',
-    description:
-      'Faz upload de uma imagem para a Cloudinary e retorna a URL pública (secure_url). Usa as variáveis CLOUDINARY_* já configuradas no MCP (ex.: em mcp.json). Use para screenshots, evidências, PRs e comentários.',
-    inputSchema: {
-      type: 'object' as const,
-      properties: {
-        file_path: {
-          type: 'string',
-          description:
-            'Caminho absoluto ou relativo do arquivo de imagem no disco (ex.: path retornado por browser_take_screenshot).',
-        },
-        public_id: {
-          type: 'string',
-          description:
-            'ID público opcional na Cloudinary (ex.: pr-evidencia-desktop, docs-screenshot-1).',
-        },
-      },
-      required: ['file_path'],
-    },
-  },
-  /**
    * @namedTools runrunit_discord_send_message
    */
   {
@@ -811,7 +791,7 @@ export const TOOLS = [
         skill_name: {
           type: 'string',
           description:
-            'Folder name under cursor-skills/ (e.g. react-best-practices, upload-image-cloudinary). Matches the directory that contains SKILL.md.',
+            'Folder name under cursor-skills/ (e.g. react-best-practices, comentar-task-runrunit). Matches the directory that contains SKILL.md.',
         },
         project_root: {
           type: 'string',
@@ -859,7 +839,7 @@ export const TOOLS = [
         skill_name: {
           type: 'string',
           description:
-            'Folder name under cursor-skills/ (e.g. react-best-practices, upload-image-cloudinary). Matches the directory that contains SKILL.md.',
+            'Folder name under cursor-skills/ (e.g. react-best-practices, comentar-task-runrunit). Matches the directory that contains SKILL.md.',
         },
         project_root: {
           type: 'string',
@@ -1220,13 +1200,6 @@ export function createMcpServer(): Server {
               task_id: taskId,
             };
           }
-          break;
-        }
-        case 'runrunit_upload_image_cloudinary': {
-          result = await uploadImageCloudinary(
-            String(a.file_path),
-            a.public_id != null ? String(a.public_id) : undefined,
-          );
           break;
         }
         case 'runrunit_list_cursor_catalog': {

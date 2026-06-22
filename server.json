@@ -26,24 +26,6 @@
           "description": "Runrun.it API User-Token (user authentication)",
           "isRequired": true,
           "isSecret": true
-        },
-        {
-          "name": "CLOUDINARY_CLOUD_NAME",
-          "description": "Cloudinary cloud name (for skills: upload-image-cloudinary, evidências em PRs/comentários)",
-          "isRequired": false,
-          "isSecret": false
-        },
-        {
-          "name": "CLOUDINARY_API_KEY",
-          "description": "Cloudinary API key (for image upload in skills)",
-          "isRequired": false,
-          "isSecret": true
-        },
-        {
-          "name": "CLOUDINARY_API_SECRET",
-          "description": "Cloudinary API secret (for image upload in skills; never expose client-side)",
-          "isRequired": false,
-          "isSecret": true
         }
       ]
     }
