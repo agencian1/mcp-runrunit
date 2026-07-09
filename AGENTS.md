@@ -1,6 +1,7 @@
 ## Learned User Preferences
 
 - Prefer git commit messages and GitHub PR bodies without marketing or footer lines such as "Made with..."; keep commits and descriptions minimal.
+- For task-related work, use commit messages in the format `task<ID>: <short description>` (e.g. `task14379: remove Cloudinary and map branch link to custom_12`). PR titles keep the three-part format from `.github/PULL_REQUEST_TEMPLATE.md` via `runrunit_get_pr_template` (e.g. `task0123: feat: Adiciona login social`).
 - Use npm (not pnpm) for installing dependencies and running scripts in this repository.
 - When the user wants to share agents or skills with the team (e.g. compartilhar, dividir com o time, share with the team), use `runrunit_share_cursor_agent` or `runrunit_share_cursor_skill` to propose changes via GitHub PR; share resolves nested repo paths from `cursor-catalog.json` (`cursor-skills/{catalog.path}/`, `cursor-agents/{catalog.path}`). `runrunit_share_cursor_skill` uploads the full skill folder (not only SKILL.md). Use `runrunit_install_cursor_agents` and `runrunit_install_cursor_skills` only for copying bundled assets to the local machine; use `runrunit_list_cursor_catalog` to discover ids and categories before install.
 - Not include Co-author in commit or branch!.

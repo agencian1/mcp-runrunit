@@ -15,6 +15,7 @@ Cria um **pull request bem estruturado**, com descrição adequada, rótulos, re
 
 ### 1. **Preparar a Branch**
 - Garante que **todas as alterações estejam commitadas**.
+- **Mensagens de commit locais:** `task<ID>: descrição` (ex.: `task14379: remove Cloudinary e mapeia link da branch`). O hook Husky `commit-msg` valida este formato quando configurado no repositório.
 - O **nome da branch deve conter o `{id}` da tarefa** (ex: `fix/ajuste-header-{id}`).
 - Faz **push da branch para o remoto**.
 - Verifica se a branch está **atualizada com a `development`** (ou `homolog`, dependendo do ambiente).

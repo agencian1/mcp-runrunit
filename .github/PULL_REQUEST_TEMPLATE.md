@@ -2,8 +2,6 @@
 
 ## 🎯 Tipo de Mudança
 
-> Marque o tipo de mudança que este PR introduz
-
 - [ ] 🐛 **Correção de bug** (alteração que corrige um problema)
 - [ ] ✨ **Novo recurso** (alteração que adiciona uma funcionalidade)
 - [ ] ♻️ **Refatoração** (uma alteração de código que não corrige um bug nem adiciona um recurso)
@@ -19,8 +17,6 @@
 ---
 
 ## 📸 Evidências Visuais (Se aplicável)
-
-> Adicione capturas de tela, GIFs ou vídeos para demonstrar as mudanças de UI/UX.
 
 **Antes:**
 ![Antes](link-da-imagem-antes.png)
@@ -41,8 +37,6 @@
 ---
 
 ## 🔗 Referências
-
-> Adicione links para tarefas, épicos ou outras referências.
 
 - **Tarefa:** [TASK-0123](https://link-da-tarefa.com)
 - **Design no Figma:** [Link para o design](https://figma.com/...)
