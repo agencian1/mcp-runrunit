@@ -2,6 +2,8 @@
 
 Servidor MCP (Model Context Protocol) para comunicação com a API do [Runrun.it](https://runrun.it). Expõe ferramentas de **Tasks** e **Comments** para uso no Cursor ou em outros clientes MCP.
 
+**Versão atual:** 1.8.1 — ver [CHANGELOG.md](CHANGELOG.md).
+
 ## Arquitetura
 
 O projeto adota o padrão **Arquitetura Hexagonal** (Ports & Adapters): o núcleo da aplicação fica isolado de detalhes de transporte (stdio, HTTP) e do cliente HTTP do Runrun.it. As **portas** definem contratos de entrada (MCP) e saída (acesso à API); os **adaptadores** implementam esses contratos (transporte e cliente HTTP).
@@ -66,8 +68,28 @@ Configure as variáveis de ambiente (ou no JSON de configuração do MCP no Curs
 **GitHub** (opcional; tools `runrunit_share_cursor_agent` e `runrunit_share_cursor_skill`):
 
 - `GITHUB_TOKEN` — PAT ou token com permissão de escrita em `contents` e `pull_requests` no repositório alvo
-- `GITHUB_REPO_OWNER`, `GITHUB_REPO_NAME` — repositório onde abrir o PR (layout `cursor-agents/` e `cursor-skills/` na raiz)
-- `GITHUB_BASE_BRANCH` — branch base (opcional; default `main`)
+- `GITHUB_REPO_OWNER`, `GITHUB_REPO_NAME` — repositório onde abrir o PR (opcional se `project_root` for um repo git com `origin` no GitHub; detectados automaticamente)
+- `GITHUB_BASE_BRANCH` — branch base (opcional; detectada via `git symbolic-ref refs/remotes/origin/HEAD`, senão `main`)
+
+Prioridade: variáveis de ambiente **>** detecção git no `project_root` **>** default `main`.
+
+Exemplo mínimo no MCP host (só credenciais; repositório e branch base vêm do `origin` do projeto em que o agente trabalha):
+
+```json
+{
+  "env": {
+    "GITHUB_TOKEN": "ghp_...",
+    "BITBUCKET_USERNAME": "user@example.com",
+    "BITBUCKET_APP_PASSWORD": "..."
+  }
+}
+```
+
+**Bitbucket** (opcional; tools `runrunit_share_cursor_agent_bitbucket` e `runrunit_share_cursor_skill_bitbucket`):
+
+- `BITBUCKET_USERNAME`, `BITBUCKET_APP_PASSWORD` — credenciais (obrigatórias no host MCP)
+- `BITBUCKET_WORKSPACE`, `BITBUCKET_REPO_SLUG` — repositório alvo (opcional se `project_root` tiver `origin` no Bitbucket)
+- `BITBUCKET_BASE_BRANCH` — branch base (opcional; mesma detecção git que GitHub)
 
 Estas variáveis existem **só no anfitrião do processo MCP** (ficheiro de config do Cursor, CI, segredos da org). **Não** passe token nem credenciais como argumento de tool nem partilhe em chat ou repositório.
 
@@ -75,7 +97,7 @@ Estas variáveis existem **só no anfitrião do processo MCP** (ficheiro de conf
 
 - `SENTRY_DSN` — DSN do projeto Sentry
 - `SENTRY_ENVIRONMENT` — ambiente (`development`, `staging`, `production`)
-- `SENTRY_RELEASE` — versão/release (ex.: `mcp-runrunit@1.5.0+abc1234`)
+- `SENTRY_RELEASE` — versão/release (ex.: `mcp-runrunit@1.8.1+abc1234`)
 - `SENTRY_ENABLED` — liga/desliga o envio de eventos
 - `SENTRY_ERROR_SAMPLE_RATE` — taxa de amostragem de erros (0.0 a 1.0; default 1.0)
 
@@ -201,13 +223,15 @@ Alternativa manual — agentes: copie os `.md` de `node_modules/mcp-runrunit/cur
 
 ### Cursor (skills e agentes do pacote)
 
-| Ferramenta                       | Descrição                                                                                                                                                                              |
-| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `runrunit_list_cursor_catalog`   | Lista skills e agentes de `cursor-catalog.json` com categorias e descrição. Filtros: `kind`, `platform`, `technology`, `utility`.                                                      |
-| `runrunit_install_cursor_skills` | **Só instalação local:** copia skills para `~/.cursor/skills` ou projeto. Filtros: `skill_names`, `categories`. Não usar para partilhar no GitHub — use `runrunit_share_cursor_skill`. |
-| `runrunit_install_cursor_agents` | **Só instalação local:** copia agentes para `~/.cursor/agents` (basename preservado). Filtros: `agent_names`, `categories`. PR no repo: `runrunit_share_cursor_agent`.                 |
-| `runrunit_share_cursor_agent`    | **Partilha com o time (PR):** abre PR com o ficheiro no path do catálogo (`cursor-agents/{path}`). Requer `GITHUB_*` no servidor MCP.                                                  |
-| `runrunit_share_cursor_skill`    | **Partilha com o time (PR):** abre PR com a pasta completa no path do catálogo (`cursor-skills/{path}/`). Resposta inclui `file_count` e `paths`.                                      |
+| Ferramenta                              | Descrição                                                                                                                                                                                                                         |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `runrunit_list_cursor_catalog`          | Lista skills e agentes de `cursor-catalog.json` com categorias e descrição. Filtros: `kind`, `platform`, `technology`, `utility`.                                                                                                 |
+| `runrunit_install_cursor_skills`        | **Só instalação local:** copia skills para `~/.cursor/skills` ou projeto. Filtros: `skill_names`, `categories`. Não usar para partilhar no GitHub — use `runrunit_share_cursor_skill`.                                            |
+| `runrunit_install_cursor_agents`        | **Só instalação local:** copia agentes para `~/.cursor/agents` (basename preservado). Filtros: `agent_names`, `categories`. PR no repo: `runrunit_share_cursor_agent`.                                                            |
+| `runrunit_share_cursor_agent`           | **Partilha com o time (PR GitHub):** abre PR com o ficheiro no path do catálogo (`cursor-agents/{path}`). Requer `GITHUB_TOKEN` no servidor MCP; owner, repo e branch base detectados do git em `project_root` (env sobrescreve). |
+| `runrunit_share_cursor_skill`           | **Partilha com o time (PR GitHub):** abre PR com a pasta completa no path do catálogo (`cursor-skills/{path}/`). Resposta inclui `file_count` e `paths`. Mesma detecção git que `runrunit_share_cursor_agent`.                    |
+| `runrunit_share_cursor_agent_bitbucket` | **Partilha com o time (PR Bitbucket):** abre PR com um agente em `cursor-agents/{path}`. Requer credenciais Bitbucket no host MCP; workspace, repo e branch base detectados do git em `project_root`.                             |
+| `runrunit_share_cursor_skill_bitbucket` | **Partilha com o time (PR Bitbucket):** abre PR com a pasta completa da skill. Mesma detecção git e credenciais que `runrunit_share_cursor_agent_bitbucket`.                                                                      |
 
 ### Skills
 
