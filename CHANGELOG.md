@@ -4,6 +4,27 @@ All notable changes to the mcp-runrunit package will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.8.0] - 2026-07-09
+
+### Added
+
+- MCP tool `runrunit_get_task_description` to fetch a task’s rich-text description (requirements, acceptance criteria, links) after `runrunit_get_task`.
+- MCP tool `runrunit_get_pr_template` to return PR title format and body from `.github/PULL_REQUEST_TEMPLATE.md`, with optional fields to pre-fill the template.
+- MCP tools `runrunit_share_cursor_agent_bitbucket` and `runrunit_share_cursor_skill_bitbucket` to open Bitbucket pull requests for bundled agents/skills (credentials via MCP host env only; see `.env.example`).
+- Task update field `link_da_branch_relatorio` mapped to custom field `custom_12` for branch links in task reports (`link_da_branch` remains on `custom_32`).
+- Bundled `.github/PULL_REQUEST_TEMPLATE.md` in the npm package.
+- Husky `commit-msg` hook and `validate-commit-message` helper enforcing commit format `task<ID>: description` (exempts merges, reverts, fixup/squash).
+
+### Changed
+
+- PR template resolution uses `.github/PULL_REQUEST_TEMPLATE.md` as the single source of truth.
+- `runrunit_get_task` description clarifies that rich description lives on the separate `runrunit_get_task_description` endpoint.
+- `AGENTS.md`, `setup-code-quality`, and `create-pr-github` skills document commit vs PR title conventions.
+
+### Removed
+
+- Cloudinary integration and `CLOUDINARY_*` environment variables from skills and documentation.
+
 ## [1.7.0] - 2026-06-09
 
 ### Added
