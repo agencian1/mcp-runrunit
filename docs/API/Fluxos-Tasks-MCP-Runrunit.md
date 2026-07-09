@@ -65,6 +65,25 @@ flowchart LR
 
 ---
 
+### 1.3.1 `runrunit_get_task_description`
+
+**Objetivo:** Obter a descrição rich-text da tarefa (requisitos, critérios de aceite, links, etc.) para a IA entender o contexto antes de iniciar o trabalho.
+
+```mermaid
+flowchart LR
+  A[task_id] --> B[runrunit_get_task_description]
+  B --> C[description, edited_at, ...]
+  C --> D[IA lê contexto da tarefa]
+```
+
+| Entrada            | Saída relevante                                                                  |
+| ------------------ | -------------------------------------------------------------------------------- |
+| `task_id` (number) | `description` (texto rich-text), `edited_at`, `current_editor_name`, `locked_at` |
+
+**Uso no fluxo:** Após `runrunit_get_task`, chamar `runrunit_get_task_description` para carregar o contexto completo da tarefa antes de criar branch, implementar ou comentar.
+
+---
+
 ### 1.4 `runrunit_list_board_stages`
 
 **Objetivo:** Listar estágios do board (Task, Ongoing, Manager Validation) para obter `board_stage_id` usado em `runrunit_update_task`.
@@ -324,9 +343,10 @@ flowchart LR
 
 Quando o usuário pedir **"iniciar task [ID]"** no chat, a sequência é **sempre**:
 
-1. **TIRAR** a outra task que está em Ongoing (reajuste) — `runrunit_list_task_filters` → `runrunit_list_tasks` → filtrar Ongoing → perguntar destino (Task ou Manager Validation) → `runrunit_update_task` para mover.
-2. **MOVER** a task com o ID solicitado para Ongoing — `runrunit_get_task` → `runrunit_list_board_stages` → `runrunit_update_task` com `board_stage_id` = Ongoing.
-3. **INICIAR** o tracking — `runrunit_create_workflow` (se necessário) → `runrunit_assignment_play`.
+1. **CARREGAR CONTEXTO** — `runrunit_get_task` → `runrunit_get_task_description` para a IA entender requisitos e critérios de aceite.
+2. **TIRAR** a outra task que está em Ongoing (reajuste) — `runrunit_list_task_filters` → `runrunit_list_tasks` → filtrar Ongoing → perguntar destino (Task ou Manager Validation) → `runrunit_update_task` para mover.
+3. **MOVER** a task com o ID solicitado para Ongoing — `runrunit_get_task` → `runrunit_list_board_stages` → `runrunit_update_task` com `board_stage_id` = Ongoing.
+4. **INICIAR** o tracking — `runrunit_create_workflow` (se necessário) → `runrunit_assignment_play`.
 
 **PROIBIDO:** Dar só `runrunit_assignment_play` e ignorar os passos 1 e 2. O fluxo está **errado** se fizer apenas tracking.
 
@@ -368,10 +388,11 @@ flowchart TD
 
 | Etapa | Ferramentas MCP (em ordem)                                                                                                                                              |
 | ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0     | `runrunit_list_task_filters` → `runrunit_list_tasks` → `runrunit_get_task` (Ongoing) → `runrunit_list_board_stages` → `runrunit_update_task` (tirar a outra de Ongoing) |
-| 1     | Git (checkout, pull, branch)                                                                                                                                            |
-| 2a    | **PRIMEIRO:** `runrunit_get_task` → `runrunit_list_board_stages` → `runrunit_update_task` (mover a task solicitada para Ongoing)                                        |
-| 2b    | **DEPOIS:** `runrunit_create_workflow` → `runrunit_assignment_play` (tracking)                                                                                          |
+| 0     | `runrunit_get_task` → `runrunit_get_task_description` (carregar contexto da tarefa)                                                                                     |
+| 1     | `runrunit_list_task_filters` → `runrunit_list_tasks` → `runrunit_get_task` (Ongoing) → `runrunit_list_board_stages` → `runrunit_update_task` (tirar a outra de Ongoing) |
+| 2     | Git (checkout, pull, branch)                                                                                                                                            |
+| 3a    | **PRIMEIRO:** `runrunit_get_task` → `runrunit_list_board_stages` → `runrunit_update_task` (mover a task solicitada para Ongoing)                                        |
+| 3b    | **DEPOIS:** `runrunit_create_workflow` → `runrunit_assignment_play` (tracking)                                                                                          |
 
 **CRÍTICO:** A ordem é sempre: (1) tirar a outra de Ongoing → (2) mover a nova para Ongoing → (3) tracking. **NUNCA** fazer só tracking.
 

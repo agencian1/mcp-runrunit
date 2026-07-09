@@ -63,12 +63,6 @@ Configure as variáveis de ambiente (ou no JSON de configuração do MCP no Curs
 - `RUNRUNIT_APP_KEY` — chave da aplicação
 - `RUNRUNIT_USER_TOKEN` — token do usuário
 
-**Cloudinary** (opcional, para as skills de evidências e upload de imagens):
-
-- `CLOUDINARY_CLOUD_NAME` — nome da cloud no Cloudinary
-- `CLOUDINARY_API_KEY` — API key
-- `CLOUDINARY_API_SECRET` — API secret (nunca expor no client-side)
-
 **GitHub** (opcional; tools `runrunit_share_cursor_agent` e `runrunit_share_cursor_skill`):
 
 - `GITHUB_TOKEN` — PAT ou token com permissão de escrita em `contents` e `pull_requests` no repositório alvo
@@ -112,10 +106,7 @@ Exemplo de configuração (ajuste o caminho para o seu projeto):
       "args": ["caminho-do-repositório-local/mcp-runrunit/dist/index.js"],
       "env": {
         "RUNRUNIT_APP_KEY": "sua_app_key",
-        "RUNRUNIT_USER_TOKEN": "seu_user_token",
-        "CLOUDINARY_CLOUD_NAME": "sua_cloud",
-        "CLOUDINARY_API_KEY": "sua_api_key",
-        "CLOUDINARY_API_SECRET": "seu_api_secret"
+        "RUNRUNIT_USER_TOKEN": "seu_user_token"
       }
     }
   }
@@ -144,9 +135,6 @@ Depois de publicado no npm, qualquer pessoa pode usar com `npx` sem clonar o rep
       "env": {
         "RUNRUNIT_APP_KEY": "<RUNRUNIT_APP_KEY>",
         "RUNRUNIT_USER_TOKEN": "<RUNRUNIT_USER_TOKEN>",
-        "CLOUDINARY_CLOUD_NAME": "<CLOUDINARY_CLOUD_NAME>",
-        "CLOUDINARY_API_KEY": "<CLOUDINARY_API_KEY>",
-        "CLOUDINARY_API_SECRET": "<CLOUDINARY_API_SECRET>",
         "BOT_DISCORD_TOKEN_PUBLIC_ID": "<BOT_DISCORD_TOKEN_PUBLIC_ID>",
         "BOT_RUNRUNIT_REPORT_PRIVATE_KEY": "<BOT_RUNRUNIT_REPORT_PRIVATE_KEY>",
         "DISCORD_GUILD_ID": "<DISCORD_GUILD_ID>",
@@ -171,8 +159,6 @@ Alternativa manual — skills: copie (ou crie link) das pastas em `node_modules/
 - **Por projeto:** `.cursor/skills/` ou `.agents/skills/` na raiz do projeto
 
 Alternativa manual — agentes: copie os `.md` de `node_modules/mcp-runrunit/cursor-agents/` para `~/.cursor/agents/` (ou `.cursor/agents/` no projeto).
-
-As skills que fazem upload de imagens (evidências em PRs e comentários Runrun.it) usam **Cloudinary**; configure `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY` e `CLOUDINARY_API_SECRET` no `env` do MCP ou no ambiente.
 
 ## Ferramentas (Tools)
 
@@ -227,15 +213,14 @@ As skills que fazem upload de imagens (evidências em PRs e comentários Runrun.
 
 Skills em `cursor-skills/`:
 
-| Skill                        | Descrição                                                                                                                                                                                                                                    |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `code-reviewer`              | Revisão de código alinhada aos padrões da agência. Use ao revisar PRs, sugerir melhorias ou validar implementações.                                                                                                                          |
-| `registrar-evidencias`       | Captura screenshots em múltiplos viewports (mobile, tablet, desktop) a partir de URLs "antes" e "depois". Usar para evidências visuais, comparar antes/depois, documentar mudanças de UI ou preparar imagens para PRs e relatórios.          |
-| `upload-image-cloudinary`    | Upload de imagens para Cloudinary e retorno de URLs públicas. Usar quando screenshots ou evidências precisarem ser hospedadas (ex.: body da PR, docs). Requer CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY e CLOUDINARY_API_SECRET.             |
-| `comentar-task-runrunit`     | Orquestra evidências e comentário na tarefa do Runrun.it: captura antes/depois, upload no Cloudinary, opcionalmente abre PR e cria comentário na task com resumo, passo a passo de teste e links; grava link_da_branch na task se houver PR. |
-| `create-pr-github`           | Cria um pull request bem estruturado, com descrição, rótulos, revisores e evidências visuais. Inclui preparar branch, descrição, checklist e output obrigatório (link da PR, branch, ambiente de destino).                                   |
-| `install-cursor-team-skills` | Orienta `runrunit_install_cursor_skills` (cópia local) e distingue de `runrunit_share_cursor_skill` (PR no GitHub quando pedirem compartilhar com o time).                                                                                   |
-| `react-best-practices`       | Checklist e regras de performance para React e Next.js (Vercel). Use ao editar TSX/JSX, revisar componentes ou otimizar bundle e render. Inclui ficheiros detalhados em `rules/` e o documento compilado `AGENTS.md`.                        |
+| Skill                        | Descrição                                                                                                                                                                                                                                                           |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `code-reviewer`              | Revisão de código alinhada aos padrões da agência. Use ao revisar PRs, sugerir melhorias ou validar implementações.                                                                                                                                                 |
+| `registrar-evidencias`       | Captura screenshots em múltiplos viewports (mobile, tablet, desktop) a partir de URLs "antes" e "depois". Usar para evidências visuais, comparar antes/depois, documentar mudanças de UI ou preparar imagens para PRs e relatórios.                                 |
+| `comentar-task-runrunit`     | Orquestra evidências e comentário na tarefa do Runrun.it: captura antes/depois, opcionalmente abre PR e cria comentário na task com resumo, passo a passo de teste e referências; grava link_da_branch e link_da_branch_relatorio (custom_12) na task se houver PR. |
+| `create-pr-github`           | Cria um pull request bem estruturado, com descrição, rótulos, revisores e evidências visuais. Inclui preparar branch, descrição, checklist e output obrigatório (link da PR, branch, ambiente de destino).                                                          |
+| `install-cursor-team-skills` | Orienta `runrunit_install_cursor_skills` (cópia local) e distingue de `runrunit_share_cursor_skill` (PR no GitHub quando pedirem compartilhar com o time).                                                                                                          |
+| `react-best-practices`       | Checklist e regras de performance para React e Next.js (Vercel). Use ao editar TSX/JSX, revisar componentes ou otimizar bundle e render. Inclui ficheiros detalhados em `rules/` e o documento compilado `AGENTS.md`.                                               |
 
 ### Agents
 

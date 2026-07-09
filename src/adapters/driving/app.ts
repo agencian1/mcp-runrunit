@@ -1,6 +1,5 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
-import { uploadImage as uploadImageCloudinary } from '../../application/cloudinary.js';
 import * as comments from '../../application/comments.js';
 import * as discord from '../../application/discord.js';
 import { detectPlatformFromTask } from '../../application/detect_platform.js';
@@ -12,8 +11,14 @@ import type { CategoryFilter } from '../../application/cursor-catalog.js';
 import { installCursorSkills } from '../../application/install-cursor-skills.js';
 import { installCursorAgents } from '../../application/install-cursor-agents.js';
 import { listCursorCatalog } from '../../application/list-cursor-catalog.js';
+import { getPrTemplate } from '../../application/pr-template.js';
 import { shareCursorAgent, shareCursorSkill } from '../../application/share-cursor-github.js';
+import {
+  shareCursorAgentBitbucket,
+  shareCursorSkillBitbucket,
+} from '../../application/share-cursor-bitbucket.js';
 import { RunrunitAPIError } from '../driven/api.js';
+import { ShareBitbucketConfigError } from '../driven/bitbucket.js';
 import { ShareGithubConfigError } from '../driven/github.js';
 import { captureExceptionWithContext } from '../../observability/sentry.js';
 
@@ -120,11 +125,22 @@ export const TOOLS = [
   },
   {
     name: 'runrunit_get_task',
-    description: 'Get a single task by ID from Runrun.it.',
+    description:
+      'Get a single task by ID from Runrun.it. Note: the rich description is on a separate endpoint — use runrunit_get_task_description to fetch it.',
     inputSchema: {
       type: 'object' as const,
       properties: { id: { type: 'number', description: 'Task ID' } },
       required: ['id'],
+    },
+  },
+  {
+    name: 'runrunit_get_task_description',
+    description:
+      'Get the rich-text description of a task. Use this after runrunit_get_task to load the full task context (requirements, acceptance criteria, links, etc.) before starting work.',
+    inputSchema: {
+      type: 'object' as const,
+      properties: { task_id: { type: 'number', description: 'Task ID' } },
+      required: ['task_id'],
     },
   },
   /**
@@ -186,7 +202,7 @@ export const TOOLS = [
   {
     name: 'runrunit_update_task',
     description:
-      "Update a task on Runrun.it. Pass task ID and an object with fields to update (e.g. title, desired_date). For the PR/branch link use link_da_branch (URL); it is stored in the custom field 'Link da branch' (custom_32). To move a task between columns (Task, Ongoing, Manager Validation), use runrunit_move_task_stage.",
+      "Update a task on Runrun.it. Pass task ID and an object with fields to update (e.g. title, desired_date). For the PR/branch link use link_da_branch (URL); it is stored in the custom field 'Link da branch' (custom_32). When posting a task report, use link_da_branch_relatorio (URL) to store the branch link in custom_12. To move a task between columns (Task, Ongoing, Manager Validation), use runrunit_move_task_stage.",
     inputSchema: {
       type: 'object' as const,
       properties: {
@@ -194,14 +210,19 @@ export const TOOLS = [
         task: {
           type: 'object',
           description:
-            "Fields to update (e.g. { title: 'New title' }, { link_da_branch: 'https://github.com/.../pull/21' }). link_da_branch maps to custom field Link da branch.",
+            "Fields to update (e.g. { title: 'New title' }, { link_da_branch: 'https://github.com/.../pull/21' }, { link_da_branch_relatorio: 'https://github.com/.../tree/feature-branch' }). link_da_branch maps to custom_32; link_da_branch_relatorio maps to custom_12 for task reports.",
           properties: {
             title: { type: 'string', description: 'Task title' },
             desired_date: { type: 'string', description: 'Desired date (ISO)' },
             link_da_branch: {
               type: 'string',
               description:
-                "URL of the PR or branch (stored in custom field 'Link da branch', e.g. https://github.com/org/repo/pull/21)",
+                "URL of the PR or branch (stored in custom field 'Link da branch', custom_32, e.g. https://github.com/org/repo/pull/21)",
+            },
+            link_da_branch_relatorio: {
+              type: 'string',
+              description:
+                'Branch link for task reports (stored in custom_12; use when posting a report about what was done on the task)',
             },
           },
           additionalProperties: true,
@@ -281,7 +302,7 @@ export const TOOLS = [
   {
     name: 'runrunit_create_comment',
     description:
-      "Create a comment on a task in Runrun.it. Format: plain text and raw URLs only (no Markdown). Optional url_antes + url_depois: when both are provided, (1) capture visual evidence (skill registrar-evidencias), (2) upload images (e.g. Cloudinary), (3) append to text plain labels and image URLs (e.g. 'Antes: <url>' and 'Depois: <url>'), (4) call this tool with the enriched text.",
+      "Create a comment on a task in Runrun.it. Format: plain text and raw URLs only (no Markdown). Optional url_antes + url_depois: when both are provided, (1) capture visual evidence (skill registrar-evidencias), (2) append to text plain labels and image URLs (e.g. 'Antes: <url>' and 'Depois: <url>'), (3) call this tool with the enriched text.",
     inputSchema: {
       type: 'object' as const,
       properties: {
@@ -500,6 +521,60 @@ export const TOOLS = [
     },
   },
   /**
+   * @namedTools runrunit_get_pr_template
+   */
+  {
+    name: 'runrunit_get_pr_template',
+    description:
+      'Returns the pull request title format and body from .github/PULL_REQUEST_TEMPLATE.md. Use before gh pr create or when opening PRs manually so the description follows the project standard. Optional fields fill the template (change_type, description, task_id, type, title_description, include_visual_evidence, references).',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        project_root: {
+          type: 'string',
+          description:
+            'Optional absolute path to the repo root containing .github/PULL_REQUEST_TEMPLATE.md. If omitted, resolves from cwd or the mcp-runrunit package.',
+        },
+        change_type: {
+          type: 'string',
+          enum: ['bug', 'feature', 'refactor', 'docs', 'layout'],
+          description: 'Marks the corresponding checkbox in the template body.',
+        },
+        description: {
+          type: 'string',
+          description: 'Fills the Descrição section.',
+        },
+        task_id: {
+          type: 'string',
+          description: 'Task id for the PR title (e.g. task0123).',
+        },
+        type: {
+          type: 'string',
+          description: 'Conventional type for the PR title (e.g. feat, fix, docs).',
+        },
+        title_description: {
+          type: 'string',
+          description: 'Short description for the PR title.',
+        },
+        include_visual_evidence: {
+          type: 'boolean',
+          description:
+            'When false, omits the Evidências Visuais section. Default true when omitted.',
+        },
+        references: {
+          type: 'object',
+          description: 'Optional links for the Referências section.',
+          properties: {
+            task: { type: 'string' },
+            figma: { type: 'string' },
+            document: { type: 'string' },
+          },
+        },
+      },
+      required: [],
+    },
+  },
+  /**
    * @namedTools runrunit_install_cursor_skills
    */
   {
@@ -599,30 +674,6 @@ export const TOOLS = [
         },
       },
       required: [],
-    },
-  },
-  /**
-   * @namedTools runrunit_upload_image_cloudinary
-   */
-  {
-    name: 'runrunit_upload_image_cloudinary',
-    description:
-      'Faz upload de uma imagem para a Cloudinary e retorna a URL pública (secure_url). Usa as variáveis CLOUDINARY_* já configuradas no MCP (ex.: em mcp.json). Use para screenshots, evidências, PRs e comentários.',
-    inputSchema: {
-      type: 'object' as const,
-      properties: {
-        file_path: {
-          type: 'string',
-          description:
-            'Caminho absoluto ou relativo do arquivo de imagem no disco (ex.: path retornado por browser_take_screenshot).',
-        },
-        public_id: {
-          type: 'string',
-          description:
-            'ID público opcional na Cloudinary (ex.: pr-evidencia-desktop, docs-screenshot-1).',
-        },
-      },
-      required: ['file_path'],
     },
   },
   /**
@@ -740,7 +791,55 @@ export const TOOLS = [
         skill_name: {
           type: 'string',
           description:
-            'Folder name under cursor-skills/ (e.g. react-best-practices, upload-image-cloudinary). Matches the directory that contains SKILL.md.',
+            'Folder name under cursor-skills/ (e.g. react-best-practices, comentar-task-runrunit). Matches the directory that contains SKILL.md.',
+        },
+        project_root: {
+          type: 'string',
+          description:
+            'Optional absolute path to project root containing cursor-skills/. If omitted, walks up from cwd.',
+        },
+      },
+      required: ['skill_name'],
+    },
+  },
+  /**
+   * @namedTools runrunit_share_cursor_agent_bitbucket
+   */
+  {
+    name: 'runrunit_share_cursor_agent_bitbucket',
+    description:
+      'Use when the user wants to share a Cursor agent with the team through Bitbucket (e.g. compartilhar agente com o time, dividir com o time, propor ao repositório, share agent with the team via PR). Opens a pull request with one markdown file from cursor-agents/. For copying agents into ~/.cursor/agents locally, use runrunit_install_cursor_agents instead. Requires BITBUCKET_USERNAME, BITBUCKET_APP_PASSWORD, BITBUCKET_WORKSPACE, BITBUCKET_REPO_SLUG on the MCP server host only; never pass credentials via this tool.',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        agent_name: {
+          type: 'string',
+          description:
+            'Agent file name or stem (e.g. security-auditor or security-auditor.md) matching a file under cursor-agents/.',
+        },
+        project_root: {
+          type: 'string',
+          description:
+            'Optional absolute path to project root containing cursor-agents/. If omitted, walks up from cwd.',
+        },
+      },
+      required: ['agent_name'],
+    },
+  },
+  /**
+   * @namedTools runrunit_share_cursor_skill_bitbucket
+   */
+  {
+    name: 'runrunit_share_cursor_skill_bitbucket',
+    description:
+      'Primary tool when the user wants to share a Cursor skill with the team via Bitbucket: compartilhar skill, dividir com o time, propor ao repo, publicar skill para a equipe, share skill with the team, open a PR for teammates. Opens a pull request that adds or updates the full cursor-skills/{skill_name}/ folder (SKILL.md, rules/, templates/, scripts/, etc.) in one atomic commit. Do not use runrunit_install_cursor_skills for this — that only copies folders to local ~/.cursor/skills. Same Bitbucket env as runrunit_share_cursor_agent_bitbucket (credentials on MCP host only).',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        skill_name: {
+          type: 'string',
+          description:
+            'Folder name under cursor-skills/ (e.g. react-best-practices, comentar-task-runrunit). Matches the directory that contains SKILL.md.',
         },
         project_root: {
           type: 'string',
@@ -974,6 +1073,9 @@ export function createMcpServer(): Server {
         case 'runrunit_get_task':
           result = await tasks.getTask(Number(a.id));
           break;
+        case 'runrunit_get_task_description':
+          result = await tasks.getTaskDescription(Number(a.task_id));
+          break;
         case 'runrunit_list_subtasks':
           result = await tasks.listSubtasks(Number(a.task_id));
           break;
@@ -1100,13 +1202,6 @@ export function createMcpServer(): Server {
           }
           break;
         }
-        case 'runrunit_upload_image_cloudinary': {
-          result = await uploadImageCloudinary(
-            String(a.file_path),
-            a.public_id != null ? String(a.public_id) : undefined,
-          );
-          break;
-        }
         case 'runrunit_list_cursor_catalog': {
           const kindRaw = a.kind != null ? String(a.kind).trim() : '';
           const kind =
@@ -1117,6 +1212,45 @@ export function createMcpServer(): Server {
             platform: parseStringArrayArg(a.platform),
             technology: parseStringArrayArg(a.technology),
             utility: parseStringArrayArg(a.utility),
+          });
+          break;
+        }
+        case 'runrunit_get_pr_template': {
+          const changeTypeRaw = a.change_type != null ? String(a.change_type).trim() : '';
+          const changeType =
+            changeTypeRaw === 'bug' ||
+            changeTypeRaw === 'feature' ||
+            changeTypeRaw === 'refactor' ||
+            changeTypeRaw === 'docs' ||
+            changeTypeRaw === 'layout'
+              ? changeTypeRaw
+              : undefined;
+          const refsRaw = a.references;
+          const references =
+            refsRaw && typeof refsRaw === 'object' && !Array.isArray(refsRaw)
+              ? {
+                  task:
+                    'task' in refsRaw && refsRaw.task != null ? String(refsRaw.task) : undefined,
+                  figma:
+                    'figma' in refsRaw && refsRaw.figma != null ? String(refsRaw.figma) : undefined,
+                  document:
+                    'document' in refsRaw && refsRaw.document != null
+                      ? String(refsRaw.document)
+                      : undefined,
+                }
+              : undefined;
+          result = getPrTemplate({
+            projectRoot: a.project_root != null ? String(a.project_root) : undefined,
+            changeType,
+            description: a.description != null ? String(a.description) : undefined,
+            taskId: a.task_id != null ? String(a.task_id) : undefined,
+            type: a.type != null ? String(a.type) : undefined,
+            titleDescription: a.title_description != null ? String(a.title_description) : undefined,
+            includeVisualEvidence:
+              a.include_visual_evidence === undefined
+                ? undefined
+                : a.include_visual_evidence === true,
+            references,
           });
           break;
         }
@@ -1197,6 +1331,20 @@ export function createMcpServer(): Server {
           });
           break;
         }
+        case 'runrunit_share_cursor_agent_bitbucket': {
+          result = await shareCursorAgentBitbucket({
+            agent_name: String(a.agent_name ?? ''),
+            project_root: a.project_root != null ? String(a.project_root) : undefined,
+          });
+          break;
+        }
+        case 'runrunit_share_cursor_skill_bitbucket': {
+          result = await shareCursorSkillBitbucket({
+            skill_name: String(a.skill_name ?? ''),
+            project_root: a.project_root != null ? String(a.project_root) : undefined,
+          });
+          break;
+        }
         default:
           return {
             content: textContent(`Unknown tool: ${name}`),
@@ -1220,7 +1368,7 @@ export function createMcpServer(): Server {
       });
 
       const message =
-        err instanceof ShareGithubConfigError
+        err instanceof ShareGithubConfigError || err instanceof ShareBitbucketConfigError
           ? err.message
           : err instanceof RunrunitAPIError
             ? `${err.message}${err.body ? ` ${JSON.stringify(err.body)}` : ''}`

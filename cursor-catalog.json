@@ -1,7 +1,7 @@
 {
   "version": 1,
   "taxonomy": {
-    "platform": ["runrunit", "github", "cloudinary", "shopify", "cursor"],
+    "platform": ["runrunit", "github", "shopify", "cursor"],
     "technology": ["react", "nextjs", "typescript"],
     "utility": [
       "workflow",
@@ -29,13 +29,6 @@
       "platform": ["github"],
       "technology": [],
       "utility": ["workflow"]
-    },
-    {
-      "id": "upload-image-cloudinary",
-      "path": "platforms/cloudinary/upload-image-cloudinary",
-      "platform": ["cloudinary"],
-      "technology": [],
-      "utility": ["evidence"]
     },
     {
       "id": "react-best-practices",

@@ -20,7 +20,7 @@ There is no formal taxonomy or catalog. Assets sit in a flat or ad hoc folder st
 
 - **Discovery:** Finding “all Runrun.it-related” assets requires reading the README or grepping the repo.
 - **Maintenance:** Moving or adding a skill risks breaking share paths hardcoded as `cursor-skills/{skill_name}/`.
-- **Scale:** As skills grow by platform (Runrun.it, GitHub, Cloudinary, Shopify) and concern (evidence, quality, security), a flat root becomes unreadable.
+- **Scale:** As skills grow by platform (Runrun.it, GitHub, Shopify) and concern (evidence, quality, security), a flat root becomes unreadable.
 - **Agent ergonomics:** No MCP tool returns structured metadata (path, categories, description) for programmatic selection.
 
 ### Evidence
@@ -58,7 +58,7 @@ There is no formal taxonomy or catalog. Assets sit in a flat or ad hoc folder st
 ### Business goals
 
 - `mcp-runrunit` is the shared npm package for Runrun.it MCP plus team Cursor assets.
-- Growth is expected along **platform** lines (Runrun.it, GitHub, Cloudinary, Shopify, Cursor meta) and **utility** lines (workflow, evidence, quality, security).
+- Growth is expected along **platform** lines (Runrun.it, GitHub, Shopify, Cursor meta) and **utility** lines (workflow, evidence, quality, security).
 
 ### Why now?
 
@@ -88,7 +88,6 @@ Public **id** = leaf name (unchanged MCP API). **path** = nested repo location (
 cursor-skills/
   platforms/runrunit/comentar-task-runrunit/
   platforms/github/create-pr-github/
-  platforms/cloudinary/upload-image-cloudinary/
   technologies/react/react-best-practices/
   utilities/evidence/registrar-evidencias/
   utilities/quality/code-reviewer/

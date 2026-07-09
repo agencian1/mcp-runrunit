@@ -9,6 +9,13 @@ function mkTmp(): string {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'mcp-share-gh-'));
 }
 
+function writePrTemplate(root: string): void {
+  const dir = path.join(root, '.github');
+  fs.mkdirSync(dir, { recursive: true });
+  const source = path.join(process.cwd(), '.github', 'PULL_REQUEST_TEMPLATE.md');
+  fs.copyFileSync(source, path.join(dir, 'PULL_REQUEST_TEMPLATE.md'));
+}
+
 function mockOctokitSingleFile(): Octokit {
   return {
     rest: {
@@ -62,6 +69,7 @@ function mockOctokitMultiFile(): Octokit {
 describe('shareCursorAgent', () => {
   it('calls GitHub APIs and returns pr_url', async () => {
     const root = mkTmp();
+    writePrTemplate(root);
     const agents = path.join(root, 'cursor-agents');
     fs.mkdirSync(agents, { recursive: true });
     fs.writeFileSync(path.join(agents, 'bot.md'), '# Bot', 'utf8');
@@ -100,6 +108,7 @@ describe('shareCursorAgent', () => {
 describe('shareCursorSkill', () => {
   it('uploads all skill files via Git Data API and returns file_count and paths', async () => {
     const root = mkTmp();
+    writePrTemplate(root);
     const dir = path.join(root, 'cursor-skills', 'team-skill');
     fs.mkdirSync(path.join(dir, 'rules'), { recursive: true });
     fs.writeFileSync(path.join(dir, 'SKILL.md'), '# Skill', 'utf8');
