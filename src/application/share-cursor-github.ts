@@ -4,7 +4,7 @@ import type { Octokit } from '@octokit/rest';
 import type { GithubShareConfig } from '../adapters/driven/github.js';
 import {
   createOctokit,
-  readGithubShareConfigFromEnv,
+  readGithubShareConfig,
   submitMultiFilePullRequest,
   submitNewFilePullRequest,
 } from '../adapters/driven/github.js';
@@ -64,15 +64,18 @@ function uniqueSuffix(): string {
   return randomBytes(3).toString('hex');
 }
 
-function resolveDeps(deps?: ShareCursorGithubDeps): {
+function resolveDeps(
+  projectRoot: string,
+  deps?: ShareCursorGithubDeps,
+): {
   octokit: Octokit;
   config: GithubShareConfig;
 } {
   if (deps?.octokit && deps?.config) {
     return { octokit: deps.octokit, config: deps.config };
   }
-  const config = readGithubShareConfigFromEnv();
-  const octokit = createOctokit(config.token);
+  const config = deps?.config ?? readGithubShareConfig({ projectRoot });
+  const octokit = deps?.octokit ?? createOctokit(config.token);
   return { octokit, config };
 }
 
@@ -95,7 +98,7 @@ export async function shareCursorAgent(
   const suffix = uniqueSuffix();
   const branch = `feat/share-agent-${slug}-${suffix}`;
   const correlationId = randomUUID();
-  const { octokit, config } = resolveDeps(deps);
+  const { octokit, config } = resolveDeps(projectRoot, deps);
 
   const pr = buildShareAgentPr({
     repoPath,
@@ -140,7 +143,7 @@ export async function shareCursorSkill(
   const suffix = uniqueSuffix();
   const branch = `feat/share-skill-${slug}-${suffix}`;
   const correlationId = randomUUID();
-  const { octokit, config } = resolveDeps(deps);
+  const { octokit, config } = resolveDeps(projectRoot, deps);
 
   const pr = buildShareSkillPr({
     repoFolderPath,

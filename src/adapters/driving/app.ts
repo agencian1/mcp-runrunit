@@ -760,7 +760,7 @@ export const TOOLS = [
   {
     name: 'runrunit_share_cursor_agent',
     description:
-      'Use when the user wants to share a Cursor agent with the team through GitHub (e.g. compartilhar agente com o time, dividir com o time, propor ao repositório, share agent with the team via PR). Opens a pull request with one markdown file from cursor-agents/. For copying agents into ~/.cursor/agents locally, use runrunit_install_cursor_agents instead. Requires GITHUB_TOKEN, GITHUB_REPO_OWNER, GITHUB_REPO_NAME on the MCP server host only; never pass credentials via this tool.',
+      'Use when the user wants to share a Cursor agent with the team through GitHub (e.g. compartilhar agente com o time, dividir com o time, propor ao repositório, share agent with the team via PR). Opens a pull request with one markdown file from cursor-agents/. For copying agents into ~/.cursor/agents locally, use runrunit_install_cursor_agents instead. Requires GITHUB_TOKEN on the MCP server host only; owner, repo and base branch are auto-detected from git origin in project_root (env vars override). Never pass credentials via this tool.',
     inputSchema: {
       type: 'object' as const,
       properties: {
@@ -784,7 +784,7 @@ export const TOOLS = [
   {
     name: 'runrunit_share_cursor_skill',
     description:
-      'Primary tool when the user wants to share a Cursor skill with the team via GitHub: compartilhar skill, dividir com o time, propor ao repo, publicar skill para a equipe, share skill with the team, open a PR for teammates. Opens a pull request that adds or updates the full cursor-skills/{skill_name}/ folder (SKILL.md, rules/, templates/, scripts/, etc.) in one atomic commit. Do not use runrunit_install_cursor_skills for this — that only copies folders to local ~/.cursor/skills. Same GitHub env as runrunit_share_cursor_agent (token on MCP host only).',
+      'Primary tool when the user wants to share a Cursor skill with the team via GitHub: compartilhar skill, dividir com o time, propor ao repo, publicar skill para a equipe, share skill with the team, open a PR for teammates. Opens a pull request that adds or updates the full cursor-skills/{skill_name}/ folder (SKILL.md, rules/, templates/, scripts/, etc.) in one atomic commit. Do not use runrunit_install_cursor_skills for this — that only copies folders to local ~/.cursor/skills. Requires GITHUB_TOKEN on MCP host; repo identity and base branch auto-detected from project_root git origin (env overrides).',
     inputSchema: {
       type: 'object' as const,
       properties: {
@@ -808,7 +808,7 @@ export const TOOLS = [
   {
     name: 'runrunit_share_cursor_agent_bitbucket',
     description:
-      'Use when the user wants to share a Cursor agent with the team through Bitbucket (e.g. compartilhar agente com o time, dividir com o time, propor ao repositório, share agent with the team via PR). Opens a pull request with one markdown file from cursor-agents/. For copying agents into ~/.cursor/agents locally, use runrunit_install_cursor_agents instead. Requires BITBUCKET_USERNAME, BITBUCKET_APP_PASSWORD, BITBUCKET_WORKSPACE, BITBUCKET_REPO_SLUG on the MCP server host only; never pass credentials via this tool.',
+      'Use when the user wants to share a Cursor agent with the team through Bitbucket (e.g. compartilhar agente com o time, dividir com o time, propor ao repositório, share agent with the team via PR). Opens a pull request with one markdown file from cursor-agents/. For copying agents into ~/.cursor/agents locally, use runrunit_install_cursor_agents instead. Requires BITBUCKET_USERNAME and BITBUCKET_APP_PASSWORD on the MCP server host; workspace, repo slug and base branch auto-detected from git origin in project_root (env vars override). Never pass credentials via this tool.',
     inputSchema: {
       type: 'object' as const,
       properties: {
@@ -832,7 +832,7 @@ export const TOOLS = [
   {
     name: 'runrunit_share_cursor_skill_bitbucket',
     description:
-      'Primary tool when the user wants to share a Cursor skill with the team via Bitbucket: compartilhar skill, dividir com o time, propor ao repo, publicar skill para a equipe, share skill with the team, open a PR for teammates. Opens a pull request that adds or updates the full cursor-skills/{skill_name}/ folder (SKILL.md, rules/, templates/, scripts/, etc.) in one atomic commit. Do not use runrunit_install_cursor_skills for this — that only copies folders to local ~/.cursor/skills. Same Bitbucket env as runrunit_share_cursor_agent_bitbucket (credentials on MCP host only).',
+      'Primary tool when the user wants to share a Cursor skill with the team via Bitbucket: compartilhar skill, dividir com o time, propor ao repo, publicar skill para a equipe, share skill with the team, open a PR for teammates. Opens a pull request that adds or updates the full cursor-skills/{skill_name}/ folder (SKILL.md, rules/, templates/, scripts/, etc.) in one atomic commit. Do not use runrunit_install_cursor_skills for this — that only copies folders to local ~/.cursor/skills. Requires Bitbucket credentials on MCP host; repo identity and base branch auto-detected from project_root git origin (env overrides).',
     inputSchema: {
       type: 'object' as const,
       properties: {

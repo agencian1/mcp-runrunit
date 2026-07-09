@@ -4,6 +4,19 @@ All notable changes to the mcp-runrunit package will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.8.1] - 2026-07-09
+
+### Added
+
+- Git repository auto-detection for share tools: `owner`/`repo` (GitHub) and `workspace`/`repoSlug` (Bitbucket) plus default base branch are read from `git remote get-url origin` and `refs/remotes/origin/HEAD` in `project_root` (`src/application/git-repo-detect.ts`).
+- Unit tests for remote URL parsing, live git detection, and env-vs-git config merge (`git-repo-detect.test.ts`, `share-config.test.ts`).
+
+### Changed
+
+- `readGithubShareConfig` and `readBitbucketShareConfig` accept optional `projectRoot`; env vars override detected values (priority: env > git > default `main`).
+- `runrunit_share_cursor_agent`, `runrunit_share_cursor_skill`, and Bitbucket share tools pass resolved `project_root` into config resolution.
+- README, `.env.example`, and MCP tool descriptions document optional `GITHUB_REPO_*`, `GITHUB_BASE_BRANCH`, `BITBUCKET_WORKSPACE`, `BITBUCKET_REPO_SLUG`, and `BITBUCKET_BASE_BRANCH` when sharing from a git checkout.
+
 ## [1.8.0] - 2026-07-09
 
 ### Added
