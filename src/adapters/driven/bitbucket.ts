@@ -1,3 +1,5 @@
+import { detectGitRepoFromProjectRoot } from '../../application/git-repo-detect.js';
+
 const BITBUCKET_BASE_URL = 'https://api.bitbucket.org/2.0';
 
 export type BitbucketShareConfig = {
@@ -20,12 +22,23 @@ export class ShareBitbucketConfigError extends Error {
   }
 }
 
-export function readBitbucketShareConfigFromEnv(): BitbucketShareConfig {
+export type ReadBitbucketShareConfigOptions = {
+  projectRoot?: string;
+};
+
+export function readBitbucketShareConfig(
+  options?: ReadBitbucketShareConfigOptions,
+): BitbucketShareConfig {
+  const detected =
+    options?.projectRoot !== undefined
+      ? detectGitRepoFromProjectRoot(options.projectRoot).bitbucket
+      : undefined;
+
   const missing: string[] = [];
   const username = process.env.BITBUCKET_USERNAME?.trim();
   const appPassword = process.env.BITBUCKET_APP_PASSWORD?.trim();
-  const workspace = process.env.BITBUCKET_WORKSPACE?.trim();
-  const repoSlug = process.env.BITBUCKET_REPO_SLUG?.trim();
+  const workspace = process.env.BITBUCKET_WORKSPACE?.trim() || detected?.workspace;
+  const repoSlug = process.env.BITBUCKET_REPO_SLUG?.trim() || detected?.repoSlug;
   if (!username) missing.push('BITBUCKET_USERNAME');
   if (!appPassword) missing.push('BITBUCKET_APP_PASSWORD');
   if (!workspace) missing.push('BITBUCKET_WORKSPACE');
@@ -33,7 +46,7 @@ export function readBitbucketShareConfigFromEnv(): BitbucketShareConfig {
   if (missing.length > 0) {
     throw new ShareBitbucketConfigError(missing);
   }
-  const baseBranch = process.env.BITBUCKET_BASE_BRANCH?.trim() || 'main';
+  const baseBranch = process.env.BITBUCKET_BASE_BRANCH?.trim() || detected?.defaultBranch || 'main';
   return {
     username: username!,
     appPassword: appPassword!,
@@ -41,6 +54,11 @@ export function readBitbucketShareConfigFromEnv(): BitbucketShareConfig {
     repoSlug: repoSlug!,
     baseBranch,
   };
+}
+
+/** @deprecated Use readBitbucketShareConfig */
+export function readBitbucketShareConfigFromEnv(): BitbucketShareConfig {
+  return readBitbucketShareConfig();
 }
 
 export type BitbucketClient = {

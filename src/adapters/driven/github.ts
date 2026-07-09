@@ -1,4 +1,5 @@
 import { Octokit } from '@octokit/rest';
+import { detectGitRepoFromProjectRoot } from '../../application/git-repo-detect.js';
 
 export type GithubShareConfig = {
   token: string;
@@ -19,24 +20,38 @@ export class ShareGithubConfigError extends Error {
   }
 }
 
-export function readGithubShareConfigFromEnv(): GithubShareConfig {
+export type ReadGithubShareConfigOptions = {
+  projectRoot?: string;
+};
+
+export function readGithubShareConfig(options?: ReadGithubShareConfigOptions): GithubShareConfig {
+  const detected =
+    options?.projectRoot !== undefined
+      ? detectGitRepoFromProjectRoot(options.projectRoot).github
+      : undefined;
+
   const missing: string[] = [];
   const token = process.env.GITHUB_TOKEN?.trim();
-  const owner = process.env.GITHUB_REPO_OWNER?.trim();
-  const repo = process.env.GITHUB_REPO_NAME?.trim();
+  const owner = process.env.GITHUB_REPO_OWNER?.trim() || detected?.owner;
+  const repo = process.env.GITHUB_REPO_NAME?.trim() || detected?.repo;
   if (!token) missing.push('GITHUB_TOKEN');
   if (!owner) missing.push('GITHUB_REPO_OWNER');
   if (!repo) missing.push('GITHUB_REPO_NAME');
   if (missing.length > 0) {
     throw new ShareGithubConfigError(missing);
   }
-  const baseBranch = process.env.GITHUB_BASE_BRANCH?.trim() || 'main';
+  const baseBranch = process.env.GITHUB_BASE_BRANCH?.trim() || detected?.defaultBranch || 'main';
   return {
     token: token!,
     owner: owner!,
     repo: repo!,
     baseBranch,
   };
+}
+
+/** @deprecated Use readGithubShareConfig */
+export function readGithubShareConfigFromEnv(): GithubShareConfig {
+  return readGithubShareConfig();
 }
 
 export function createOctokit(token: string): Octokit {

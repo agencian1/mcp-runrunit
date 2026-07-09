@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import type { BitbucketClient, BitbucketShareConfig } from '../adapters/driven/bitbucket.js';
 import {
   createBitbucketClient,
-  readBitbucketShareConfigFromEnv,
+  readBitbucketShareConfig,
   submitFilesPullRequest,
 } from '../adapters/driven/bitbucket.js';
 import { buildShareAgentPr, buildShareSkillPr } from './pr-template.js';
@@ -62,15 +62,18 @@ function uniqueSuffix(): string {
   return randomBytes(3).toString('hex');
 }
 
-function resolveDeps(deps?: ShareCursorBitbucketDeps): {
+function resolveDeps(
+  projectRoot: string,
+  deps?: ShareCursorBitbucketDeps,
+): {
   client: BitbucketClient;
   config: BitbucketShareConfig;
 } {
   if (deps?.client && deps?.config) {
     return { client: deps.client, config: deps.config };
   }
-  const config = readBitbucketShareConfigFromEnv();
-  const client = createBitbucketClient(config);
+  const config = deps?.config ?? readBitbucketShareConfig({ projectRoot });
+  const client = deps?.client ?? createBitbucketClient(config);
   return { client, config };
 }
 
@@ -91,7 +94,7 @@ export async function shareCursorAgentBitbucket(
   const suffix = uniqueSuffix();
   const branch = `feat/share-agent-${slug}-${suffix}`;
   const correlationId = randomUUID();
-  const { client, config } = resolveDeps(deps);
+  const { client, config } = resolveDeps(projectRoot, deps);
 
   const pr = buildShareAgentPr({
     repoPath,
@@ -135,7 +138,7 @@ export async function shareCursorSkillBitbucket(
   const suffix = uniqueSuffix();
   const branch = `feat/share-skill-${slug}-${suffix}`;
   const correlationId = randomUUID();
-  const { client, config } = resolveDeps(deps);
+  const { client, config } = resolveDeps(projectRoot, deps);
 
   const pr = buildShareSkillPr({
     repoFolderPath,
