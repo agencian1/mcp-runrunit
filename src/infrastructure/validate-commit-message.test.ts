@@ -2,11 +2,14 @@ import { describe, expect, it } from 'vitest';
 import { validateCommitMessage, validateCommitSubject } from './validate-commit-message.js';
 
 describe('validateCommitSubject', () => {
-  it('accepts task ID with description', () => {
-    expect(
-      validateCommitSubject('task14379: remove Cloudinary and map branch link to custom_12'),
-    ).toBeNull();
-    expect(validateCommitSubject('TASK123: descrição da alteração')).toBeNull();
+  it('accepts task number, type and description', () => {
+    expect(validateCommitSubject('12345 - feat - adiciona suporte a cupom no carrinho')).toBeNull();
+    expect(validateCommitSubject('14751 - fix - corrige seleção de SKU na PDP')).toBeNull();
+    expect(validateCommitSubject('14751 - chore - atualiza dependências do manifest')).toBeNull();
+    expect(validateCommitSubject('1 - docs - documenta o hook de commit')).toBeNull();
+    expect(validateCommitSubject('1 - refactor - extrai validação da mensagem')).toBeNull();
+    expect(validateCommitSubject('1 - test - cobre formato da mensagem')).toBeNull();
+    expect(validateCommitSubject('1 - perf - reduz leituras no hook')).toBeNull();
   });
 
   it('rejects empty subject', () => {
@@ -14,14 +17,14 @@ describe('validateCommitSubject', () => {
     expect(validateCommitSubject('   ')).toMatch(/vazia/i);
   });
 
-  it('rejects missing task prefix', () => {
+  it('rejects messages outside the skill format', () => {
     expect(validateCommitSubject('feat: add login')).toMatch(/Formato esperado/);
-    expect(validateCommitSubject('remove Cloudinary')).toMatch(/Formato esperado/);
-  });
-
-  it('rejects task without description', () => {
-    expect(validateCommitSubject('task14379:')).toMatch(/Formato esperado/);
-    expect(validateCommitSubject('task14379: ')).toMatch(/Formato esperado/);
+    expect(validateCommitSubject('task14379: remove Cloudinary')).toMatch(/Formato esperado/);
+    expect(validateCommitSubject('12345 - feature - adiciona login')).toMatch(/Formato esperado/);
+    expect(validateCommitSubject('12345 - Feat - adiciona login')).toMatch(/Formato esperado/);
+    expect(validateCommitSubject('12345 - feat -')).toMatch(/Formato esperado/);
+    expect(validateCommitSubject('12345 - feat -   ')).toMatch(/Formato esperado/);
+    expect(validateCommitSubject('12345-feat-adiciona login')).toMatch(/Formato esperado/);
   });
 
   it('exempts merge commits', () => {
@@ -30,18 +33,20 @@ describe('validateCommitSubject', () => {
   });
 
   it('exempts revert commits', () => {
-    expect(validateCommitSubject('Revert "task14379: remove Cloudinary"')).toBeNull();
+    expect(validateCommitSubject('Revert "12345 - feat - adiciona cupom"')).toBeNull();
   });
 
   it('exempts fixup and squash commits', () => {
-    expect(validateCommitSubject('fixup! task14379: previous message')).toBeNull();
-    expect(validateCommitSubject('squash! task14379: previous message')).toBeNull();
-    expect(validateCommitSubject('amend! task14379: previous message')).toBeNull();
+    expect(validateCommitSubject('fixup! 12345 - feat - mensagem anterior')).toBeNull();
+    expect(validateCommitSubject('squash! 12345 - feat - mensagem anterior')).toBeNull();
+    expect(validateCommitSubject('amend! 12345 - feat - mensagem anterior')).toBeNull();
   });
 });
 
 describe('validateCommitMessage', () => {
   it('validates only the first line', () => {
-    expect(validateCommitMessage('task14379: descrição\n\nCorpo opcional do commit.')).toBeNull();
+    expect(
+      validateCommitMessage('12345 - feat - adiciona cupom\n\nCorpo opcional do commit.'),
+    ).toBeNull();
   });
 });
