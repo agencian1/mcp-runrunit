@@ -1,5 +1,7 @@
 #!/usr/bin/env node
-import { validateCommitMessageFile } from '../dist/infrastructure/validate-commit-message.js';
+import { spawnSync } from 'node:child_process';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const msgFile = process.argv[2];
 if (!msgFile) {
@@ -7,8 +9,15 @@ if (!msgFile) {
   process.exit(1);
 }
 
-const error = validateCommitMessageFile(msgFile);
-if (error) {
-  console.error(`\nCommit rejeitado:\n${error}\n`);
+const script = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../cursor-skills/platforms/github/format-commit-message/validate-commit-msg.sh',
+);
+
+const result = spawnSync('bash', [script, msgFile], { stdio: 'inherit' });
+if (result.error) {
+  console.error(result.error.message);
   process.exit(1);
 }
+
+process.exit(result.status ?? 1);
