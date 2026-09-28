@@ -37,6 +37,10 @@ EOF
 )"
 ```
 
+## Hook
+
+O script [`validate-commit-msg.sh`](validate-commit-msg.sh) rejeita o commit quando a primeira linha foge deste formato. O hook Husky `commit-msg` chama esse script. Merges, reverts e `fixup!` / `squash!` / `amend!` passam direto. Em branch `task_[número]`, o número da mensagem tem de ser o da branch.
+
 ## Próxima skill
 
 Se o pedido incluir commitar e esta skill não foi chamada por [commit-per-file](../commit-per-file/SKILL.md), chamar a skill [commit-per-file](../commit-per-file/SKILL.md). Leia o SKILL.md e siga-o.
