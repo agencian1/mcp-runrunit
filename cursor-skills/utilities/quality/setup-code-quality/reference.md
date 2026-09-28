@@ -102,9 +102,11 @@ Incluir arquivos na raiz:
 
 ### Commit rejeitado pelo hook commit-msg
 
-- Formato exigido: `task123456: descrição da alteração`
+- Formato exigido: `12345 - feat - descrição da alteração`
+- Tipos: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `perf`
+- Em branch `task_[número]`, o número da mensagem tem de ser o da branch
 - Exceções automáticas: merges, reverts, `fixup!` / `squash!` / `amend!`
-- Testar manualmente: `node scripts/validate-commit-msg.mjs .git/COMMIT_EDITMSG`
+- Testar manualmente: `bash scripts/validate-commit-msg.sh .git/COMMIT_EDITMSG`
 
 ### Conflito ESLint + Prettier
 
