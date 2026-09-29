@@ -12,6 +12,7 @@ import { installCursorSkills } from '../../application/install-cursor-skills.js'
 import { installCursorAgents } from '../../application/install-cursor-agents.js';
 import { listCursorCatalog } from '../../application/list-cursor-catalog.js';
 import { getPrTemplate } from '../../application/pr-template.js';
+import { GITHUB_WORKFLOW_TOOLS, runGithubWorkflowTool } from './github-workflow-tools.js';
 import { shareCursorAgent, shareCursorSkill } from '../../application/share-cursor-github.js';
 import {
   shareCursorAgentBitbucket,
@@ -850,6 +851,7 @@ export const TOOLS = [
       required: ['skill_name'],
     },
   },
+  ...GITHUB_WORKFLOW_TOOLS,
 ];
 
 function textContent(text: string): { type: 'text'; text: string }[] {
@@ -1343,6 +1345,16 @@ export function createMcpServer(): Server {
             skill_name: String(a.skill_name ?? ''),
             project_root: a.project_root != null ? String(a.project_root) : undefined,
           });
+          break;
+        }
+        case 'runrunit_commits_branches_prs':
+        case 'runrunit_create_task_branch':
+        case 'runrunit_format_commit_message':
+        case 'runrunit_commit_per_file':
+        case 'runrunit_check_pr':
+        case 'runrunit_create_pr_github': {
+          const github = runGithubWorkflowTool(name, a);
+          result = github.handled ? github.result : { error: `Unknown tool: ${name}` };
           break;
         }
         default:
