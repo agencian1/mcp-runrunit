@@ -204,7 +204,7 @@ function followUpActions(): WorkflowPlan['actions'] {
     },
     {
       description:
-        'Comentar na task com runrunit_create_comment em texto simples, incluindo a URL da PR. Runrun.it não aceita Markdown.',
+        'Comentar na task com runrunit_create_comment preenchendo escopo, como_foi_feito, arquivos_configuracoes, como_validar e links (URL da PR em links). Texto simples, sem Markdown.',
     },
     {
       description:
