@@ -38,6 +38,23 @@ Este documento define regras e convenções para que o agente (Cursor/IA) use as
 | **Excluir** comentário                                              | `runrunit_delete_comment`          | Exige `id`.                                                         |
 | Adicionar reação (emoji)                                            | `runrunit_comment_reaction`        | Exige `comment_id` e `emoji` (ex.: `"👍"`).                         |
 
+### GitHub — commits, branches e PRs
+
+Uma tool por skill em `cursor-skills/platforms/github/`. Nenhuma tool executa o passo da seguinte: use `next_tool` só se o pedido incluir esse passo.
+
+**Aprovação:** `runrunit_create_task_branch`, `runrunit_commit_per_file` e `runrunit_create_pr_github` devolvem um plano (`status: "awaiting_approval"`) e não alteram o git enquanto `approved` não for `true`. Mostre o plano ao usuário e só então chame de novo com `approved: true` e o mesmo payload (em commits, a lista `commits` aprovada).
+
+| Intenção                                          | Tool                             | Observação                                                                                                                                                                         |
+| ------------------------------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Escolher o passo (branch, mensagem, commit ou PR) | `runrunit_commits_branches_prs`  | `intent`: `branch`, `message`, `commit`, `branch_and_commit`, `pr`. Só roteia. `pr` aponta para o checklist, não para abrir a PR.                                                  |
+| Criar branch `task_[número]`                      | `runrunit_create_task_branch`    | `project_root` obrigatório. `task_id` ou branch atual `task_[número]`. `includes_commit: true` só preenche `next_tool`.                                                            |
+| Redigir a mensagem                                | `runrunit_format_commit_message` | Formato `[numero] - [tipo] - [descrição]`. Não commita. `called_from: "commit-per-file"` evita voltar para `runrunit_commit_per_file`.                                             |
+| Um commit por arquivo                             | `runrunit_commit_per_file`       | Ordem de dependência. Ignora `.env`, chaves e `credentials.json`. Não abre PR. `includes_pr: true` aponta `next_tool` para `runrunit_check_pr`.                                    |
+| Conferir o checklist                              | `runrunit_check_pr`              | Somente leitura. Fim da cadeia do fluxo (`next_tool` null). Não abre PR.                                                                                                           |
+| Abrir a PR no GitHub                              | `runrunit_create_pr_github`      | Base `development` ou `homolog`. `main` e `master` são recusados. Exige `type` e `title_description`. Depois de executar, use `pull_request_url`, `branch` e `target_environment`. |
+
+Depois da PR, a própria tool não comenta nem grava link: chame `runrunit_create_comment` e `runrunit_update_task` (`link_da_branch` com a URL da PR, `link_da_branch_relatorio` com a URL da branch). Evidências visuais seguem a skill `registrar-evidencias`.
+
 ### Sugestão de desenvolvedor (MCP Sentinel)
 
 | Intenção do usuário                                                | Tool recomendada                                   | Observação                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
@@ -128,5 +145,6 @@ Variáveis de ambiente para Discord: `BOT_RUNRUNIT_REPORT` (token do bot), `DISC
 - **Escolher** a tool pelo verbo (listar → list*\*, ver um → get*\_, criar → create\_\_, alterar → update*\*, excluir → delete*\*).
 - **Em updates**, enviar só os campos que mudam dentro de `task`.
 - **Respeitar** rate limit: evitar muitas chamadas seguidas; usar filtros e paginação em listagens.
+- **GitHub workflow:** apresentar o plano (`awaiting_approval`) e só repetir a tool com `approved: true` depois que o usuário aceitar. Não pular `next_tool` para commitar ou abrir PR se o pedido não incluir esse passo.
 - Em caso de **erro da API**, informar ao usuário de forma clara e sugerir verificar ID, permissões e credenciais MCP.
 - Para **sugerir dev com fila livre** (Sentinel), sempre passar `board_id` (ex.: `96356`) ou `task_stage_ids` para evitar erro TASK_STAGE_NOT_RESOLVED.
