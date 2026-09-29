@@ -1,7 +1,7 @@
 ---
 name: check-pr
 description: >-
-  Confere o checklist de PR no padrão Damyller: branch `task_[número]`
+  Confere o checklist de PR no padrão do repositório: branch `task_[número]`
   e commits `[task] - [tipo] - [descrição]`, um por arquivo, na ordem
   de dependência. Use ao preparar o PR neste repositório. Fim da cadeia.
 ---
