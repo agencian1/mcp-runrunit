@@ -18,6 +18,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Commit message hook now requires `[numero] - [tipo] - [descrição]` (`feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `perf`). `.husky/commit-msg` runs `cursor-skills/platforms/github/format-commit-message/validate-commit-msg.sh`.
 
+### Fixed
+
+- `npm test` on Windows Git Bash calls Vitest through a relative path. The `node_modules/.bin` shim was rewriting the drive letter to `D:\`, and Vitest then reported no test suites.
+
 ## [1.8.1] - 2026-07-09
 
 ### Added

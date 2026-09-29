@@ -31,7 +31,7 @@
     "prepublishOnly": "npm run build",
     "start": "node --env-file=.env --import ./dist/instrument-http.js dist/server.js",
     "dev": "npm run build && node --env-file=.env --import ./dist/instrument-http.js dist/server.js",
-    "test": "vitest run",
+    "test": "node ./node_modules/vitest/vitest.mjs run",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
