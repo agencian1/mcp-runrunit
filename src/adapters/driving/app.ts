@@ -23,6 +23,69 @@ import { ShareBitbucketConfigError } from '../driven/bitbucket.js';
 import { ShareGithubConfigError } from '../driven/github.js';
 import { captureExceptionWithContext } from '../../observability/sentry.js';
 
+const taskCommentSectionProperties = {
+  escopo: {
+    type: 'string' as const,
+    description:
+      'Context of the implementation or fix. Example: correção no checkout. Plain text only.',
+  },
+  como_foi_feito: {
+    type: 'string' as const,
+    description:
+      'Whether the change was code or panel configuration, and what changed. Example: Atualizei o código X do arquivo xyz.ts. Plain text only.',
+  },
+  arquivos_configuracoes: {
+    type: 'string' as const,
+    description:
+      'Paths or links of the affected files or settings. Example: src/checkout/xyz.ts. Plain text and raw URLs only.',
+  },
+  como_validar: {
+    type: 'string' as const,
+    description:
+      'Step-by-step test instructions, at least two non-empty lines. Example: "1. Acesse o link de preview:\\n2. Navegue até a sessão Y". Plain text only.',
+  },
+  links: {
+    type: 'string' as const,
+    description:
+      'Reference links for validation, including preview and PR/MR URLs. Raw URLs only, no Markdown.',
+  },
+  url_antes: {
+    type: 'string' as const,
+    description:
+      "Optional. URL of the before state or evidence image. When set, the server appends 'Antes: <url>' at the end of Links. Capture evidence with the registrar-evidencias skill first.",
+  },
+  url_depois: {
+    type: 'string' as const,
+    description:
+      "Optional. URL of the after state or evidence image. When set, the server appends 'Depois: <url>' at the end of Links.",
+  },
+};
+
+const taskCommentRequiredSections = [
+  'escopo',
+  'como_foi_feito',
+  'arquivos_configuracoes',
+  'como_validar',
+  'links',
+] as const;
+
+function taskCommentTextFromArgs(a: Record<string, unknown>): string {
+  return comments.buildTaskComment(
+    {
+      escopo: a.escopo != null ? String(a.escopo) : '',
+      como_foi_feito: a.como_foi_feito != null ? String(a.como_foi_feito) : '',
+      arquivos_configuracoes:
+        a.arquivos_configuracoes != null ? String(a.arquivos_configuracoes) : '',
+      como_validar: a.como_validar != null ? String(a.como_validar) : '',
+      links: a.links != null ? String(a.links) : '',
+    },
+    {
+      url_antes: a.url_antes != null ? String(a.url_antes) : undefined,
+      url_depois: a.url_depois != null ? String(a.url_depois) : undefined,
+    },
+  );
+}
+
 export const TOOLS = [
   /**
    * @namedTools runrunit_list_projects
@@ -303,28 +366,14 @@ export const TOOLS = [
   {
     name: 'runrunit_create_comment',
     description:
-      "Create a comment on a task in Runrun.it. Format: plain text and raw URLs only (no Markdown). Optional url_antes + url_depois: when both are provided, (1) capture visual evidence (skill registrar-evidencias), (2) append to text plain labels and image URLs (e.g. 'Antes: <url>' and 'Depois: <url>'), (3) call this tool with the enriched text.",
+      'Create a comment on a task in Runrun.it using the standard template. The server assembles plain text (no Markdown) in this order: Escopo, Como foi feito, Quais arquivos/configurações foram afetadas, Como validar, Links. Every section is required. Como validar must have at least two steps, one per line. Optional url_antes and url_depois are appended at the end of Links as "Antes: <url>" and "Depois: <url>" after capturing evidence with the registrar-evidencias skill.',
     inputSchema: {
       type: 'object' as const,
       properties: {
         task_id: { type: 'number', description: 'Task ID' },
-        text: {
-          type: 'string',
-          description:
-            'Comment text (can be enriched with an evidence block when url_antes/url_depois are used)',
-        },
-        url_antes: {
-          type: 'string',
-          description:
-            "Optional. URL of the page in the 'before' state; when provided with url_depois, agent should capture evidence and append it to text",
-        },
-        url_depois: {
-          type: 'string',
-          description:
-            "Optional. URL of the page in the 'after' state; when provided with url_antes, agent should capture evidence and append it to text",
-        },
+        ...taskCommentSectionProperties,
       },
-      required: ['task_id', 'text'],
+      required: ['task_id', ...taskCommentRequiredSections],
     },
   },
   /**
@@ -332,14 +381,15 @@ export const TOOLS = [
    */
   {
     name: 'runrunit_update_comment',
-    description: "Update a comment's text on Runrun.it.",
+    description:
+      'Update a comment on Runrun.it. Send the same standard template sections as runrunit_create_comment (Escopo, Como foi feito, Quais arquivos/configurações foram afetadas, Como validar, Links). Plain text and raw URLs only. Optional url_antes and url_depois are appended at the end of Links.',
     inputSchema: {
       type: 'object' as const,
       properties: {
         id: { type: 'number', description: 'Comment ID' },
-        text: { type: 'string', description: 'New comment text' },
+        ...taskCommentSectionProperties,
       },
-      required: ['id', 'text'],
+      required: ['id', ...taskCommentRequiredSections],
     },
   },
   /**
@@ -1130,11 +1180,11 @@ export function createMcpServer(): Server {
         case 'runrunit_create_comment':
           result = await comments.createComment({
             task_id: Number(a.task_id),
-            text: String(a.text),
+            text: taskCommentTextFromArgs(a),
           });
           break;
         case 'runrunit_update_comment':
-          result = await comments.updateComment(Number(a.id), String(a.text));
+          result = await comments.updateComment(Number(a.id), taskCommentTextFromArgs(a));
           break;
         case 'runrunit_delete_comment':
           await comments.deleteComment(Number(a.id));
