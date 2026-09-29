@@ -4,6 +4,17 @@ All notable changes to the mcp-runrunit package will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.0.0] - 2026-09-29
+
+### Changed
+
+- **Breaking:** `runrunit_create_comment` and `runrunit_update_comment` no longer accept free-form `text`. Callers must send `escopo`, `como_foi_feito`, `arquivos_configuracoes`, `como_validar`, and `links`. The server assembles plain text in that order and rejects Markdown. `como_validar` needs at least two steps, one per line. Optional `url_antes` and `url_depois` are appended at the end of Links.
+- Skill `comentar-task-runrunit`, README, agent context, and the GitHub PR follow-up describe those comment template sections.
+
+### Added
+
+- `buildTaskComment` validates the task comment template before the text is sent to Runrun.it.
+
 ## [1.9.0] - 2026-09-29
 
 ### Added
