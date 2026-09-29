@@ -1,6 +1,6 @@
 {
   "name": "mcp-runrunit",
-  "version": "1.9.0",
+  "version": "2.0.0",
   "description": "MCP server for Runrun.it API - Tasks, Comments, Projects",
   "type": "module",
   "main": "dist/index.js",
