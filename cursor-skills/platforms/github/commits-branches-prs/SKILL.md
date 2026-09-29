@@ -1,7 +1,7 @@
 ---
 name: commits-branches-prs
 description: >-
-  Cria commits, branches e PRs no padrão Damyller: mensagem em PT-BR
+  Cria commits, branches e PRs no padrão do repositório: mensagem em PT-BR
   `[task] - [tipo] - [descrição]`, um commit por arquivo na ordem de
   dependência e branches `task_[número]`. Use ao criar commit, branch, PR
   ou push neste repositório.
