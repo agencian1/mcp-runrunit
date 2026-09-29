@@ -97,8 +97,16 @@ Incluir arquivos na raiz:
 
 - Verificar `prepare` no package.json
 - Rodar `npm run prepare` ou `npx husky`
-- Unix: `chmod +x .husky/pre-commit`
+- Unix: `chmod +x .husky/pre-commit` (e `commit-msg` / `pre-push` se existirem)
 - Windows: exige Git Bash / sh do Git instalado
+
+### Commit rejeitado pelo hook commit-msg
+
+- Formato exigido: `12345 - feat - descrição da alteração`
+- Tipos: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `perf`
+- Em branch `task_[número]`, o número da mensagem tem de ser o da branch
+- Exceções automáticas: merges, reverts, `fixup!` / `squash!` / `amend!`
+- Testar manualmente: `bash scripts/validate-commit-msg.sh .git/COMMIT_EDITMSG`
 
 ### Conflito ESLint + Prettier
 

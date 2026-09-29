@@ -4,6 +4,49 @@ All notable changes to the mcp-runrunit package will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.9.0] - 2026-09-28
+
+### Added
+
+- MCP tools for the GitHub workflow, one per skill in `cursor-skills/platforms/github/`: `runrunit_commits_branches_prs`, `runrunit_create_task_branch`, `runrunit_format_commit_message`, `runrunit_commit_per_file`, `runrunit_check_pr`, and `runrunit_create_pr_github`.
+- Plan-before-execute: branch, commit, and pull request tools return `awaiting_approval` and do not change git until `approved: true`.
+- `GitWorkspacePort` with an in-memory test double and a `git`/`gh` adapter. Use cases do not call the next tool; the response `next_tool` tells the agent which single step follows.
+- ADR `docs/adr/002-github-workflow-plan-tools.md`. README and `docs/CONTEXTO-AGENTE.md` document the tools, the approval gate, and the hexagonal layout.
+
+## [1.8.1] - 2026-07-09
+
+### Added
+
+- Git repository auto-detection for share tools: `owner`/`repo` (GitHub) and `workspace`/`repoSlug` (Bitbucket) plus default base branch are read from `git remote get-url origin` and `refs/remotes/origin/HEAD` in `project_root` (`src/application/git-repo-detect.ts`).
+- Unit tests for remote URL parsing, live git detection, and env-vs-git config merge (`git-repo-detect.test.ts`, `share-config.test.ts`).
+
+### Changed
+
+- `readGithubShareConfig` and `readBitbucketShareConfig` accept optional `projectRoot`; env vars override detected values (priority: env > git > default `main`).
+- `runrunit_share_cursor_agent`, `runrunit_share_cursor_skill`, and Bitbucket share tools pass resolved `project_root` into config resolution.
+- README, `.env.example`, and MCP tool descriptions document optional `GITHUB_REPO_*`, `GITHUB_BASE_BRANCH`, `BITBUCKET_WORKSPACE`, `BITBUCKET_REPO_SLUG`, and `BITBUCKET_BASE_BRANCH` when sharing from a git checkout.
+
+## [1.8.0] - 2026-07-09
+
+### Added
+
+- MCP tool `runrunit_get_task_description` to fetch a task’s rich-text description (requirements, acceptance criteria, links) after `runrunit_get_task`.
+- MCP tool `runrunit_get_pr_template` to return PR title format and body from `.github/PULL_REQUEST_TEMPLATE.md`, with optional fields to pre-fill the template.
+- MCP tools `runrunit_share_cursor_agent_bitbucket` and `runrunit_share_cursor_skill_bitbucket` to open Bitbucket pull requests for bundled agents/skills (credentials via MCP host env only; see `.env.example`).
+- Task update field `link_da_branch_relatorio` mapped to custom field `custom_12` for branch links in task reports (`link_da_branch` remains on `custom_32`).
+- Bundled `.github/PULL_REQUEST_TEMPLATE.md` in the npm package.
+- Husky `commit-msg` hook and `validate-commit-message` helper enforcing commit format `task<ID>: description` (exempts merges, reverts, fixup/squash).
+
+### Changed
+
+- PR template resolution uses `.github/PULL_REQUEST_TEMPLATE.md` as the single source of truth.
+- `runrunit_get_task` description clarifies that rich description lives on the separate `runrunit_get_task_description` endpoint.
+- `AGENTS.md`, `setup-code-quality`, and `create-pr-github` skills document commit vs PR title conventions.
+
+### Removed
+
+- Cloudinary integration and `CLOUDINARY_*` environment variables from skills and documentation.
+
 ## [1.7.0] - 2026-06-09
 
 ### Added

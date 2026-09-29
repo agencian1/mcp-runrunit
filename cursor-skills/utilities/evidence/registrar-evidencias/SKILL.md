@@ -5,7 +5,7 @@ description: Captura screenshots de páginas web em múltiplos viewports (mobile
 
 # Registrar Evidências (Antes/Depois)
 
-Captura prints de tela a partir de **duas URLs** (antes e depois), em mobile, tablet e desktop. Mesmo input, devolvendo as URLs da imagem após utilizar a skill [upload-image-cloudinary](skills/upload-image-cloudinary/SKILL.md) para fazer o upload de cada imagem.
+Captura prints de tela a partir de **duas URLs** (antes e depois), em mobile, tablet e desktop.
 
 ## Input obrigatório
 
@@ -31,10 +31,9 @@ Solicite essas duas URLs ao usuário quando não forem fornecidas.
    - Repetir os mesmos viewports: mobile, tablet, desktop.
    - Nomear ex.: `depois-desktop.png`, `depois-mobile.png`, `depois-tablet.png`.
 
-4. **Publicar imagens (opcional):**
-   - Se as evidências forem para PR ou documentação, usar a skill [upload-image-cloudinary](skills/upload-image-cloudinary/SKILL.md) para cada screenshot e obter `secure_url`.
-   - **PR/documentação (Markdown):** `![Antes - Desktop](<secure_url>)`, `![Depois - Desktop](<secure_url>)`.
-   - **Runrun.it (comentários):** não aceita Markdown; usar apenas texto simples com a URL: ex. `Antes: <secure_url>` e `Depois: <secure_url>`.
+4. **Usar as evidências:**
+   - **PR/documentação (Markdown):** referenciar os arquivos locais ou URLs disponíveis com `![Antes - Desktop](<url>)`, `![Depois - Desktop](<url>)`.
+   - **Runrun.it (comentários):** não aceita Markdown; usar apenas texto simples com a URL ou referência ao arquivo: ex. `Antes: <url>` e `Depois: <url>`.
 
 ## Viewports sugeridos
 
@@ -46,7 +45,6 @@ Solicite essas duas URLs ao usuário quando não forem fornecidas.
 
 ## Saída
 
-- Arquivos de screenshot locais **e/ou**
-- URLs públicas (via Cloudinary): em Markdown para PR/docs; em texto simples (só a URL) para comentários no Runrun.it.
+- Arquivos de screenshot locais para uso em PRs, documentação ou comentários no Runrun.it.
 
 Quando o usuário pedir apenas "registrar evidências" ou "tirar prints antes/depois", use esta skill com as duas URLs fornecidas ou solicite-as.

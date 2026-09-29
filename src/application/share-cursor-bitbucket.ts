@@ -1,13 +1,11 @@
 import { randomBytes, randomUUID } from 'node:crypto';
 import fs from 'node:fs';
-import type { Octokit } from '@octokit/rest';
-import type { GithubShareConfig } from '../adapters/driven/github.js';
+import type { BitbucketClient, BitbucketShareConfig } from '../adapters/driven/bitbucket.js';
 import {
-  createOctokit,
-  readGithubShareConfig,
-  submitMultiFilePullRequest,
-  submitNewFilePullRequest,
-} from '../adapters/driven/github.js';
+  createBitbucketClient,
+  readBitbucketShareConfig,
+  submitFilesPullRequest,
+} from '../adapters/driven/bitbucket.js';
 import { buildShareAgentPr, buildShareSkillPr } from './pr-template.js';
 import {
   assertPathInsideProjectRoot,
@@ -17,7 +15,7 @@ import {
   resolveShareProjectRoot,
 } from './share-cursor-paths.js';
 
-export type ShareCursorGithubResult = {
+export type ShareCursorBitbucketResult = {
   pr_url: string;
   branch: string;
   path: string;
@@ -26,9 +24,9 @@ export type ShareCursorGithubResult = {
   paths?: string[];
 };
 
-export type ShareCursorGithubDeps = {
-  octokit?: Octokit;
-  config?: GithubShareConfig;
+export type ShareCursorBitbucketDeps = {
+  client?: BitbucketClient;
+  config?: BitbucketShareConfig;
 };
 
 function readUtf8FileLimited(absPath: string, projectRoot: string): string {
@@ -66,39 +64,37 @@ function uniqueSuffix(): string {
 
 function resolveDeps(
   projectRoot: string,
-  deps?: ShareCursorGithubDeps,
+  deps?: ShareCursorBitbucketDeps,
 ): {
-  octokit: Octokit;
-  config: GithubShareConfig;
+  client: BitbucketClient;
+  config: BitbucketShareConfig;
 } {
-  if (deps?.octokit && deps?.config) {
-    return { octokit: deps.octokit, config: deps.config };
+  if (deps?.client && deps?.config) {
+    return { client: deps.client, config: deps.config };
   }
-  const config = deps?.config ?? readGithubShareConfig({ projectRoot });
-  const octokit = deps?.octokit ?? createOctokit(config.token);
-  return { octokit, config };
+  const config = deps?.config ?? readBitbucketShareConfig({ projectRoot });
+  const client = deps?.client ?? createBitbucketClient(config);
+  return { client, config };
 }
 
-export async function shareCursorAgent(
+export async function shareCursorAgentBitbucket(
   params: { agent_name: string; project_root?: string },
-  deps?: ShareCursorGithubDeps,
-): Promise<ShareCursorGithubResult> {
+  deps?: ShareCursorBitbucketDeps,
+): Promise<ShareCursorBitbucketResult> {
   const agentName = String(params.agent_name ?? '').trim();
   if (!agentName) {
     throw new Error('agent_name is required.');
   }
   const projectRoot = resolveShareProjectRoot(params.project_root, 'cursor-agents');
-  const { sourcePath, destBasename, repoPath } = resolveAgentMarkdownForShare(
-    projectRoot,
-    agentName,
-  );
+  const { sourcePath, destBasename } = resolveAgentMarkdownForShare(projectRoot, agentName);
   const content = readUtf8FileLimited(sourcePath, projectRoot);
   const bytes = Buffer.byteLength(content, 'utf8');
+  const repoPath = `cursor-agents/${destBasename}`;
   const slug = branchSlugFromBasename(destBasename);
   const suffix = uniqueSuffix();
   const branch = `feat/share-agent-${slug}-${suffix}`;
   const correlationId = randomUUID();
-  const { octokit, config } = resolveDeps(projectRoot, deps);
+  const { client, config } = resolveDeps(projectRoot, deps);
 
   const pr = buildShareAgentPr({
     repoPath,
@@ -107,13 +103,12 @@ export async function shareCursorAgent(
     projectRoot,
   });
 
-  const { prUrl, branch: createdBranch } = await submitNewFilePullRequest(octokit, {
-    owner: config.owner,
-    repo: config.repo,
+  const { prUrl, branch: createdBranch } = await submitFilesPullRequest(client, {
+    workspace: config.workspace,
+    repoSlug: config.repoSlug,
     baseBranch: config.baseBranch,
     branch,
-    path: repoPath,
-    contentUtf8: content,
+    files: [{ path: repoPath, content }],
     commitMessage: `feat(agents): share ${destBasename}`,
     prTitle: pr.title,
     prBody: pr.body,
@@ -127,10 +122,10 @@ export async function shareCursorAgent(
   };
 }
 
-export async function shareCursorSkill(
+export async function shareCursorSkillBitbucket(
   params: { skill_name: string; project_root?: string },
-  deps?: ShareCursorGithubDeps,
-): Promise<ShareCursorGithubResult> {
+  deps?: ShareCursorBitbucketDeps,
+): Promise<ShareCursorBitbucketResult> {
   const skillNameRaw = String(params.skill_name ?? '').trim();
   if (!skillNameRaw) {
     throw new Error('skill_name is required.');
@@ -143,7 +138,7 @@ export async function shareCursorSkill(
   const suffix = uniqueSuffix();
   const branch = `feat/share-skill-${slug}-${suffix}`;
   const correlationId = randomUUID();
-  const { octokit, config } = resolveDeps(projectRoot, deps);
+  const { client, config } = resolveDeps(projectRoot, deps);
 
   const pr = buildShareSkillPr({
     repoFolderPath,
@@ -153,9 +148,9 @@ export async function shareCursorSkill(
     projectRoot,
   });
 
-  const { prUrl, branch: createdBranch } = await submitMultiFilePullRequest(octokit, {
-    owner: config.owner,
-    repo: config.repo,
+  const { prUrl, branch: createdBranch } = await submitFilesPullRequest(client, {
+    workspace: config.workspace,
+    repoSlug: config.repoSlug,
     baseBranch: config.baseBranch,
     branch,
     files: files.map((f) => ({ path: f.repoPath, content: f.content })),

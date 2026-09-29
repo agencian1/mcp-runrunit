@@ -1,7 +1,7 @@
 {
   "version": 1,
   "taxonomy": {
-    "platform": ["runrunit", "github", "cloudinary", "shopify", "cursor"],
+    "platform": ["runrunit", "github", "shopify", "cursor"],
     "technology": ["react", "nextjs", "typescript"],
     "utility": [
       "workflow",
@@ -31,11 +31,39 @@
       "utility": ["workflow"]
     },
     {
-      "id": "upload-image-cloudinary",
-      "path": "platforms/cloudinary/upload-image-cloudinary",
-      "platform": ["cloudinary"],
+      "id": "commits-branches-prs",
+      "path": "platforms/github/commits-branches-prs",
+      "platform": ["github"],
       "technology": [],
-      "utility": ["evidence"]
+      "utility": ["workflow"]
+    },
+    {
+      "id": "create-task-branch",
+      "path": "platforms/github/create-task-branch",
+      "platform": ["github"],
+      "technology": [],
+      "utility": ["workflow"]
+    },
+    {
+      "id": "format-commit-message",
+      "path": "platforms/github/format-commit-message",
+      "platform": ["github"],
+      "technology": [],
+      "utility": ["workflow"]
+    },
+    {
+      "id": "commit-per-file",
+      "path": "platforms/github/commit-per-file",
+      "platform": ["github"],
+      "technology": [],
+      "utility": ["workflow"]
+    },
+    {
+      "id": "check-pr",
+      "path": "platforms/github/check-pr",
+      "platform": ["github"],
+      "technology": [],
+      "utility": ["workflow"]
     },
     {
       "id": "react-best-practices",

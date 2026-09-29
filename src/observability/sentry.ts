@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/node';
 
 const SENSITIVE_KEY_RE =
-  /authorization|cookie|set-cookie|token|password|secret|api[-_]?key|x-api-key|github_|runrunit_|cloudinary_/i;
+  /authorization|cookie|set-cookie|token|password|secret|api[-_]?key|x-api-key|github_|runrunit_/i;
 const REDACTED = '[REDACTED]';
 const FLUSH_TIMEOUT_MS = 2000;
 

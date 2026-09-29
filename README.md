@@ -2,6 +2,8 @@
 
 Servidor MCP (Model Context Protocol) para comunicação com a API do [Runrun.it](https://runrun.it). Expõe ferramentas de **Tasks** e **Comments** para uso no Cursor ou em outros clientes MCP.
 
+**Versão atual:** 1.9.0 — ver [CHANGELOG.md](CHANGELOG.md).
+
 ## Arquitetura
 
 O projeto adota o padrão **Arquitetura Hexagonal** (Ports & Adapters): o núcleo da aplicação fica isolado de detalhes de transporte (stdio, HTTP) e do cliente HTTP do Runrun.it. As **portas** definem contratos de entrada (MCP) e saída (acesso à API); os **adaptadores** implementam esses contratos (transporte e cliente HTTP).
@@ -13,6 +15,7 @@ O projeto adota o padrão **Arquitetura Hexagonal** (Ports & Adapters): o núcle
 - **Adaptadores de entrada:** como o MCP é acessado — `src/index.ts` (stdio) e `src/server.ts` (HTTP). Ambos usam o mesmo `createMcpServer()`.
 - **Porta de saída (driven):** contrato para acessar o Runrun.it (listar/criar tarefas, comentários, etc.). Hoje usada implicitamente; em uma evolução pode ser uma interface TypeScript injetada.
 - **Adaptador de saída:** implementação HTTP da API Runrun.it em `src/adapters/driven/api.ts` (auth, `runrunitFetch`, tratamento de erros).
+- **Workflow GitHub:** casos de uso em `src/application/github-workflow/` dependem da porta `GitWorkspacePort` (`src/domain/github-workflow.ts`). O adaptador `src/adapters/driven/git-workspace.ts` executa `git` e `gh`. As tools em `src/adapters/driving/` só fazem parse e delegam. Escrita (`checkout`, `commit`, `push`, `gh pr create`) só ocorre com `approved: true`; o padrão é um plano.
 
 ### Fluxo
 
@@ -41,13 +44,13 @@ flowchart LR
 
 ### Estrutura de pastas
 
-| Pasta / Arquivos                | Papel                                                                        |
-| ------------------------------- | ---------------------------------------------------------------------------- |
-| `src/index.ts`, `src/server.ts` | Pontos de entrada (adaptadores de transporte stdio e HTTP)                   |
-| `src/domain/`                   | Domínio (tipos e portas para evolução futura)                                |
-| `src/application/`              | Núcleo de aplicação: `tasks.ts`, `comments.ts` (casos de uso)                |
-| `src/adapters/driving/`         | Adaptador de entrada: `app.ts` (MCP — definição de tools e handler CallTool) |
-| `src/adapters/driven/`          | Adaptador de saída: `api.ts` (cliente HTTP Runrun.it)                        |
+| Pasta / Arquivos                | Papel                                                                                |
+| ------------------------------- | ------------------------------------------------------------------------------------ |
+| `src/index.ts`, `src/server.ts` | Pontos de entrada (adaptadores de transporte stdio e HTTP)                           |
+| `src/domain/`                   | Domínio: tipos e portas (`GitWorkspacePort` em `github-workflow.ts`)                 |
+| `src/application/`              | Núcleo de aplicação: tasks, comments e `github-workflow/` (um caso de uso por skill) |
+| `src/adapters/driving/`         | Adaptador de entrada: `app.ts` e `github-workflow-tools.ts` (tools MCP)              |
+| `src/adapters/driven/`          | Adaptadores de saída: `api.ts` (HTTP Runrun.it) e `git-workspace.ts` (`git`/`gh`)    |
 
 A separação permite trocar o transporte (stdio vs HTTP) sem alterar o núcleo e, no futuro, mockar ou trocar a implementação da API Runrun.it para testes ou outros backends.
 
@@ -63,17 +66,31 @@ Configure as variáveis de ambiente (ou no JSON de configuração do MCP no Curs
 - `RUNRUNIT_APP_KEY` — chave da aplicação
 - `RUNRUNIT_USER_TOKEN` — token do usuário
 
-**Cloudinary** (opcional, para as skills de evidências e upload de imagens):
-
-- `CLOUDINARY_CLOUD_NAME` — nome da cloud no Cloudinary
-- `CLOUDINARY_API_KEY` — API key
-- `CLOUDINARY_API_SECRET` — API secret (nunca expor no client-side)
-
 **GitHub** (opcional; tools `runrunit_share_cursor_agent` e `runrunit_share_cursor_skill`):
 
 - `GITHUB_TOKEN` — PAT ou token com permissão de escrita em `contents` e `pull_requests` no repositório alvo
-- `GITHUB_REPO_OWNER`, `GITHUB_REPO_NAME` — repositório onde abrir o PR (layout `cursor-agents/` e `cursor-skills/` na raiz)
-- `GITHUB_BASE_BRANCH` — branch base (opcional; default `main`)
+- `GITHUB_REPO_OWNER`, `GITHUB_REPO_NAME` — repositório onde abrir o PR (opcional se `project_root` for um repo git com `origin` no GitHub; detectados automaticamente)
+- `GITHUB_BASE_BRANCH` — branch base (opcional; detectada via `git symbolic-ref refs/remotes/origin/HEAD`, senão `main`)
+
+Prioridade: variáveis de ambiente **>** detecção git no `project_root` **>** default `main`.
+
+Exemplo mínimo no MCP host (só credenciais; repositório e branch base vêm do `origin` do projeto em que o agente trabalha):
+
+```json
+{
+  "env": {
+    "GITHUB_TOKEN": "ghp_...",
+    "BITBUCKET_USERNAME": "user@example.com",
+    "BITBUCKET_APP_PASSWORD": "..."
+  }
+}
+```
+
+**Bitbucket** (opcional; tools `runrunit_share_cursor_agent_bitbucket` e `runrunit_share_cursor_skill_bitbucket`):
+
+- `BITBUCKET_USERNAME`, `BITBUCKET_APP_PASSWORD` — credenciais (obrigatórias no host MCP)
+- `BITBUCKET_WORKSPACE`, `BITBUCKET_REPO_SLUG` — repositório alvo (opcional se `project_root` tiver `origin` no Bitbucket)
+- `BITBUCKET_BASE_BRANCH` — branch base (opcional; mesma detecção git que GitHub)
 
 Estas variáveis existem **só no anfitrião do processo MCP** (ficheiro de config do Cursor, CI, segredos da org). **Não** passe token nem credenciais como argumento de tool nem partilhe em chat ou repositório.
 
@@ -81,7 +98,7 @@ Estas variáveis existem **só no anfitrião do processo MCP** (ficheiro de conf
 
 - `SENTRY_DSN` — DSN do projeto Sentry
 - `SENTRY_ENVIRONMENT` — ambiente (`development`, `staging`, `production`)
-- `SENTRY_RELEASE` — versão/release (ex.: `mcp-runrunit@1.5.0+abc1234`)
+- `SENTRY_RELEASE` — versão/release (ex.: `mcp-runrunit@1.8.1+abc1234`)
 - `SENTRY_ENABLED` — liga/desliga o envio de eventos
 - `SENTRY_ERROR_SAMPLE_RATE` — taxa de amostragem de erros (0.0 a 1.0; default 1.0)
 
@@ -112,10 +129,7 @@ Exemplo de configuração (ajuste o caminho para o seu projeto):
       "args": ["caminho-do-repositório-local/mcp-runrunit/dist/index.js"],
       "env": {
         "RUNRUNIT_APP_KEY": "sua_app_key",
-        "RUNRUNIT_USER_TOKEN": "seu_user_token",
-        "CLOUDINARY_CLOUD_NAME": "sua_cloud",
-        "CLOUDINARY_API_KEY": "sua_api_key",
-        "CLOUDINARY_API_SECRET": "seu_api_secret"
+        "RUNRUNIT_USER_TOKEN": "seu_user_token"
       }
     }
   }
@@ -144,9 +158,6 @@ Depois de publicado no npm, qualquer pessoa pode usar com `npx` sem clonar o rep
       "env": {
         "RUNRUNIT_APP_KEY": "<RUNRUNIT_APP_KEY>",
         "RUNRUNIT_USER_TOKEN": "<RUNRUNIT_USER_TOKEN>",
-        "CLOUDINARY_CLOUD_NAME": "<CLOUDINARY_CLOUD_NAME>",
-        "CLOUDINARY_API_KEY": "<CLOUDINARY_API_KEY>",
-        "CLOUDINARY_API_SECRET": "<CLOUDINARY_API_SECRET>",
         "BOT_DISCORD_TOKEN_PUBLIC_ID": "<BOT_DISCORD_TOKEN_PUBLIC_ID>",
         "BOT_RUNRUNIT_REPORT_PRIVATE_KEY": "<BOT_RUNRUNIT_REPORT_PRIVATE_KEY>",
         "DISCORD_GUILD_ID": "<DISCORD_GUILD_ID>",
@@ -171,8 +182,6 @@ Alternativa manual — skills: copie (ou crie link) das pastas em `node_modules/
 - **Por projeto:** `.cursor/skills/` ou `.agents/skills/` na raiz do projeto
 
 Alternativa manual — agentes: copie os `.md` de `node_modules/mcp-runrunit/cursor-agents/` para `~/.cursor/agents/` (ou `.cursor/agents/` no projeto).
-
-As skills que fazem upload de imagens (evidências em PRs e comentários Runrun.it) usam **Cloudinary**; configure `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY` e `CLOUDINARY_API_SECRET` no `env` do MCP ou no ambiente.
 
 ## Ferramentas (Tools)
 
@@ -215,27 +224,46 @@ As skills que fazem upload de imagens (evidências em PRs e comentários Runrun.
 
 ### Cursor (skills e agentes do pacote)
 
-| Ferramenta                       | Descrição                                                                                                                                                                              |
-| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `runrunit_list_cursor_catalog`   | Lista skills e agentes de `cursor-catalog.json` com categorias e descrição. Filtros: `kind`, `platform`, `technology`, `utility`.                                                      |
-| `runrunit_install_cursor_skills` | **Só instalação local:** copia skills para `~/.cursor/skills` ou projeto. Filtros: `skill_names`, `categories`. Não usar para partilhar no GitHub — use `runrunit_share_cursor_skill`. |
-| `runrunit_install_cursor_agents` | **Só instalação local:** copia agentes para `~/.cursor/agents` (basename preservado). Filtros: `agent_names`, `categories`. PR no repo: `runrunit_share_cursor_agent`.                 |
-| `runrunit_share_cursor_agent`    | **Partilha com o time (PR):** abre PR com o ficheiro no path do catálogo (`cursor-agents/{path}`). Requer `GITHUB_*` no servidor MCP.                                                  |
-| `runrunit_share_cursor_skill`    | **Partilha com o time (PR):** abre PR com a pasta completa no path do catálogo (`cursor-skills/{path}/`). Resposta inclui `file_count` e `paths`.                                      |
+| Ferramenta                              | Descrição                                                                                                                                                                                                                         |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `runrunit_list_cursor_catalog`          | Lista skills e agentes de `cursor-catalog.json` com categorias e descrição. Filtros: `kind`, `platform`, `technology`, `utility`.                                                                                                 |
+| `runrunit_install_cursor_skills`        | **Só instalação local:** copia skills para `~/.cursor/skills` ou projeto. Filtros: `skill_names`, `categories`. Não usar para partilhar no GitHub — use `runrunit_share_cursor_skill`.                                            |
+| `runrunit_install_cursor_agents`        | **Só instalação local:** copia agentes para `~/.cursor/agents` (basename preservado). Filtros: `agent_names`, `categories`. PR no repo: `runrunit_share_cursor_agent`.                                                            |
+| `runrunit_share_cursor_agent`           | **Partilha com o time (PR GitHub):** abre PR com o ficheiro no path do catálogo (`cursor-agents/{path}`). Requer `GITHUB_TOKEN` no servidor MCP; owner, repo e branch base detectados do git em `project_root` (env sobrescreve). |
+| `runrunit_share_cursor_skill`           | **Partilha com o time (PR GitHub):** abre PR com a pasta completa no path do catálogo (`cursor-skills/{path}/`). Resposta inclui `file_count` e `paths`. Mesma detecção git que `runrunit_share_cursor_agent`.                    |
+| `runrunit_share_cursor_agent_bitbucket` | **Partilha com o time (PR Bitbucket):** abre PR com um agente em `cursor-agents/{path}`. Requer credenciais Bitbucket no host MCP; workspace, repo e branch base detectados do git em `project_root`.                             |
+| `runrunit_share_cursor_skill_bitbucket` | **Partilha com o time (PR Bitbucket):** abre PR com a pasta completa da skill. Mesma detecção git e credenciais que `runrunit_share_cursor_agent_bitbucket`.                                                                      |
+
+### GitHub (commits, branches e PRs)
+
+Cada skill em `cursor-skills/platforms/github/` tem uma tool. A tool não executa o passo das outras: a resposta traz `next_tool` para o agente chamar em seguida, só se o pedido incluir esse passo. Tools que alteram git ou abrem PR devolvem um plano (`status: "awaiting_approval"`) até `approved: true`.
+
+| Ferramenta                       | Descrição                                                                                                                                                                                                                                      |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `runrunit_commits_branches_prs`  | Só roteia. `intent`: `branch`, `message`, `commit`, `branch_and_commit` ou `pr`. Não cria branch, commit nem PR.                                                                                                                               |
+| `runrunit_create_task_branch`    | Plano ou criação só da branch `task_[número]`. Sem `approved`, não faz checkout. Se `includes_commit`, `next_tool` é `runrunit_commit_per_file`.                                                                                               |
+| `runrunit_format_commit_message` | Só formata `[numero] - [tipo] - [descrição]`. Não commita. Se `includes_commit` e `called_from` não for `commit-per-file`, `next_tool` é `runrunit_commit_per_file`.                                                                           |
+| `runrunit_commit_per_file`       | Plano de um commit por arquivo, na ordem de dependência, ignorando secrets. Sem `approved`, não commita. Se `includes_pr`, `next_tool` é `runrunit_check_pr`.                                                                                  |
+| `runrunit_check_pr`              | Checklist somente leitura: branch `task_[número]`, subject no formato `[numero] - [tipo] - [descrição]`, um arquivo por commit. `next_tool` é sempre `null`.                                                                                   |
+| `runrunit_create_pr_github`      | Plano ou abertura de uma PR para `development` ou `homolog` (nunca `main`/`master`). Reusa `runrunit_get_pr_template`. Sem `approved`, não faz push nem `gh pr create`. Evidências, comentário e `link_da_branch` ficam como passos seguintes. |
 
 ### Skills
 
 Skills em `cursor-skills/`:
 
-| Skill                        | Descrição                                                                                                                                                                                                                                    |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `code-reviewer`              | Revisão de código alinhada aos padrões da agência. Use ao revisar PRs, sugerir melhorias ou validar implementações.                                                                                                                          |
-| `registrar-evidencias`       | Captura screenshots em múltiplos viewports (mobile, tablet, desktop) a partir de URLs "antes" e "depois". Usar para evidências visuais, comparar antes/depois, documentar mudanças de UI ou preparar imagens para PRs e relatórios.          |
-| `upload-image-cloudinary`    | Upload de imagens para Cloudinary e retorno de URLs públicas. Usar quando screenshots ou evidências precisarem ser hospedadas (ex.: body da PR, docs). Requer CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY e CLOUDINARY_API_SECRET.             |
-| `comentar-task-runrunit`     | Orquestra evidências e comentário na tarefa do Runrun.it: captura antes/depois, upload no Cloudinary, opcionalmente abre PR e cria comentário na task com resumo, passo a passo de teste e links; grava link_da_branch na task se houver PR. |
-| `create-pr-github`           | Cria um pull request bem estruturado, com descrição, rótulos, revisores e evidências visuais. Inclui preparar branch, descrição, checklist e output obrigatório (link da PR, branch, ambiente de destino).                                   |
-| `install-cursor-team-skills` | Orienta `runrunit_install_cursor_skills` (cópia local) e distingue de `runrunit_share_cursor_skill` (PR no GitHub quando pedirem compartilhar com o time).                                                                                   |
-| `react-best-practices`       | Checklist e regras de performance para React e Next.js (Vercel). Use ao editar TSX/JSX, revisar componentes ou otimizar bundle e render. Inclui ficheiros detalhados em `rules/` e o documento compilado `AGENTS.md`.                        |
+| Skill                        | Descrição                                                                                                                                                                                                                                                           |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `code-reviewer`              | Revisão de código alinhada aos padrões da agência. Use ao revisar PRs, sugerir melhorias ou validar implementações.                                                                                                                                                 |
+| `registrar-evidencias`       | Captura screenshots em múltiplos viewports (mobile, tablet, desktop) a partir de URLs "antes" e "depois". Usar para evidências visuais, comparar antes/depois, documentar mudanças de UI ou preparar imagens para PRs e relatórios.                                 |
+| `comentar-task-runrunit`     | Orquestra evidências e comentário na tarefa do Runrun.it: captura antes/depois, opcionalmente abre PR e cria comentário na task com resumo, passo a passo de teste e referências; grava link_da_branch e link_da_branch_relatorio (custom_12) na task se houver PR. |
+| `create-pr-github`           | Cria um pull request bem estruturado, com descrição, rótulos, revisores e evidências visuais. Inclui preparar branch, descrição, checklist e output obrigatório (link da PR, branch, ambiente de destino).                                                          |
+| `commits-branches-prs`       | Roteia commit, branch e PR no padrão do repositório. Use ao criar commit, branch, PR ou push neste repositório. Cada skill chama a próxima só se o pedido incluir esse passo.                                                                                       |
+| `create-task-branch`         | Cria a branch no padrão `task_[número]`. Use ao criar branch neste repositório. Se o pedido incluir commit, chama commit-per-file.                                                                                                                                  |
+| `format-commit-message`      | Formata a mensagem de commit no padrão do repositório, em PT-BR: `[numero da task] - [tipo] - [descrição]`. Use ao redigir a mensagem de commit. Se o pedido incluir commitar, chama commit-per-file.                                                               |
+| `commit-per-file`            | Cria um commit por arquivo alterado, na ordem de dependência, com a mensagem no padrão do repositório. Use ao commitar neste repositório. Antes de cada commit, lê format-commit-message. Se o pedido incluir PR, chama check-pr.                                   |
+| `check-pr`                   | Confere o checklist de PR no padrão do repositório: branch `task_[número]` e commits `[task] - [tipo] - [descrição]`, um por arquivo, na ordem de dependência. Use ao preparar o PR neste repositório. Fim da cadeia.                                               |
+| `install-cursor-team-skills` | Orienta `runrunit_install_cursor_skills` (cópia local) e distingue de `runrunit_share_cursor_skill` (PR no GitHub quando pedirem compartilhar com o time).                                                                                                          |
+| `react-best-practices`       | Checklist e regras de performance para React e Next.js (Vercel). Use ao editar TSX/JSX, revisar componentes ou otimizar bundle e render. Inclui ficheiros detalhados em `rules/` e o documento compilado `AGENTS.md`.                                               |
 
 ### Agents
 

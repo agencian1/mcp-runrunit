@@ -96,9 +96,12 @@ Copiar da pasta [templates/](templates/):
 | Arquivo | Conteúdo | Quando |
 |---------|----------|--------|
 | `.husky/pre-commit` | `npx lint-staged` | sempre |
+| `.husky/commit-msg` | `bash scripts/validate-commit-msg.sh "$1"` | validar formato `12345 - feat - descrição` |
 | `.husky/pre-push` | `npm test` | só se `package.json` tiver script `test` não vazio |
 
-Em Unix, garantir hooks executáveis: `chmod +x .husky/pre-commit` (e `pre-push` se criado).
+Em Unix, garantir hooks executáveis: `chmod +x .husky/pre-commit` (e `pre-push` / `commit-msg` se criados).
+
+Copiar [`validate-commit-msg.sh`](../../../platforms/github/format-commit-message/validate-commit-msg.sh) para `scripts/validate-commit-msg.sh` no repositório alvo (ou recriar com a mesma lógica). O hook chama esse script e não depende do build.
 
 ### lint-staged no package.json
 
