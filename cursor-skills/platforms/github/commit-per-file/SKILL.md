@@ -2,7 +2,7 @@
 name: commit-per-file
 description: >-
   Cria um commit por arquivo alterado, na ordem de dependência, com a
-  mensagem no padrão Damyller. Use ao commitar neste repositório. Antes
+  mensagem no padrão do repositório. Use ao commitar neste repositório. Antes
   de cada commit, leia format-commit-message. Se o pedido incluir PR,
   chame check-pr.
 ---
