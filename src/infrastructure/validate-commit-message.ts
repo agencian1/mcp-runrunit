@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 
-const TASK_COMMIT_RE = /^task\d+: .+$/i;
+/** Mesmo formato de validate-commit-msg.sh. O hook commit-msg chama o script bash. */
+const TASK_COMMIT_RE = /^(\d+) - (feat|fix|docs|refactor|test|chore|perf) - \S.*$/;
 
 const EXEMPT_RES = [/^Merge /, /^Revert "/, /^(fixup!|squash!|amend!)/i];
 
@@ -16,8 +17,9 @@ export function validateCommitSubject(subject: string): string | null {
 
   if (!TASK_COMMIT_RE.test(trimmed)) {
     return [
-      'Formato esperado: task123456: descrição da alteração',
-      'Exemplo: task14379: remove Cloudinary e mapeia link da branch',
+      'Formato esperado: [numero da task] - [tipo] - [descrição]',
+      'Tipos: feat, fix, docs, refactor, test, chore, perf',
+      'Exemplo: 12345 - feat - adiciona suporte a cupom no carrinho',
     ].join('\n');
   }
 

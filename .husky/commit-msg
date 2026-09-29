@@ -1,1 +1,1 @@
-node scripts/validate-commit-msg.mjs "$1"
+bash cursor-skills/platforms/github/format-commit-message/validate-commit-msg.sh "$1"

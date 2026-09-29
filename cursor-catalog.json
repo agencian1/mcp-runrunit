@@ -31,6 +31,41 @@
       "utility": ["workflow"]
     },
     {
+      "id": "commits-branches-prs",
+      "path": "platforms/github/commits-branches-prs",
+      "platform": ["github"],
+      "technology": [],
+      "utility": ["workflow"]
+    },
+    {
+      "id": "create-task-branch",
+      "path": "platforms/github/create-task-branch",
+      "platform": ["github"],
+      "technology": [],
+      "utility": ["workflow"]
+    },
+    {
+      "id": "format-commit-message",
+      "path": "platforms/github/format-commit-message",
+      "platform": ["github"],
+      "technology": [],
+      "utility": ["workflow"]
+    },
+    {
+      "id": "commit-per-file",
+      "path": "platforms/github/commit-per-file",
+      "platform": ["github"],
+      "technology": [],
+      "utility": ["workflow"]
+    },
+    {
+      "id": "check-pr",
+      "path": "platforms/github/check-pr",
+      "platform": ["github"],
+      "technology": [],
+      "utility": ["workflow"]
+    },
+    {
       "id": "react-best-practices",
       "path": "technologies/react/react-best-practices",
       "platform": [],

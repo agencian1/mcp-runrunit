@@ -2,7 +2,7 @@
 
 Servidor MCP (Model Context Protocol) para comunicação com a API do [Runrun.it](https://runrun.it). Expõe ferramentas de **Tasks** e **Comments** para uso no Cursor ou em outros clientes MCP.
 
-**Versão atual:** 1.8.1 — ver [CHANGELOG.md](CHANGELOG.md).
+**Versão atual:** 1.9.0 — ver [CHANGELOG.md](CHANGELOG.md).
 
 ## Arquitetura
 
@@ -15,6 +15,7 @@ O projeto adota o padrão **Arquitetura Hexagonal** (Ports & Adapters): o núcle
 - **Adaptadores de entrada:** como o MCP é acessado — `src/index.ts` (stdio) e `src/server.ts` (HTTP). Ambos usam o mesmo `createMcpServer()`.
 - **Porta de saída (driven):** contrato para acessar o Runrun.it (listar/criar tarefas, comentários, etc.). Hoje usada implicitamente; em uma evolução pode ser uma interface TypeScript injetada.
 - **Adaptador de saída:** implementação HTTP da API Runrun.it em `src/adapters/driven/api.ts` (auth, `runrunitFetch`, tratamento de erros).
+- **Workflow GitHub:** casos de uso em `src/application/github-workflow/` dependem da porta `GitWorkspacePort` (`src/domain/github-workflow.ts`). O adaptador `src/adapters/driven/git-workspace.ts` executa `git` e `gh`. As tools em `src/adapters/driving/` só fazem parse e delegam. Escrita (`checkout`, `commit`, `push`, `gh pr create`) só ocorre com `approved: true`; o padrão é um plano.
 
 ### Fluxo
 
@@ -43,13 +44,13 @@ flowchart LR
 
 ### Estrutura de pastas
 
-| Pasta / Arquivos                | Papel                                                                        |
-| ------------------------------- | ---------------------------------------------------------------------------- |
-| `src/index.ts`, `src/server.ts` | Pontos de entrada (adaptadores de transporte stdio e HTTP)                   |
-| `src/domain/`                   | Domínio (tipos e portas para evolução futura)                                |
-| `src/application/`              | Núcleo de aplicação: `tasks.ts`, `comments.ts` (casos de uso)                |
-| `src/adapters/driving/`         | Adaptador de entrada: `app.ts` (MCP — definição de tools e handler CallTool) |
-| `src/adapters/driven/`          | Adaptador de saída: `api.ts` (cliente HTTP Runrun.it)                        |
+| Pasta / Arquivos                | Papel                                                                                |
+| ------------------------------- | ------------------------------------------------------------------------------------ |
+| `src/index.ts`, `src/server.ts` | Pontos de entrada (adaptadores de transporte stdio e HTTP)                           |
+| `src/domain/`                   | Domínio: tipos e portas (`GitWorkspacePort` em `github-workflow.ts`)                 |
+| `src/application/`              | Núcleo de aplicação: tasks, comments e `github-workflow/` (um caso de uso por skill) |
+| `src/adapters/driving/`         | Adaptador de entrada: `app.ts` e `github-workflow-tools.ts` (tools MCP)              |
+| `src/adapters/driven/`          | Adaptadores de saída: `api.ts` (HTTP Runrun.it) e `git-workspace.ts` (`git`/`gh`)    |
 
 A separação permite trocar o transporte (stdio vs HTTP) sem alterar o núcleo e, no futuro, mockar ou trocar a implementação da API Runrun.it para testes ou outros backends.
 
@@ -233,6 +234,19 @@ Alternativa manual — agentes: copie os `.md` de `node_modules/mcp-runrunit/cur
 | `runrunit_share_cursor_agent_bitbucket` | **Partilha com o time (PR Bitbucket):** abre PR com um agente em `cursor-agents/{path}`. Requer credenciais Bitbucket no host MCP; workspace, repo e branch base detectados do git em `project_root`.                             |
 | `runrunit_share_cursor_skill_bitbucket` | **Partilha com o time (PR Bitbucket):** abre PR com a pasta completa da skill. Mesma detecção git e credenciais que `runrunit_share_cursor_agent_bitbucket`.                                                                      |
 
+### GitHub (commits, branches e PRs)
+
+Cada skill em `cursor-skills/platforms/github/` tem uma tool. A tool não executa o passo das outras: a resposta traz `next_tool` para o agente chamar em seguida, só se o pedido incluir esse passo. Tools que alteram git ou abrem PR devolvem um plano (`status: "awaiting_approval"`) até `approved: true`.
+
+| Ferramenta                       | Descrição                                                                                                                                                                                                                                      |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `runrunit_commits_branches_prs`  | Só roteia. `intent`: `branch`, `message`, `commit`, `branch_and_commit` ou `pr`. Não cria branch, commit nem PR.                                                                                                                               |
+| `runrunit_create_task_branch`    | Plano ou criação só da branch `task_[número]`. Sem `approved`, não faz checkout. Se `includes_commit`, `next_tool` é `runrunit_commit_per_file`.                                                                                               |
+| `runrunit_format_commit_message` | Só formata `[numero] - [tipo] - [descrição]`. Não commita. Se `includes_commit` e `called_from` não for `commit-per-file`, `next_tool` é `runrunit_commit_per_file`.                                                                           |
+| `runrunit_commit_per_file`       | Plano de um commit por arquivo, na ordem de dependência, ignorando secrets. Sem `approved`, não commita. Se `includes_pr`, `next_tool` é `runrunit_check_pr`.                                                                                  |
+| `runrunit_check_pr`              | Checklist somente leitura: branch `task_[número]`, subject no formato `[numero] - [tipo] - [descrição]`, um arquivo por commit. `next_tool` é sempre `null`.                                                                                   |
+| `runrunit_create_pr_github`      | Plano ou abertura de uma PR para `development` ou `homolog` (nunca `main`/`master`). Reusa `runrunit_get_pr_template`. Sem `approved`, não faz push nem `gh pr create`. Evidências, comentário e `link_da_branch` ficam como passos seguintes. |
+
 ### Skills
 
 Skills em `cursor-skills/`:
@@ -243,6 +257,11 @@ Skills em `cursor-skills/`:
 | `registrar-evidencias`       | Captura screenshots em múltiplos viewports (mobile, tablet, desktop) a partir de URLs "antes" e "depois". Usar para evidências visuais, comparar antes/depois, documentar mudanças de UI ou preparar imagens para PRs e relatórios.                                 |
 | `comentar-task-runrunit`     | Orquestra evidências e comentário na tarefa do Runrun.it: captura antes/depois, opcionalmente abre PR e cria comentário na task com resumo, passo a passo de teste e referências; grava link_da_branch e link_da_branch_relatorio (custom_12) na task se houver PR. |
 | `create-pr-github`           | Cria um pull request bem estruturado, com descrição, rótulos, revisores e evidências visuais. Inclui preparar branch, descrição, checklist e output obrigatório (link da PR, branch, ambiente de destino).                                                          |
+| `commits-branches-prs`       | Roteia commit, branch e PR no padrão do repositório. Use ao criar commit, branch, PR ou push neste repositório. Cada skill chama a próxima só se o pedido incluir esse passo.                                                                                       |
+| `create-task-branch`         | Cria a branch no padrão `task_[número]`. Use ao criar branch neste repositório. Se o pedido incluir commit, chama commit-per-file.                                                                                                                                  |
+| `format-commit-message`      | Formata a mensagem de commit no padrão do repositório, em PT-BR: `[numero da task] - [tipo] - [descrição]`. Use ao redigir a mensagem de commit. Se o pedido incluir commitar, chama commit-per-file.                                                               |
+| `commit-per-file`            | Cria um commit por arquivo alterado, na ordem de dependência, com a mensagem no padrão do repositório. Use ao commitar neste repositório. Antes de cada commit, lê format-commit-message. Se o pedido incluir PR, chama check-pr.                                   |
+| `check-pr`                   | Confere o checklist de PR no padrão do repositório: branch `task_[número]` e commits `[task] - [tipo] - [descrição]`, um por arquivo, na ordem de dependência. Use ao preparar o PR neste repositório. Fim da cadeia.                                               |
 | `install-cursor-team-skills` | Orienta `runrunit_install_cursor_skills` (cópia local) e distingue de `runrunit_share_cursor_skill` (PR no GitHub quando pedirem compartilhar com o time).                                                                                                          |
 | `react-best-practices`       | Checklist e regras de performance para React e Next.js (Vercel). Use ao editar TSX/JSX, revisar componentes ou otimizar bundle e render. Inclui ficheiros detalhados em `rules/` e o documento compilado `AGENTS.md`.                                               |
 
