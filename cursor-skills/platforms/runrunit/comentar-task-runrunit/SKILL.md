@@ -1,11 +1,11 @@
 ---
 name: comentar-task-runrunit
-description: Orquestra evidências e comentário na tarefa do Runrun.it. Captura screenshots antes/depois, opcionalmente abre PR (development ou branch informada) e cria comentário na task com resumo, passo a passo de teste e referências às evidências; se houver link da PR, inclui no comentário e grava na task. Usar quando o usuário enviar link da task Runrun.it e URLs antes/depois para registrar evidências na task.
+description: Orquestra evidências e comentário na tarefa do Runrun.it. Captura screenshots antes/depois, opcionalmente abre PR (development ou branch informada) e cria comentário na task no template padrão (escopo, como foi feito, arquivos, como validar e links); se houver link da PR, inclui em links e grava na task. Usar quando o usuário enviar link da task Runrun.it e URLs antes/depois para registrar evidências na task.
 ---
 
 # Comentar na tarefa do Runrun.it (evidências + PR)
 
-Fluxo: **evidências (antes/depois)** → **(opcional)** abrir PR → **comentar na task** com resumo, passo a passo de teste e referências às evidências. Se houver link da PR, incluir no comentário e gravar na task.
+Fluxo: **evidências (antes/depois)** → **(opcional)** abrir PR → **comentar na task** com as seções do template (escopo, como foi feito, arquivos, como validar e links). Se houver link da PR, incluir em `links` e gravar na task.
 
 ## Input
 
@@ -31,9 +31,9 @@ Solicitar link da task e as duas URLs quando não forem fornecidos.
    - Se o usuário quiser PR: chamar a skill [create-pr-github](skills/create-pr-github/SKILL.md) para abrir a PR na branch **development** (ou na branch informada) e obter o **link da PR**. Se não abrir PR ou falhar, seguir sem o link.
 
 4. **Montar e publicar o comentário na task**
-   - Usar **runrunit_create_comment** com `task_id` (numérico) e `text` no formato abaixo.
-   - Incluir **Link da PR** no comentário somente se o link tiver sido obtido no passo 3.
-   - **Runrun.it não aceita Markdown:** usar texto simples; evidências como URLs ou referências aos arquivos.
+   - Usar **runrunit_create_comment** com `task_id` (numérico) e as cinco seções abaixo. A tool monta o texto a partir desses campos.
+   - Colocar o link da PR em `links` somente se ele tiver sido obtido no passo 3.
+   - **Runrun.it não aceita Markdown:** texto simples e URLs cruas.
 
 5. **Gravar o link da branch na task (obrigatório quando houver PR)**
    - Se houver link da PR ou da branch, usar **runrunit_update_task** com:
@@ -42,30 +42,42 @@ Solicitar link da task e as duas URLs quando não forem fornecidos.
 
 ## Formato do comentário na task
 
-Seguir o padrão do projeto (AGENTS.md): **contexto do que foi alterado** + **passo a passo para testar**.
+A tool publica o texto nesta ordem. Preencha cada campo em texto simples, sem Markdown.
 
-Use texto simples (sem Markdown). Exemplo de estrutura:
+| Campo | Conteúdo |
+|-------|----------|
+| `escopo` | Contexto da implementação ou correção. Ex.: correção no checkout. |
+| `como_foi_feito` | Se foi código ou configuração de painel. Ex.: Atualizei o código X do arquivo xyz.ts. |
+| `arquivos_configuracoes` | Caminho ou link do que mudou. Ex.: src/checkout/xyz.ts. |
+| `como_validar` | Passo a passo, pelo menos duas linhas. Ex.: acesse o preview, navegue até a seção e valide o slider. |
+| `links` | Preview, PR/MR e URLs das evidências, uma referência por linha. |
+
+`url_antes` e `url_depois` são opcionais. Se enviados, a tool acrescenta `Antes: <url>` e `Depois: <url>` no final de Links.
+
+Exemplo do texto publicado:
 
 ```
-Resumo do que foi feito:
-[Contexto das alterações. Ex.: O slider da home foi alterado para exibir 5 itens.]
+Escopo:
+correção no checkout.
 
-Passo a passo para testar:
-1. Acesse [URL ou descrição].
-2. [Ação]. Ex.: Role até a área abaixo do topo.
-3. [O que validar]. Ex.: Teste a funcionalidade e a responsividade do elemento.
+Como foi feito:
+Atualizei o código do slider no arquivo xyz.ts
 
-[Se houver link da PR:] Link da PR: [url_completa_da_pr]
+Quais arquivos/configurações foram afetadas:
+src/checkout/xyz.ts
 
-Evidências:
-Antes (Desktop): [url_ou_caminho]
-Depois (Desktop): [url_ou_caminho]
-Antes (Mobile): [url_ou_caminho]
-Depois (Mobile): [url_ou_caminho]
-[repetir para cada viewport que tiver referência]
+Como validar:
+1. Acesse o link de preview.
+2. Navegue até a sessão Y.
+3. Faça o scroll lateral no slider.
+
+Links:
+https://github.com/org/repo/pull/1
+Antes (Desktop): https://exemplo/antes-desktop.png
+Depois (Desktop): https://exemplo/depois-desktop.png
 ```
 
-Se houver muitas referências, agrupar por tipo (Antes/Depois) e por viewport (Desktop, Mobile, Tablet) para manter legível.
+Agrupe evidências por tipo (Antes/Depois) e por viewport (Desktop, Mobile, Tablet) dentro de `links`.
 
 ## Resumo de dependências
 
@@ -73,4 +85,4 @@ Se houver muitas referências, agrupar por tipo (Antes/Depois) e por viewport (D
 - **create-pr-github:** branch commitada e pushed; branch de destino = `development` ou a informada pelo usuário.
 - **Runrun.it:** `RUNRUNIT_APP_KEY` e `RUNRUNIT_USER_TOKEN` configurados no MCP.
 
-Se a criação da PR falhar (ex.: `gh` não disponível), informar o erro e seguir com o comentário na task apenas com resumo, passo a passo e referências às evidências (sem link da PR).
+Se a criação da PR falhar (ex.: `gh` não disponível), informar o erro e seguir com o comentário na task preenchendo as cinco seções, sem a URL da PR em `links`.

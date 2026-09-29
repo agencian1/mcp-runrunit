@@ -28,15 +28,15 @@ Este documento define regras e convenções para que o agente (Cursor/IA) use as
 
 ### Comments
 
-| Intenção do usuário                                                 | Tool recomendada                   | Observação                                                          |
-| ------------------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------- |
-| Ver comentários de uma tarefa                                       | `runrunit_list_task_comments`      | Exige `task_id`.                                                    |
-| Ver um comentário específico                                        | `runrunit_get_comment`             | Exige `id` do comentário.                                           |
-| **Criar** comentário em tarefa                                      | `runrunit_create_comment`          | Exige `task_id` e `text`.                                           |
-| **Criar** comentário na sessão externa (compartilhada com clientes) | `runrunit_create_external_comment` | Exige `task_id` e `text`. Envia `channel_name: "guest"` para a API. |
-| **Editar** texto do comentário                                      | `runrunit_update_comment`          | Exige `id` e `text`.                                                |
-| **Excluir** comentário                                              | `runrunit_delete_comment`          | Exige `id`.                                                         |
-| Adicionar reação (emoji)                                            | `runrunit_comment_reaction`        | Exige `comment_id` e `emoji` (ex.: `"👍"`).                         |
+| Intenção do usuário                                                 | Tool recomendada                   | Observação                                                                                                                        |
+| ------------------------------------------------------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Ver comentários de uma tarefa                                       | `runrunit_list_task_comments`      | Exige `task_id`.                                                                                                                  |
+| Ver um comentário específico                                        | `runrunit_get_comment`             | Exige `id` do comentário.                                                                                                         |
+| **Criar** comentário em tarefa                                      | `runrunit_create_comment`          | Exige `task_id` e as seções `escopo`, `como_foi_feito`, `arquivos_configuracoes`, `como_validar` e `links`. A tool monta o texto. |
+| **Criar** comentário na sessão externa (compartilhada com clientes) | `runrunit_create_external_comment` | Exige `task_id` e `text`. Envia `channel_name: "guest"` para a API.                                                               |
+| **Editar** texto do comentário                                      | `runrunit_update_comment`          | Exige `id` e as mesmas cinco seções do template.                                                                                  |
+| **Excluir** comentário                                              | `runrunit_delete_comment`          | Exige `id`.                                                                                                                       |
+| Adicionar reação (emoji)                                            | `runrunit_comment_reaction`        | Exige `comment_id` e `emoji` (ex.: `"👍"`).                                                                                       |
 
 ### GitHub — commits, branches e PRs
 
@@ -101,7 +101,7 @@ Variáveis de ambiente para Discord: `BOT_RUNRUNIT_REPORT` (token do bot), `DISC
      1. Chamar a skill [registrar-evidencias](skills/registrar-evidencias/SKILL.md) (URL antes, URL depois) para capturar screenshots.
      2. **Chamar a skill [create-pr-github](skills/create-pr-github/SKILL.md) para abrir a PR e obter a URL da PR — passo obrigatório; o link é necessário para os passos 4 e 5. Nunca pule este passo.**
      3. Com as referências das evidências (antes/depois) e **a URL da PR**, montar um resumo do que foi feito (ex.: histórico do que foi alterado, alinhado aos comentários do GitHub).
-     4. Criar o comentário na task com `runrunit_create_comment`: texto do resumo + **Link da PR: \<url_da_pr>** + evidências em texto simples (Runrun.it não aceita Markdown), ex.: `Antes: <url>` e `Depois: <url>`.
+     4. Criar o comentário na task com `runrunit_create_comment` preenchendo `escopo`, `como_foi_feito`, `arquivos_configuracoes`, `como_validar` (pelo menos dois passos) e `links` (URL da PR, preview e evidências em URLs cruas). Runrun.it não aceita Markdown. `url_antes` e `url_depois` são opcionais e a tool acrescenta `Antes:` e `Depois:` no final de Links.
      5. Atualizar a task com o link da branch: `runrunit_update_task(id, { task: { link_da_branch: "<url_da_pr>", link_da_branch_relatorio: "<url_da_branch>" } })`. O campo `link_da_branch` é mapeado para o custom field "Link da branch" (`custom_32`); `link_da_branch_relatorio` é mapeado para `custom_12` ao publicar o relatório do que foi feito. **Sempre** preencher com a URL obtida no passo 2.
      6. Se for mover a task para outra etapa (ex.: Manager Validation), usar **depois** do passo 5: `runrunit_move_task_stage(task_id, { board_stage_name: "Manager Validation" })`. Etapas que exigem "Link da branch" só aceitam a mudança após o link estar preenchido.
 

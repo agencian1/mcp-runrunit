@@ -286,11 +286,13 @@ flowchart LR
 
 ### 4.3 `runrunit_create_comment`
 
-**Objetivo:** Criar comentário em uma tarefa.
+**Objetivo:** Criar comentário em uma tarefa no template padrão (texto simples, sem Markdown).
+
+Seções obrigatórias: `escopo`, `como_foi_feito`, `arquivos_configuracoes`, `como_validar` (pelo menos dois passos, um por linha) e `links`. `url_antes` e `url_depois` são opcionais e entram no final de Links.
 
 ```mermaid
 flowchart LR
-  A[task_id, text] --> B[runrunit_create_comment]
+  A[task_id e secoes do template] --> B[runrunit_create_comment]
   B --> C[Comentário criado]
 ```
 
@@ -298,7 +300,7 @@ flowchart LR
 
 ### 4.4 `runrunit_update_comment` / `runrunit_delete_comment`
 
-**Objetivo:** Editar ou excluir comentário (por `id`).
+**Objetivo:** Editar ou excluir comentário (por `id`). A edição reenvia as mesmas seções do template de `runrunit_create_comment`.
 
 ---
 
