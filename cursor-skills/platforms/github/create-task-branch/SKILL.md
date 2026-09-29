@@ -1,7 +1,7 @@
 ---
 name: create-task-branch
 description: >-
-  Cria a branch no padrão Damyller `task_[número]`. Use ao criar branch
+  Cria a branch no padrão `task_[número]`. Use ao criar branch
   neste repositório. Se o pedido incluir commit, chame commit-per-file.
 ---
 
