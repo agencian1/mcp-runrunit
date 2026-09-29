@@ -1,7 +1,7 @@
 ---
 name: format-commit-message
 description: >-
-  Formata a mensagem de commit no padrão Damyller, em PT-BR:
+  Formata a mensagem de commit no padrão do repositório, em PT-BR:
   `[numero da task] - [tipo] - [descrição]`. Use ao redigir a mensagem
   de commit. Se o pedido incluir commitar, chame commit-per-file.
 ---
