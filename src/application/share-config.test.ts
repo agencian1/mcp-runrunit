@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { readGithubShareConfig } from '../adapters/driven/github.js';
 import { readBitbucketShareConfig } from '../adapters/driven/bitbucket.js';
 
@@ -15,10 +15,23 @@ describe('readGithubShareConfig merge', () => {
     'GITHUB_REPO_NAME',
     'GITHUB_BASE_BRANCH',
   ] as const;
+  const savedEnv: Partial<Record<(typeof envKeys)[number], string | undefined>> = {};
+
+  beforeEach(() => {
+    for (const key of envKeys) {
+      savedEnv[key] = process.env[key];
+      delete process.env[key];
+    }
+  });
 
   afterEach(() => {
     for (const key of envKeys) {
-      delete process.env[key];
+      const saved = savedEnv[key];
+      if (saved === undefined) {
+        delete process.env[key];
+      } else {
+        process.env[key] = saved;
+      }
     }
     vi.mocked(detectGitRepoFromProjectRoot).mockReset();
   });
@@ -67,10 +80,23 @@ describe('readBitbucketShareConfig merge', () => {
     'BITBUCKET_REPO_SLUG',
     'BITBUCKET_BASE_BRANCH',
   ] as const;
+  const savedEnv: Partial<Record<(typeof envKeys)[number], string | undefined>> = {};
+
+  beforeEach(() => {
+    for (const key of envKeys) {
+      savedEnv[key] = process.env[key];
+      delete process.env[key];
+    }
+  });
 
   afterEach(() => {
     for (const key of envKeys) {
-      delete process.env[key];
+      const saved = savedEnv[key];
+      if (saved === undefined) {
+        delete process.env[key];
+      } else {
+        process.env[key] = saved;
+      }
     }
     vi.mocked(detectGitRepoFromProjectRoot).mockReset();
   });
