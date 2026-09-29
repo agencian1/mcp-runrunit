@@ -67,9 +67,8 @@ Ordem obrigatória do fluxo:
 2. **Abrir a PR e obter a URL** (obrigatório)  
    Chamar esta skill (create-pr-github) para abrir a PR no repositório. **Sempre obter a URL da PR** — sem ela os passos 3 e 4 não podem ser concluídos corretamente. Nunca pule este passo.
 
-3. **Montar resumo e comentar**  
-   Com as referências das evidências (antes e depois) **e a URL da PR**, criar um **resumo do que foi feito** (ex.: histórico alinhado aos comentários no GitHub).  
-   Usar **runrunit_create_comment** com: texto do resumo + **link da PR** + evidências em **texto simples** (Runrun.it não aceita Markdown), ex.: `Link da PR: <url_da_pr>`, `Antes: <url>` e `Depois: <url>`.
+3. **Montar o comentário no template e publicar**  
+   Usar **runrunit_create_comment** com as seções `escopo`, `como_foi_feito`, `arquivos_configuracoes`, `como_validar` (pelo menos dois passos) e `links`. Em `links`, incluir a URL da PR, o preview e as evidências em **texto simples** (Runrun.it não aceita Markdown). `url_antes` e `url_depois` são opcionais e a tool acrescenta `Antes:` e `Depois:` no final de Links.
 
 4. **Gravar o link da branch na task** (obrigatório)  
    Usar **runrunit_update_task** com:
